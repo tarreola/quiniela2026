@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reglas — Quiniela Mundial 2026</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    :root{
+      --bg:#f0f4f8;--surface:#ffffff;--surface2:#f7f9fc;
+      --navy:#0d1f3c;--navy2:#1a3358;--green:#00a550;--green2:#00c060;
+      --green-light:#e6f9ee;--gold:#f59e0b;--gold2:#fbbf24;--gold-light:#fef3c7;
+      --text:#1a2333;--muted:#64748b;--border:#e2e8f0;
+      --shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.06);
+    }
+    body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    header{background:linear-gradient(110deg,var(--navy) 0%,var(--navy2) 60%,#1e4a7a 100%);border-bottom:4px solid var(--green);box-shadow:0 2px 16px rgba(0,0,0,.18)}
+    .hdr{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:64px}
+    .logo{display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:900;color:#fff;letter-spacing:-.3px;text-decoration:none}
+    .logo-ball{width:34px;height:34px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 0 0 3px rgba(0,197,96,.3)}
+    .btn-back{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.18);font-size:.82rem;font-weight:600;text-decoration:none;transition:background .18s}
+    .btn-back:hover{background:rgba(255,255,255,.2);color:#fff}
+    main{max-width:760px;margin:0 auto;padding:32px 20px 60px}
+    .page-title{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;color:var(--navy);margin-bottom:6px}
+    .page-subtitle{font-size:.88rem;color:var(--muted);margin-bottom:24px}
+    .card{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:20px 24px;box-shadow:var(--shadow)}
+    .card-title{font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .card-title span{font-size:1.2rem}
+    .rule-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+    .rule-item:last-child{border-bottom:none;padding-bottom:0}
+    .rule-num{min-width:26px;height:26px;border-radius:7px;background:var(--navy);color:#fff;font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .rule-title{font-size:.88rem;font-weight:800;color:var(--navy);margin-bottom:4px}
+    .rule-body{font-size:.82rem;color:var(--muted);line-height:1.7}
+    .rule-body strong{color:var(--text)}
+    .rule-body a{color:var(--green);text-decoration:none}
+    .rule-body a:hover{text-decoration:underline}
+    .prize-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:.83rem}
+    .prize-row:last-child{border-bottom:none}
+    .prize-pct{font-weight:800;color:var(--green);font-size:.9rem}
+    .important-box{background:#fff8e6;border:1px solid var(--gold);border-radius:10px;padding:12px 14px;margin:8px 0}
+    .important-box p{font-size:.82rem;color:var(--text);line-height:1.6}
+    .score-table{width:100%;border-collapse:collapse;margin-top:8px;border-radius:10px;overflow:hidden}
+    .score-table th{background:var(--navy);color:#fff;font-size:.8rem;padding:8px 10px;text-align:left}
+    .score-table td{padding:10px;font-size:.88rem;border-bottom:1px solid var(--border);color:var(--text)}
+    .score-table tr:last-child td{border-bottom:none}
+    .score-table tr:nth-child(even) td{background:var(--surface2)}
+    .pts-badge{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;font-weight:800;font-size:.9rem}
+    .pts-3{background:var(--green);color:#fff}
+    .pts-1{background:var(--gold);color:#fff}
+    .pts-0{background:#e2e8f0;color:var(--muted)}
+    .ko-pts-badge{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;font-weight:800;font-size:.88rem;background:var(--navy);color:#fff}
+    .cta{margin-top:28px;text-align:center}
+    .btn-registro{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:12px;background:var(--green);color:#fff;font-size:1rem;font-weight:800;text-decoration:none;box-shadow:0 4px 16px rgba(0,165,80,.3);transition:background .18s}
+    .btn-registro:hover{background:var(--green2)}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <a href="/" class="logo">
+      <div class="logo-ball">⚽</div>
+      Quiniela Mundial 2026
+    </a>
+    <a href="/" class="btn-back">← Volver al Tablero</a>
+  </div>
+</header>
+
+<main>
+  <div class="page-title"><span>📜</span> Reglamento</div>
+  <p class="page-subtitle">Lee con atención las siguientes reglas antes de registrar tu quiniela.</p>
+
+  <div class="card">
+    <div class="card-title"><span>📋</span> Reglas de la Quiniela Entre Amigos 2026</div>
+
+    <div class="rule-item">
+      <div class="rule-num">1</div>
+      <div>
+        <div class="rule-title">Costo de participación</div>
+        <div class="rule-body">Costo de entrada: <strong>$3,000 pesos MXN</strong> por quiniela.</div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">2</div>
+      <div>
+        <div class="rule-title">Participantes</div>
+        <div class="rule-body">
+          Cada participante puede inscribir una o más quinielas y/o invitar a otros amigos a participar, recuerden que entre más seamos mayor la bolsa y mejores los premios.<br><br>
+          Sin embargo, nos reservamos el derecho de admisión a únicamente amigos.<br><br>
+          La fecha límite de inscripción de quiniela será el <strong>Domingo 7 de Junio del 2026</strong>.
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">3</div>
+      <div>
+        <div class="rule-title">Pago</div>
+        <div class="rule-body">
+          Fecha límite de pago: <strong>Domingo 7 de Junio 2026</strong>.<br><br>
+          Sólo serán consideradas para participar aquellas quinielas que hayan sido pagadas a más tardar en esa fecha, de acuerdo con las instrucciones detalladas en este reglamento. <strong>Quiniela no pagada, No participa.</strong><br><br>
+          Las inscripciones serán aceptadas conforme sean pagadas, NO conforme sean llenadas en este enlace web. Para facilitar tu inscripción, les recomendamos hacer el pago al finalizar la quiniela en Mercado Pago.
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">4</div>
+      <div>
+        <div class="rule-title">Métodos de pago</div>
+        <div class="rule-body">
+          Los pagos se pueden hacer en <strong>efectivo</strong>, <strong>Mercado Pago</strong> ó <strong>transferencia bancaria</strong> a la cuenta indicada por el organizador y se deberá envíar vía correo electrónico el comprobante de la transferencia haciendo referencia al participante y su apodo.<br><br>
+          Correo electrónico: <strong>admin@tarreola.com</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">5</div>
+      <div>
+        <div class="rule-title">Llenado de la quiniela</div>
+        <div class="rule-body">
+          Utilizando este enlace, sigan los pasos para ir llenando los marcadores en la fase de grupos y a partir de los 16avos de final los nombres de los equipos que piensen que van a ir avanzando.<br><br>
+          Asegúrate de completar todos los marcadores de todos los partidos de la fase de grupos ya que marcador que no sea completado, se asignarán <strong>cero puntos</strong> automáticamente.<br><br>
+          Debes incluir tu pronóstico del <strong>total de goles anotados en todo el mundial</strong> sin incluir los goles en series de penales (de fases definitorias), esto incluye los 72 partidos. Este dato servirá como criterio de desempate y habrá un premio especial al que más se acerque más <strong>SIN PASARSE</strong>.
+        </div>
+        <div class="important-box" style="margin-top:10px">
+          <p><strong>IMPORTANTE:</strong> LOS EQUIPOS QUE SELECCIONES A PARTIR DE LA FASE DE 16avos, SON INDEPENDIENTES A LOS MARCADORES QUE PUSISTE EN LA FASE DE GRUPOS. ES TU DECISIÓN MANTENER TU PRONÓSTICO O CAMBIARLO. Como sugerencia, puedes llevar la contabilidad de los puntos para ver que equipos pasarán a los octavos según tus marcadores, para que decidas si así serán tus pronósticos o cambiarán.</p>
+        </div>
+        <div class="rule-body" style="margin-top:12px">
+          Te sugerimos utilizar algún simulador de resultados del mundial –usa el de tu preferencia–. Esto te ayudará mucho a ser coherente con tus pronósticos, especialmente en la Fase Eliminatoria, después de la fase de grupos.<br><br>
+          Aquí algunas sugerencias:
+          <ul style="margin:8px 0 0 18px;line-height:2">
+            <li><a href="https://www.infobae.com/mundial-2026/simulador/" target="_blank" rel="noopener">www.infobae.com/mundial-2026/simulador/</a></li>
+            <li><a href="https://www.clarosports.com/simulador-mundial-2026/" target="_blank" rel="noopener">www.clarosports.com/simulador-mundial-2026/</a></li>
+            <li><a href="https://www.atfa.com.ar/mundial/simulador.html" target="_blank" rel="noopener">www.atfa.com.ar/mundial/simulador.html</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">6</div>
+      <div>
+        <div class="rule-title">Premio</div>
+        <div class="rule-body" style="margin-bottom:10px">
+          El objetivo del juego es acumular la mayor cantidad de puntos totales al final del Mundial. La repartición de los premios se realizará al finalizar el torneo, tomando como base el total de puntos acumulados a lo largo de todas las fases según los criterios que más adelante se detallan.<br><br>
+          Se repartirá el <strong>98% de la bolsa acumulada</strong> que consistirá en la suma total de los pagos de inscripción de todos los participantes. El 2% restante será para pagar gastos administrativos.<br><br>
+          El remanente se repartirá de la siguiente manera:
+        </div>
+        <div style="margin-bottom:10px">
+          <div class="prize-row"><span>🥇 1er lugar</span><span class="prize-pct">60%</span></div>
+          <div class="prize-row"><span>🥈 2do lugar</span><span class="prize-pct">15%</span></div>
+          <div class="prize-row"><span>⚽ Al ganador al momento del cierre de la fase de grupos</span><span class="prize-pct">15%</span></div>
+          <div class="prize-row"><span>🎯 Premio especial por pronóstico de goles</span><span class="prize-pct">5%</span></div>
+          <div class="prize-row"><span>🪦 Premio especial al "más saldo" (Menos puntos)</span><span class="prize-pct">3%</span></div>
+        </div>
+        <div class="rule-body" style="margin-bottom:8px">*Los premios se otorgarán hasta que haya finalizado el mundial.</div>
+        <div class="important-box">
+          <p><strong>NOTA:</strong> La bolsa acumulada a repartir se anunciará antes del partido inaugural mediante un grupo de WhatsApp que crearemos para estar comunicados durante el mundial.<br><br>La comisión generada por Mercado Pago no es parte de la bolsa.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">7</div>
+      <div>
+        <div class="rule-title">Criterios de desempate</div>
+        <div class="rule-body">
+          Los criterios de desempate son:<br><br>
+          Primero, mayor número de marcadores exactos en fase de grupos.<br>
+          Segundo, mayor acercamiento en el pronóstico de los goles del mundial.<br>
+          En caso de empate, el premio correspondiente se repartirá en partes iguales.
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">8</div>
+      <div>
+        <div class="rule-title">Método de asignación de puntos</div>
+        <div class="rule-body" style="margin-bottom:10px">
+          En los partidos de la primera fase:<br>
+          a) Si el resultado y marcador son acertados: 3 puntos.<br>
+          b) Si el resultado es acertado pero el marcador es incorrecto: 1 punto.<br>
+          c) Si el resultado es incorrecto y evidentemente el marcador también: 0 puntos.
+        </div>
+        <table class="score-table" style="margin-bottom:12px">
+          <thead><tr><th>Fase de Grupos</th><th style="text-align:center;width:80px">Puntos</th></tr></thead>
+          <tbody>
+            <tr><td>✅ Marcador exacto</td><td style="text-align:center"><span class="pts-badge pts-3">3</span></td></tr>
+            <tr><td>🟡 Ganador o empate correcto</td><td style="text-align:center"><span class="pts-badge pts-1">1</span></td></tr>
+            <tr><td>❌ Resultado incorrecto</td><td style="text-align:center"><span class="pts-badge pts-0">0</span></td></tr>
+          </tbody>
+        </table>
+        <table class="score-table" style="margin-bottom:12px">
+          <thead><tr><th>Fases Eliminatorias</th><th style="text-align:center;width:80px">Punto por equipo acertado</th></tr></thead>
+          <tbody>
+            <tr><td>16vos de Final</td><td style="text-align:center"><span class="ko-pts-badge">1</span></td></tr>
+            <tr><td>Octavos de Final</td><td style="text-align:center"><span class="ko-pts-badge">2</span></td></tr>
+            <tr><td>Cuartos de Final</td><td style="text-align:center"><span class="ko-pts-badge">3</span></td></tr>
+            <tr><td>Semifinales</td><td style="text-align:center"><span class="ko-pts-badge">4</span></td></tr>
+            <tr><td>Final</td><td style="text-align:center"><span class="ko-pts-badge">5</span></td></tr>
+            <tr><td>Campeón</td><td style="text-align:center"><span class="ko-pts-badge" style="background:var(--gold);color:var(--navy)">10</span></td></tr>
+          </tbody>
+        </table>
+        <div class="rule-body" style="margin-bottom:10px">
+          En las fases finales, los puntos se otorgarán de acuerdo a la cantidad de países que hayan sido identificados acertadamente como participantes en cada ronda, como sigue:
+        </div>
+        <div class="rule-body">
+          <strong>Nota 1:</strong> No es necesario definir que país queda en primer y segundo lugar de grupo, pero es recomendable definirlo de manera personal para seguir con la lógica de tu pronóstico de quién pasa a las siguientes fases (recuerda apoyarte con un simulador).<br><br>
+          <strong>Nota 2:</strong> En las fases finales no se otorgarán puntos por aciertos en los marcadores; solo se otorgarán por la cantidad de países acertados.
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">9</div>
+      <div>
+        <div class="rule-title">Contacto</div>
+        <div class="rule-body">El medio oficial de comunicación de la quiniela será a través de el grupo de WhatsApp, y en caso de necesitar contactar al Administrador porfavor envía un correo a <strong>admin@tarreola.com</strong></div>
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-num">10</div>
+      <div>
+        <div class="rule-title">¡A divertirse!</div>
+        <div class="rule-body">Esta quiniela es entre amigos y no tiene ninguna finalidad más que la de divertirse.<br><br><strong>¡Buena suerte!!</strong></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

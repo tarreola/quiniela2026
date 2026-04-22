@@ -671,6 +671,13 @@
   <!-- ══════════ ADMIN ══════════ -->
   <div id="view-config" class="view">
     <div class="page-title"><span>⚙️</span> Administración</div>
+
+    <!-- Pendientes de Aprobación (ancho completo) -->
+    <div id="pending-section" style="margin-bottom:24px">
+      <div class="page-title" style="font-size:1rem;margin-bottom:12px"><span>🔔</span> Pendientes de Aprobación <span id="pending-badge" style="font-size:.75rem;background:var(--red);color:#fff;padding:2px 8px;border-radius:20px;margin-left:6px;display:none"></span></div>
+      <div id="pending-list"></div>
+    </div>
+
     <div class="admin-grid">
 
       <!-- Participantes -->
@@ -687,6 +694,27 @@
         </div>
         <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
           <button class="btn btn-danger btn-sm" onclick="clearAllPredictions()">🗑 Borrar todas las predicciones</button>
+        </div>
+      </div>
+
+      <!-- Datos del Tablero -->
+      <div class="card">
+        <h3 style="color:var(--green);margin-bottom:16px">📊 Datos del Tablero</h3>
+        <div style="margin-bottom:20px">
+          <label style="font-size:.8rem;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">💰 Bolsa Acumulada ($ MXN)</label>
+          <div style="display:flex;gap:8px">
+            <input type="number" id="admin-bolsa" placeholder="Ej: 120000" style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);padding:9px 12px;font-size:.9rem;outline:none">
+            <button class="btn btn-primary btn-sm" onclick="saveBolsa()">💾 Guardar</button>
+          </div>
+        </div>
+        <div>
+          <label style="font-size:.8rem;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">⚽ Goles Acumulados del Mundial</label>
+          <div style="display:flex;gap:8px;margin-bottom:6px">
+            <input type="number" id="admin-goles-mundial" placeholder="Goles" style="width:90px;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);padding:9px 12px;font-size:.9rem;outline:none">
+            <input type="text" id="admin-goles-fecha" placeholder="Fecha de actualización (ej: 25 Jun)" style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);padding:9px 12px;font-size:.9rem;outline:none">
+            <button class="btn btn-primary btn-sm" onclick="saveGolesMundial()">💾 Guardar</button>
+          </div>
+          <div id="admin-datos-status" style="font-size:.76rem;color:var(--muted)"></div>
         </div>
       </div>
 
@@ -766,7 +794,7 @@ const DEFAULT_TEAMS = {
 const GROUP_LETTERS = Object.keys(DEFAULT_TEAMS);
 
 const KNOCKOUT_ROUNDS=[
-  {id:'r16',label:'Dieciseisavos de Final',short:'R16',    count:32,pts:1},
+  {id:'r16',label:'16vos de Final',short:'R16',count:32,pts:1},
   {id:'r8', label:'Octavos de Final',      short:'Octavos',count:16,pts:2},
   {id:'r4', label:'Cuartos de Final',      short:'Cuartos',count:8, pts:3},
   {id:'r2', label:'Semifinal',             short:'Semi',   count:4, pts:4},
@@ -1103,7 +1131,7 @@ function renderTablero(){
     if(isModal){
       row1+=`<th class="ko-col-col" style="background:#0e2245">
         <div class="match-header-info" style="gap:4px">
-          <span style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45)">🏆 Fase KO</span>
+          <span style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45)">🏆 Fase Eliminatoria</span>
           <span style="font-size:.72rem;font-weight:800;color:var(--gold)">${r.short}</span>
           <span style="font-size:.57rem;color:rgba(255,255,255,.35)">${r.count} eq · ${r.pts}pt c/u</span>
         </div>
@@ -1112,7 +1140,7 @@ function renderTablero(){
       // Semifinal / Final / Campeón — always expanded, no toggle
       row1+=`<th class="ko-col-exp" style="background:#0e2245">
         <div class="match-header-info" style="gap:4px">
-          <span style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45)">🏆 Fase KO</span>
+          <span style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45)">🏆 Fase Eliminatoria</span>
           <span style="font-size:.72rem;font-weight:800;color:var(--gold)">${r.label}</span>
           <span style="font-size:.59rem;opacity:.5">${r.count} eq · ${r.pts}pt c/u</span>
         </div>
@@ -1785,9 +1813,93 @@ function lockPredictions(p){
 // ═══════════════════════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════════════════════
+function saveBolsa(){
+  const v=parseInt(document.getElementById('admin-bolsa').value)||0;
+  _db.ref('q26_bolsa').set(v).then(()=>{
+    showToast('✅ Bolsa guardada');
+    document.getElementById('admin-datos-status').textContent='Bolsa actualizada: $'+v.toLocaleString('es-MX')+' MXN';
+  });
+}
+
+function saveGolesMundial(){
+  const goles=parseInt(document.getElementById('admin-goles-mundial').value)||0;
+  const fecha=document.getElementById('admin-goles-fecha').value.trim();
+  _db.ref('q26_goles_mundial').set({goles,fecha}).then(()=>{
+    showToast('✅ Goles del mundial guardados');
+    document.getElementById('admin-datos-status').textContent='Goles actualizados: '+goles+(fecha?' ('+fecha+')':'');
+  });
+}
+
+function renderPending(){
+  const pending=_cache.q26_pending||{};
+  const list=document.getElementById('pending-list');
+  const badge=document.getElementById('pending-badge');
+  if(!list)return;
+  const entries=Object.entries(pending);
+  if(badge){if(entries.length){badge.textContent=entries.length;badge.style.display='';}else badge.style.display='none';}
+  if(!entries.length){
+    list.innerHTML='<p style="color:var(--muted);font-size:.88rem;padding:12px 0">No hay quinielas pendientes de aprobación.</p>';
+    return;
+  }
+  list.innerHTML=entries.map(([apodo,d])=>{
+    const pagoColor=d.pago==='mp_pendiente'?'#009ee3':'#92400e';
+    const pagoLabel=d.pago==='mp_pendiente'?'💳 MP pendiente':'💵 Efectivo pendiente';
+    const ts=d.timestamp?new Date(d.timestamp).toLocaleDateString('es-MX',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+    const matchCount=Object.keys(d.predictions||{}).length;
+    const koRounds=Object.keys(d.ko_preds||{}).length;
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:.95rem;font-weight:800;color:var(--navy)">${apodo}</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:2px">${d.nombre||''} · ${d.email||''}</div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:2px">📱 ${d.whatsapp||'—'} · ⚽ ${d.goles??'—'} goles predichos · ${matchCount}/72 partidos · ${koRounds} rondas Elim.</div>
+        ${ts?`<div style="font-size:.72rem;color:var(--muted);margin-top:3px">Enviado: ${ts}</div>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:.75rem;font-weight:700;color:${pagoColor};border:1px solid ${pagoColor};padding:3px 10px;border-radius:20px">${pagoLabel}</span>
+        <button class="btn btn-primary btn-sm" onclick="approvePending('${apodo.replace(/'/g,"\\'")}')">✅ Aprobar</button>
+        <button class="btn btn-danger btn-sm" onclick="rejectPending('${apodo.replace(/'/g,"\\'")}')">❌ Rechazar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function approvePending(apodo){
+  const d=(_cache.q26_pending||{})[apodo];
+  if(!d){showToast('⚠️ No se encontró la quiniela');return;}
+  const participants=getParticipants();
+  if(!participants.includes(apodo))participants.push(apodo);
+  const locked=getLocked();
+  if(!locked.includes(apodo))locked.push(apodo);
+  const updates={};
+  updates['q26_participants']=participants;
+  updates['q26_predictions/'+apodo]=d.predictions||{};
+  updates['q26_ko_preds/'+apodo]=d.ko_preds||{};
+  updates['q26_profiles/'+apodo]={nombre:d.nombre||'',email:d.email||'',whatsapp:d.whatsapp||'',goles:d.goles||0};
+  updates['q26_goals/'+apodo]=d.goles||0;
+  updates['q26_payments/'+apodo]=d.pago||'efectivo_pendiente';
+  updates['q26_locked']=locked;
+  updates['q26_pending/'+apodo]=null;
+  _db.ref('/').update(updates).then(()=>{showToast('✅ Quiniela de '+apodo+' aprobada');renderConfig();});
+}
+
+function rejectPending(apodo){
+  if(!confirm('¿Rechazar la quiniela de '+apodo+'? Se eliminará del sistema.'))return;
+  _db.ref('q26_pending/'+apodo).remove().then(()=>{showToast('❌ Quiniela de '+apodo+' rechazada');renderConfig();});
+}
+
 function renderConfig(){
   renderParticipants();
   renderNoPago();
+  renderPending();
+  // Pre-poblar inputs desde cache
+  const bolsa=_cache.q26_bolsa;
+  const golesM=_cache.q26_goles_mundial;
+  const bolsaInput=document.getElementById('admin-bolsa');
+  const golesMInput=document.getElementById('admin-goles-mundial');
+  const fechaInput=document.getElementById('admin-goles-fecha');
+  if(bolsaInput&&bolsa)bolsaInput.value=bolsa;
+  if(golesMInput&&golesM?.goles!==undefined)golesMInput.value=golesM.goles;
+  if(fechaInput&&golesM?.fecha)fechaInput.value=golesM.fecha;
 }
 
 function renderParticipants(){
@@ -2040,8 +2152,8 @@ function renderMissingTable(){
       ?`<span class="missing-badge missing-warn">${r.missingGroups} partidos</span>`
       :`<span class="missing-badge missing-ok">Completo</span>`;
     const koBadge=r.missingKO>0
-      ?`<span class="missing-badge missing-warn" style="margin-left:4px">${r.missingKO} KO</span>`
-      :`<span class="missing-badge missing-ok" style="margin-left:4px">KO ✓</span>`;
+      ?`<span class="missing-badge missing-warn" style="margin-left:4px">${r.missingKO} Fase Elim.</span>`
+      :`<span class="missing-badge missing-ok" style="margin-left:4px">Elim. ✓</span>`;
     return `<tr>
       <td>${lockIcon}<strong>${r.p}</strong></td>
       <td>${r.done}/${total}</td>
@@ -2051,7 +2163,7 @@ function renderMissingTable(){
   }).join('');
 
   el.innerHTML=`<table class="missing-table">
-    <thead><tr><th>Participante</th><th>Grupos</th><th>Faltantes grupos</th><th>Faltantes KO</th></tr></thead>
+    <thead><tr><th>Participante</th><th>Grupos</th><th>Faltantes grupos</th><th>Faltantes Fase Elim.</th></tr></thead>
     <tbody>${tableRows}</tbody>
   </table>`;
 }

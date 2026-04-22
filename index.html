@@ -157,6 +157,15 @@
     .pm-score-badge{font-size:.75rem;font-weight:900;padding:2px 10px;border-radius:20px;background:var(--green);color:#fff}
     .pm-pending-badge{font-size:.75rem;font-weight:700;padding:2px 10px;border-radius:20px;background:var(--gold-light);color:var(--gold);border:1px solid var(--gold)}
     .ranking-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .tablero-infobar{display:flex;align-items:stretch;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+    .info-card{display:flex;flex-direction:column;gap:3px;padding:12px 18px;border-radius:12px;background:var(--surface);box-shadow:var(--shadow)}
+    .info-card-bolsa{border-left:4px solid var(--gold);background:linear-gradient(135deg,#fffbef 0%,#fff 60%)}
+    .info-card-goles{border-left:4px solid var(--green);background:linear-gradient(135deg,#e6f9ee 0%,#fff 60%)}
+    .info-card-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+    .info-card-value{font-size:1.5rem;font-weight:900;color:var(--navy);line-height:1.1}
+    .info-card-sub{font-size:.68rem;color:var(--muted);margin-top:2px}
+    .btn-reglas{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .18s;white-space:nowrap;align-self:center;margin-left:auto}
+    .btn-reglas:hover{background:var(--navy2)}
     @media(max-width:700px){.ranking-grid{grid-template-columns:1fr}}
     .ranking-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
     .ranking-card h3{font-size:.95rem;font-weight:800;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
@@ -202,6 +211,18 @@
   <!-- ══════════ TABLERO ══════════ -->
   <div id="view-tablero" class="view active">
     <div class="page-title"><span>📊</span> Tablero Principal — Fase de Grupos</div>
+    <div class="tablero-infobar">
+      <div class="info-card info-card-bolsa">
+        <div class="info-card-label">💰 Bolsa Acumulada</div>
+        <div class="info-card-value" id="info-bolsa">—</div>
+      </div>
+      <div class="info-card info-card-goles">
+        <div class="info-card-label">⚽ Goles del Mundial</div>
+        <div class="info-card-value" id="info-goles-mundial">—</div>
+        <div class="info-card-sub" id="info-goles-fecha"></div>
+      </div>
+      <a href="/reglas" class="btn-reglas">📋 Ver Reglas</a>
+    </div>
     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
       <div id="tablero-stats" style="display:flex;gap:10px;flex-wrap:wrap"></div>
       <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
@@ -279,7 +300,7 @@ function load(key,def){
 // ═══════════════════════════════════════════════════════════
 const DEFAULT_TEAMS={A:['México','Corea del Sur','Sudáfrica','Rep. Checa'],B:['Canadá','Bosnia-Herzegovina','Catar','Suiza'],C:['Brasil','Marruecos','Haití','Escocia'],D:['Estados Unidos','Paraguay','Australia','Turquía'],E:['Alemania','Curazao','Costa de Marfil','Ecuador'],F:['Países Bajos','Japón','Suecia','Túnez'],G:['Bélgica','Egipto','Irán','Nueva Zelanda'],H:['España','Cabo Verde','Arabia Saudita','Uruguay'],I:['Francia','Senegal','Irak','Noruega'],J:['Argentina','Austria','Argelia','Jordania'],K:['Portugal','Colombia','Rep. Dem. Congo','Uzbekistán'],L:['Inglaterra','Croacia','Ghana','Panamá']};
 const GROUP_LETTERS=Object.keys(DEFAULT_TEAMS);
-const KNOCKOUT_ROUNDS=[{id:'r16',label:'Dieciseisavos de Final',short:'R16',count:32,pts:1},{id:'r8',label:'Octavos de Final',short:'Octavos',count:16,pts:2},{id:'r4',label:'Cuartos de Final',short:'Cuartos',count:8,pts:3},{id:'r2',label:'Semifinal',short:'Semi',count:4,pts:4},{id:'rf',label:'Final',short:'Final',count:2,pts:5},{id:'rc',label:'Campeón',short:'Campeón',count:1,pts:10}];
+const KNOCKOUT_ROUNDS=[{id:'r16',label:'16vos de Final',short:'R16',count:32,pts:1},{id:'r8',label:'Octavos de Final',short:'Octavos',count:16,pts:2},{id:'r4',label:'Cuartos de Final',short:'Cuartos',count:8,pts:3},{id:'r2',label:'Semifinal',short:'Semi',count:4,pts:4},{id:'rf',label:'Final',short:'Final',count:2,pts:5},{id:'rc',label:'Campeón',short:'Campeón',count:1,pts:10}];
 const KO_PREVIEW_ROUNDS=new Set(['r16','r8','r4']);
 const DEFAULT_MATCHES=[{id:'A1',group:'A',matchday:1,date:'11 Jun',hi:0,ai:2},{id:'A2',group:'A',matchday:1,date:'11 Jun',hi:1,ai:3},{id:'A3',group:'A',matchday:2,date:'18 Jun',hi:0,ai:1},{id:'A4',group:'A',matchday:2,date:'18 Jun',hi:3,ai:2},{id:'A5',group:'A',matchday:3,date:'24 Jun',hi:0,ai:3},{id:'A6',group:'A',matchday:3,date:'24 Jun',hi:1,ai:2},{id:'B1',group:'B',matchday:1,date:'12 Jun',hi:0,ai:1},{id:'B2',group:'B',matchday:1,date:'13 Jun',hi:2,ai:3},{id:'B3',group:'B',matchday:2,date:'18 Jun',hi:3,ai:1},{id:'B4',group:'B',matchday:2,date:'18 Jun',hi:0,ai:2},{id:'B5',group:'B',matchday:3,date:'24 Jun',hi:0,ai:3},{id:'B6',group:'B',matchday:3,date:'24 Jun',hi:1,ai:2},{id:'C1',group:'C',matchday:1,date:'13 Jun',hi:0,ai:1},{id:'C2',group:'C',matchday:1,date:'13 Jun',hi:2,ai:3},{id:'C3',group:'C',matchday:2,date:'19 Jun',hi:0,ai:2},{id:'C4',group:'C',matchday:2,date:'19 Jun',hi:3,ai:1},{id:'C5',group:'C',matchday:3,date:'26 Jun',hi:0,ai:3},{id:'C6',group:'C',matchday:3,date:'26 Jun',hi:1,ai:2},{id:'D1',group:'D',matchday:1,date:'12 Jun',hi:0,ai:1},{id:'D2',group:'D',matchday:1,date:'13 Jun',hi:2,ai:3},{id:'D3',group:'D',matchday:2,date:'19 Jun',hi:0,ai:2},{id:'D4',group:'D',matchday:2,date:'19 Jun',hi:3,ai:1},{id:'D5',group:'D',matchday:3,date:'25 Jun',hi:0,ai:3},{id:'D6',group:'D',matchday:3,date:'25 Jun',hi:1,ai:2},{id:'E1',group:'E',matchday:1,date:'14 Jun',hi:0,ai:1},{id:'E2',group:'E',matchday:1,date:'14 Jun',hi:2,ai:3},{id:'E3',group:'E',matchday:2,date:'20 Jun',hi:0,ai:2},{id:'E4',group:'E',matchday:2,date:'20 Jun',hi:3,ai:1},{id:'E5',group:'E',matchday:3,date:'25 Jun',hi:0,ai:3},{id:'E6',group:'E',matchday:3,date:'25 Jun',hi:1,ai:2},{id:'F1',group:'F',matchday:1,date:'14 Jun',hi:0,ai:1},{id:'F2',group:'F',matchday:1,date:'15 Jun',hi:2,ai:3},{id:'F3',group:'F',matchday:2,date:'20 Jun',hi:0,ai:2},{id:'F4',group:'F',matchday:2,date:'21 Jun',hi:3,ai:1},{id:'F5',group:'F',matchday:3,date:'25 Jun',hi:0,ai:3},{id:'F6',group:'F',matchday:3,date:'25 Jun',hi:1,ai:2},{id:'G1',group:'G',matchday:1,date:'15 Jun',hi:0,ai:1},{id:'G2',group:'G',matchday:1,date:'15 Jun',hi:2,ai:3},{id:'G3',group:'G',matchday:2,date:'21 Jun',hi:0,ai:2},{id:'G4',group:'G',matchday:2,date:'21 Jun',hi:3,ai:1},{id:'G5',group:'G',matchday:3,date:'26 Jun',hi:0,ai:3},{id:'G6',group:'G',matchday:3,date:'26 Jun',hi:1,ai:2},{id:'H1',group:'H',matchday:1,date:'15 Jun',hi:0,ai:1},{id:'H2',group:'H',matchday:1,date:'15 Jun',hi:2,ai:3},{id:'H3',group:'H',matchday:2,date:'21 Jun',hi:0,ai:2},{id:'H4',group:'H',matchday:2,date:'21 Jun',hi:3,ai:1},{id:'H5',group:'H',matchday:3,date:'26 Jun',hi:0,ai:3},{id:'H6',group:'H',matchday:3,date:'26 Jun',hi:1,ai:2},{id:'I1',group:'I',matchday:1,date:'16 Jun',hi:0,ai:1},{id:'I2',group:'I',matchday:1,date:'16 Jun',hi:2,ai:3},{id:'I3',group:'I',matchday:2,date:'22 Jun',hi:0,ai:2},{id:'I4',group:'I',matchday:2,date:'22 Jun',hi:3,ai:1},{id:'I5',group:'I',matchday:3,date:'26 Jun',hi:0,ai:3},{id:'I6',group:'I',matchday:3,date:'26 Jun',hi:1,ai:2},{id:'J1',group:'J',matchday:1,date:'16 Jun',hi:0,ai:2},{id:'J2',group:'J',matchday:1,date:'16 Jun',hi:1,ai:3},{id:'J3',group:'J',matchday:2,date:'22 Jun',hi:0,ai:1},{id:'J4',group:'J',matchday:2,date:'22 Jun',hi:2,ai:3},{id:'J5',group:'J',matchday:3,date:'26 Jun',hi:0,ai:3},{id:'J6',group:'J',matchday:3,date:'26 Jun',hi:1,ai:2},{id:'K1',group:'K',matchday:1,date:'17 Jun',hi:0,ai:2},{id:'K2',group:'K',matchday:1,date:'17 Jun',hi:3,ai:1},{id:'K3',group:'K',matchday:2,date:'23 Jun',hi:0,ai:1},{id:'K4',group:'K',matchday:2,date:'23 Jun',hi:2,ai:3},{id:'K5',group:'K',matchday:3,date:'27 Jun',hi:0,ai:3},{id:'K6',group:'K',matchday:3,date:'27 Jun',hi:1,ai:2},{id:'L1',group:'L',matchday:1,date:'17 Jun',hi:0,ai:1},{id:'L2',group:'L',matchday:1,date:'17 Jun',hi:2,ai:3},{id:'L3',group:'L',matchday:2,date:'23 Jun',hi:0,ai:2},{id:'L4',group:'L',matchday:2,date:'23 Jun',hi:3,ai:1},{id:'L5',group:'L',matchday:3,date:'27 Jun',hi:0,ai:3},{id:'L6',group:'L',matchday:3,date:'27 Jun',hi:1,ai:2}];
 const TEAM_CODES={'México':'mx','Corea del Sur':'kr','Sudáfrica':'za','Rep. Checa':'cz','Canadá':'ca','Bosnia-Herzegovina':'ba','Catar':'qa','Suiza':'ch','Brasil':'br','Marruecos':'ma','Haití':'ht','Escocia':'gb-sct','Estados Unidos':'us','Paraguay':'py','Australia':'au','Turquía':'tr','Alemania':'de','Curazao':'cw','Costa de Marfil':'ci','Ecuador':'ec','Países Bajos':'nl','Japón':'jp','Suecia':'se','Túnez':'tn','Bélgica':'be','Egipto':'eg','Irán':'ir','Nueva Zelanda':'nz','España':'es','Cabo Verde':'cv','Arabia Saudita':'sa','Uruguay':'uy','Francia':'fr','Senegal':'sn','Irak':'iq','Noruega':'no','Argentina':'ar','Austria':'at','Argelia':'dz','Jordania':'jo','Portugal':'pt','Colombia':'co','Rep. Dem. Congo':'cd','Uzbekistán':'uz','Inglaterra':'gb-eng','Croacia':'hr','Ghana':'gh','Panamá':'pa'};
@@ -321,7 +342,10 @@ function setTableroSort(by){
 
 function renderTablero(){
   const teams=getTeams();
-  const participants=getParticipants();
+  const allParticipants=getParticipants();
+  const payments=load('q26_payments',{});
+  const PAID=new Set(['efectivo','transferencia','mp']);
+  const participants=allParticipants.filter(p=>PAID.has(payments[p]||''));
   const predictions=getPredictions();
   const results=getResults();
   const matches=generateMatches(teams);
@@ -330,6 +354,16 @@ function renderTablero(){
   const koPreds=getKoPreds();
   const koResults=getKoResults();
   const hasKoResults=Object.keys(koResults).length>0;
+
+  // Info cards: bolsa y goles del mundial
+  const bolsa=_cache.q26_bolsa;
+  const golesM=_cache.q26_goles_mundial;
+  const bolsaEl=document.getElementById('info-bolsa');
+  const golesMEl=document.getElementById('info-goles-mundial');
+  const golesFechaEl=document.getElementById('info-goles-fecha');
+  if(bolsaEl)bolsaEl.textContent=bolsa?'$'+Number(bolsa).toLocaleString('es-MX')+' MXN':'—';
+  if(golesMEl)golesMEl.textContent=(golesM&&golesM.goles!==undefined)?golesM.goles:'—';
+  if(golesFechaEl)golesFechaEl.textContent=golesM?.fecha?'Última actualización: '+golesM.fecha:'';
 
   const statsEl=document.getElementById('tablero-stats');
   const resultCount=Object.keys(results).length;
@@ -435,7 +469,7 @@ function renderTablero(){
     return `<tr>
       <td class="col-rank"><span class="${rankCls}">${rankLabel}</span></td>
       <td class="col-participant"><span class="p-apodo">${p}</span>${nombre?`<span class="p-name">${nombre}</span>`:''}</td>
-      <td class="col-total" title="Grupos: ${groupPts}pts + KO: ${koPts}pts">${(hasResults||hasKoResults)?totalPts:'—'}</td>
+      <td class="col-total" title="Grupos: ${groupPts}pts + Fase Eliminatoria: ${koPts}pts">${(hasResults||hasKoResults)?totalPts:'—'}</td>
       <td class="col-exact">${(hasResults||hasKoResults)?exactCount:'—'}</td>
       <td class="col-spacer"></td>
       <td class="col-goals">${goalsMap[p]!==undefined?goalsMap[p]:'—'}</td>

@@ -6,6 +6,8 @@
   <title>Quiniela Mundial 2026 — Registro</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -273,7 +275,7 @@
   <div class="step-dot" id="dot-2"><div class="step-circle">2</div><div class="step-label">Perfil</div></div>
   <div class="step-dot" id="dot-3"><div class="step-circle">3</div><div class="step-label">Goles</div></div>
   <div class="step-dot" id="dot-4"><div class="step-circle">4</div><div class="step-label">Grupos</div></div>
-  <div class="step-dot" id="dot-5"><div class="step-circle">5</div><div class="step-label">KO</div></div>
+  <div class="step-dot" id="dot-5"><div class="step-circle">5</div><div class="step-label">Fase Eliminatoria</div></div>
   <div class="step-dot" id="dot-6"><div class="step-circle">6</div><div class="step-label">Revisar</div></div>
   <div class="step-dot" id="dot-7"><div class="step-circle">7</div><div class="step-label">Pago</div></div>
 </div>
@@ -303,7 +305,7 @@
         <div>
           <div class="rule-title">Participantes</div>
           <div class="rule-body">
-            Cada participante puede inscribir más de una quiniela y/o invitar a otros amigos a participar, recuerden que entre más seamos mayor el premio.<br><br>
+            Cada participante puede inscribir una o más quinielas y/o invitar a otros amigos a participar, recuerden que entre más seamos mayor la bolsa y mejores los premios.<br><br>
             Sin embargo, nos reservamos el derecho de admisión a únicamente amigos.<br><br>
             La fecha límite de inscripción de quiniela será el <strong>Domingo 7 de Junio del 2026</strong>.
           </div>
@@ -345,6 +347,13 @@
           <div class="important-box" style="margin-top:10px">
             <p><strong>IMPORTANTE:</strong> LOS EQUIPOS QUE SELECCIONES A PARTIR DE LA FASE DE 16avos, SON INDEPENDIENTES A LOS MARCADORES QUE PUSISTE EN LA FASE DE GRUPOS. ES TU DECISIÓN MANTENER TU PRONÓSTICO O CAMBIARLO. Como sugerencia, puedes llevar la contabilidad de los puntos para ver que equipos pasarán a los octavos según tus marcadores, para que decidas si así serán tus pronósticos o cambiarán.</p>
           </div>
+          <div class="rule-body" style="margin-top:12px">
+            Te sugerimos utilizar algún simulador de resultados del mundial –usa el de tu preferencia–. Esto te ayudará mucho a ser coherente con tus pronósticos, especialmente en la Fase Eliminatoria, después de la fase de grupos.<br><br>
+            Aquí algunas sugerencias:<br>
+            • <a href="https://www.infobae.com/mundial-2026/simulador/" target="_blank" rel="noopener">www.infobae.com/mundial-2026/simulador/</a><br>
+            • <a href="https://www.clarosports.com/simulador-mundial-2026/" target="_blank" rel="noopener">www.clarosports.com/simulador-mundial-2026/</a><br>
+            • <a href="https://www.atfa.com.ar/mundial/simulador.html" target="_blank" rel="noopener">www.atfa.com.ar/mundial/simulador.html</a>
+          </div>
         </div>
       </div>
 
@@ -366,7 +375,7 @@
           </div>
           <div class="rule-body" style="margin-bottom:8px">*Los premios se otorgarán hasta que haya finalizado el mundial.</div>
           <div class="important-box">
-            <p><strong>NOTA:</strong> La bolsa acumulada a repartir se anunciará antes del partido inaugural mediante un grupo de WhatsApp que crearemos para estar comunicados durante el mundial. Cualquier comisión por pago de quiniela, no se acumularán en la bolsa.</p>
+            <p><strong>NOTA:</strong> La bolsa acumulada a repartir se anunciará antes del partido inaugural mediante un grupo de WhatsApp que crearemos para estar comunicados durante el mundial.<br><br>La comisión generada por Mercado Pago no es parte de la bolsa.</p>
           </div>
         </div>
       </div>
@@ -390,10 +399,9 @@
           <div class="rule-title">Método de asignación de puntos</div>
           <div class="rule-body" style="margin-bottom:10px">
             En los partidos de la primera fase:<br>
-            a) Si el resultado es acertado pero el marcador es incorrecto: 1 punto.<br>
-            b) Si el resultado y marcador son acertados: 3 puntos.<br>
-            c) Si el resultado es incorrecto y evidentemente el marcador también: 0 puntos.<br><br>
-            En las fases finales, los puntos se otorgarán de acuerdo a la cantidad de países que hayan sido identificados acertadamente como participantes en cada ronda, como sigue:
+            a) Si el resultado y marcador son acertados: 3 puntos.<br>
+            b) Si el resultado es acertado pero el marcador es incorrecto: 1 punto.<br>
+            c) Si el resultado es incorrecto y evidentemente el marcador también: 0 puntos.
           </div>
           <table class="score-table" style="margin-bottom:12px">
             <thead><tr><th>Fase de Grupos</th><th style="text-align:center;width:80px">Puntos</th></tr></thead>
@@ -406,7 +414,7 @@
           <table class="score-table" style="margin-bottom:12px">
             <thead><tr><th>Fases Eliminatorias</th><th style="text-align:center;width:80px">Punto por equipo acertado</th></tr></thead>
             <tbody>
-              <tr><td>Dieciseisavos de Final</td><td style="text-align:center"><span class="ko-pts-badge">1</span></td></tr>
+              <tr><td>16vos de Final</td><td style="text-align:center"><span class="ko-pts-badge">1</span></td></tr>
               <tr><td>Octavos de Final</td><td style="text-align:center"><span class="ko-pts-badge">2</span></td></tr>
               <tr><td>Cuartos de Final</td><td style="text-align:center"><span class="ko-pts-badge">3</span></td></tr>
               <tr><td>Semifinales</td><td style="text-align:center"><span class="ko-pts-badge">4</span></td></tr>
@@ -414,8 +422,11 @@
               <tr><td>Campeón</td><td style="text-align:center"><span class="ko-pts-badge" style="background:var(--gold);color:var(--navy)">10</span></td></tr>
             </tbody>
           </table>
+          <div class="rule-body" style="margin-bottom:10px">
+            En las fases finales, los puntos se otorgarán de acuerdo a la cantidad de países que hayan sido identificados acertadamente como participantes en cada ronda, como sigue:
+          </div>
           <div class="rule-body">
-            <strong>Nota 1:</strong> No es necesario definir que país queda en primer y segundo lugar de grupo, pero es recomendable definirlo de manera personal para seguir con la lógica de tu pronóstico de quién pasa a las siguientes fases.<br><br>
+            <strong>Nota 1:</strong> No es necesario definir que país queda en primer y segundo lugar de grupo, pero es recomendable definirlo de manera personal para seguir con la lógica de tu pronóstico de quién pasa a las siguientes fases (recuerda apoyarte con un simulador).<br><br>
             <strong>Nota 2:</strong> En las fases finales no se otorgarán puntos por aciertos en los marcadores; solo se otorgarán por la cantidad de países acertados.
           </div>
         </div>
@@ -470,7 +481,8 @@
   <div id="step-3" class="hidden">
     <div class="card">
       <div class="card-title"><span>⚽</span> Goles Totales del Mundial</div>
-      <p class="text-muted" style="margin-bottom:20px">Predice cuántos goles se anotarán en total durante el Mundial 2026 (sin contar penales en fases eliminatorias). Este dato es el <strong>criterio de desempate</strong> y hay un <strong>premio especial</strong> para quien más se acerque sin pasarse.</p>
+      <p class="text-muted" style="margin-bottom:12px">Predice cuántos goles se anotarán en total durante el Mundial 2026 (sin contar penales en fases eliminatorias). Este dato es el <strong>criterio de desempate</strong> y hay un <strong>premio especial</strong> para quien más se acerque sin pasarse.</p>
+      <p class="text-muted" style="margin-bottom:20px">Solo cuentan los goles anotados durante el juego. Si el partido se tiene que definir por rondas de penales, esos goles no se acumulan y se cuentan los del marcador empatado con el que terminó el partido antes de los penales.</p>
       <div class="field" style="margin-bottom:0">
         <label>Total de goles *</label>
         <input type="number" id="reg-goles" min="0" max="500" inputmode="numeric"
@@ -486,6 +498,9 @@
 
   <!-- ══ PASO 4: QUINIELA ══ -->
   <div id="step-4" class="hidden">
+    <div class="card" style="margin-bottom:16px;padding:14px 18px">
+      <div class="card-title" style="margin-bottom:0"><span>⚽</span> Fase de Grupos</div>
+    </div>
     <div class="progress-wrap">
       <div class="progress-label">
         <span>Partidos completados</span>
@@ -493,6 +508,12 @@
       </div>
       <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
     </div>
+    <p class="text-muted" style="margin:10px 0 4px;font-size:.82rem">💡 <strong>Simuladores:</strong></p>
+    <ul class="text-muted" style="margin:0 0 16px;font-size:.82rem;padding-left:20px;line-height:2">
+      <li><a href="https://www.infobae.com/mundial-2026/simulador/" target="_blank" rel="noopener">www.infobae.com/mundial-2026/simulador/</a></li>
+      <li><a href="https://www.clarosports.com/simulador-mundial-2026/" target="_blank" rel="noopener">www.clarosports.com/simulador-mundial-2026/</a></li>
+      <li><a href="https://www.atfa.com.ar/mundial/simulador.html" target="_blank" rel="noopener">www.atfa.com.ar/mundial/simulador.html</a></li>
+    </ul>
     <div id="matches-container"></div>
   </div>
 
@@ -595,10 +616,11 @@
   <!-- ══ PASO 8: ÉXITO ══ -->
   <div id="step-8" class="hidden success-screen">
     <span class="success-icon">🎉</span>
-    <h2>¡Registro completo!</h2>
-    <p>Tu quiniela ha sido registrada exitosamente.</p>
+    <h2>¡Quiniela enviada!</h2>
+    <p>Tu quiniela fue recibida y está <strong>pendiente de aprobación</strong> por el administrador.</p>
     <p id="success-pago-msg" style="margin-top:4px"></p>
-    <p style="margin-top:12px">Revisa tu correo — te enviamos un resumen de tus predicciones.</p>
+    <p style="margin-top:12px">Una vez aprobada y confirmado tu pago, aparecerás en el tablero.</p>
+    <p style="margin-top:6px;font-size:.82rem;color:var(--muted)">Revisa tu correo — te enviamos un resumen de tus predicciones.</p>
     <div style="margin-top:24px;padding:14px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
       <p style="font-size:.82rem;color:var(--muted)">¿No recibiste el correo? Revisa tu carpeta de spam o contacta al organizador.</p>
     </div>
@@ -741,6 +763,10 @@ function generateMatches(){
   });
 }
 
+const _firebaseConfig={apiKey:'AIzaSyBbaCAODAbhgjSEUaA8Hzf31vf8K6ek1zU',authDomain:'quiniela2026-9784f.firebaseapp.com',databaseURL:'https://quiniela2026-9784f-default-rtdb.firebaseio.com',projectId:'quiniela2026-9784f',storageBucket:'quiniela2026-9784f.firebasestorage.app',messagingSenderId:'386303908707',appId:'1:386303908707:web:d36ce736e974f13e871156'};
+firebase.initializeApp(_firebaseConfig);
+const _db=firebase.database();
+
 function load(key,def){try{const v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch{return def;}}
 function save(key,val){localStorage.setItem(key,JSON.stringify(val));}
 function getParticipants(){return load('q26_participants',[]);}
@@ -756,7 +782,7 @@ let mpClicked = false;
 const TOTAL_MATCHES = DEFAULT_MATCHES.length;
 
 const KNOCKOUT_ROUNDS=[
-  {id:'r16',label:'Dieciseisavos de Final',short:'R16',    count:32,pts:1},
+  {id:'r16',label:'16vos de Final',short:'R16',count:32,pts:1,desc:'Pasan los dos primeros de cada grupo y los 8 mejores terceros lugares.'},
   {id:'r8', label:'Octavos de Final',      short:'Octavos',count:16,pts:2},
   {id:'r4', label:'Cuartos de Final',      short:'Cuartos',count:8, pts:3},
   {id:'r2', label:'Semifinal',             short:'Semi',   count:4, pts:4},
@@ -986,6 +1012,7 @@ function renderKoRoundCard(r){
       <span class="ko-info-chip">${r.pts} pt/equipo</span>
       <span class="ko-count-chip ${isFull?'done':''}">${picks.length}/${r.count}</span>
     </div>
+    ${r.desc?`<p style="font-size:.78rem;color:var(--muted);margin:6px 0 10px">${r.desc}</p>`:''}
     <div class="picked-pills">
       ${picks.map(t=>`<span class="pick-pill">
         <span class="fi fi-${TEAM_CODES[t]||''}"></span> ${t}
@@ -1064,7 +1091,7 @@ function goToConfirm(){
   document.getElementById('conf-stats').innerHTML=`
     <span style="background:var(--green);color:#fff;padding:4px 10px;border-radius:6px;font-size:.8rem;font-weight:700">✅ ${filled}/${TOTAL_MATCHES} partidos</span>
     ${filled<TOTAL_MATCHES?`<span style="background:var(--red);color:#fff;padding:4px 10px;border-radius:6px;font-size:.8rem;font-weight:700">⚠️ ${TOTAL_MATCHES-filled} sin completar</span>`:''}
-    <span style="background:var(--gold);color:#fff;padding:4px 10px;border-radius:6px;font-size:.8rem;font-weight:700">🏆 ${koFilled}/6 rondas KO con picks</span>
+    <span style="background:var(--gold);color:#fff;padding:4px 10px;border-radius:6px;font-size:.8rem;font-weight:700">🏆 ${koFilled}/6 rondas de Fase Eliminatoria con picks</span>
   `;
 
   // Mini list — group matches
@@ -1141,79 +1168,56 @@ function submitQuiniela(){
   const btn=document.getElementById('btn-next');
   btn.disabled=true;btn.textContent='Enviando…';
 
-  // 1. Save to localStorage
-  const participants=getParticipants();
-  if(!participants.includes(apodo)){participants.push(apodo);save('q26_participants',participants);}
-  const predictions=getPredictions();
-  predictions[apodo]=preds;
-  save('q26_predictions',predictions);
-  const locked=load('q26_locked',[]);
-  if(!locked.includes(apodo)){locked.push(apodo);save('q26_locked',locked);}
-
-  // 1a. Save profile (nombre + email + whatsapp + goles for tablero display)
   const whatsappVal=document.getElementById('reg-whatsapp').value.trim();
   const golesVal=parseInt(document.getElementById('reg-goles').value)||0;
-  const profilesMap=load('q26_profiles',{});
-  profilesMap[apodo]={nombre,email,whatsapp:whatsappVal,goles:golesVal};
-  save('q26_profiles',profilesMap);
-  // Save goles separately for easy tablero access
-  const golesMap=load('q26_goals',{});
-  golesMap[apodo]=golesVal;
-  save('q26_goals',golesMap);
+  const koPredsSaved={};
+  KNOCKOUT_ROUNDS.forEach(r=>{if((koPicks[r.id]||[]).length)koPredsSaved[r.id]=koPicks[r.id];});
 
-  // 1b. Save KO picks
-  const koPredsSaved=load('q26_ko_preds',{});
-  koPredsSaved[apodo]={};
-  KNOCKOUT_ROUNDS.forEach(r=>{if((koPicks[r.id]||[]).length)koPredsSaved[apodo][r.id]=koPicks[r.id];});
-  save('q26_ko_preds',koPredsSaved);
+  // 1. Guardar en Firebase como pendiente de aprobación
+  const pendingData={
+    nombre, email, whatsapp:whatsappVal, goles:golesVal,
+    pago: selectedPago==='mp'?'mp_pendiente':'efectivo_pendiente',
+    timestamp: Date.now(),
+    predictions: preds,
+    ko_preds: koPredsSaved
+  };
 
-  // 2. Save payment status
-  const payments=getPayments();
-  payments[apodo]=selectedPago==='mp'?'mp_pendiente':'efectivo_pendiente';
-  save('q26_payments',payments);
+  const doSend=()=>{
+    // 2. Success message
+    const pagoMsg=selectedPago==='mp'
+      ?'💳 Pago con MercadoPago registrado. El organizador lo confirmará.'
+      :'💵 Pago en efectivo pendiente. Entrégalo al organizador.';
+    document.getElementById('success-pago-msg').textContent=pagoMsg;
 
-  // 3. Success message
-  const pagoMsg=selectedPago==='mp'
-    ?'💳 Pago con MercadoPago registrado. El organizador confirmará tu pago.'
-    :'💵 Pago en efectivo pendiente. Entrégalo al organizador.';
-  document.getElementById('success-pago-msg').textContent=pagoMsg;
-
-  // 4. Send email via EmailJS
-  const bodyText=formatEmailBody(nombre,apodo,preds,selectedPago);
-  const emailConfigured=EMAILJS_PUBLIC_KEY!=='TU_PUBLIC_KEY';
-
-  if(emailConfigured){
-    try{emailjs.init(EMAILJS_PUBLIC_KEY);}catch(e){}
-    const pagoLabel=selectedPago==='mp'?'MercadoPago (pendiente)':selectedPago==='efectivo'?'Efectivo (pendiente)':'Sin especificar';
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      from_name: nombre,
-      apodo: apodo,
-      reply_to: email,
-      to_email: email,
-      predictions: bodyText,
-      total_filled: Object.keys(preds).length,
-      pago_label: pagoLabel
-    }).then(()=>{
-      showStep(8);
-    },(err)=>{
-      console.warn('EmailJS error:',err);
+    // 3. Send email via EmailJS
+    const bodyText=formatEmailBody(nombre,apodo,preds,selectedPago,koPicks);
+    const emailConfigured=EMAILJS_PUBLIC_KEY!=='TU_PUBLIC_KEY';
+    if(emailConfigured){
+      try{emailjs.init(EMAILJS_PUBLIC_KEY);}catch(e){}
+      const pagoLabel=selectedPago==='mp'?'MercadoPago (pendiente)':'Efectivo (pendiente)';
+      emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
+        from_name:nombre,apodo,reply_to:email,to_email:email,
+        predictions:bodyText,total_filled:Object.keys(preds).length,pago_label:pagoLabel
+      }).then(()=>showStep(8),(err)=>{console.warn('EmailJS:',err);fallbackMailto(nombre,apodo,email,preds);showStep(8);});
+    }else{
       fallbackMailto(nombre,apodo,email,preds);
       showStep(8);
-    });
-  }else{
-    fallbackMailto(nombre,apodo,email,preds);
-    showStep(8);
-  }
+    }
+  };
+
+  _db.ref('q26_pending/'+apodo).set(pendingData)
+    .then(doSend)
+    .catch(e=>{console.warn('Firebase pending error:',e);doSend();});
 }
 
 function fallbackMailto(nombre,apodo,email,preds){
   const subject=`Quiniela Mundial 2026 — ${apodo}`;
-  const body=formatEmailBody(nombre,apodo,preds);
+  const body=formatEmailBody(nombre,apodo,preds,null,koPicks);
   const mailtoUrl=`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.substring(0,1800))}`;
   try{window.open(mailtoUrl,'_blank');}catch(e){}
 }
 
-function formatEmailBody(nombre,apodo,preds,pago){
+function formatEmailBody(nombre,apodo,preds,pago,picks){
   const matches=generateMatches();
   const byGroup={};
   matches.forEach(m=>{
@@ -1232,6 +1236,22 @@ function formatEmailBody(nombre,apodo,preds,pago){
     });
     body+='\n';
   });
+
+  // Fase Eliminatoria picks
+  const kp=picks||{};
+  const hasKo=KNOCKOUT_ROUNDS.some(r=>(kp[r.id]||[]).length>0);
+  if(hasKo){
+    body+=`\n${'═'.repeat(44)}\n`;
+    body+=`FASE ELIMINATORIA\n`;
+    body+=`${'═'.repeat(44)}\n`;
+    KNOCKOUT_ROUNDS.forEach(r=>{
+      const teams=kp[r.id]||[];
+      if(!teams.length)return;
+      body+=`\n── ${r.label} (${r.pts} pt/equipo) ──\n`;
+      teams.forEach(t=>{ body+=`  • ${t}\n`; });
+    });
+  }
+
   return body.trimEnd();
 }
 
