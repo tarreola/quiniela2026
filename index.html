@@ -168,7 +168,7 @@
     .info-card-sub{font-size:.68rem;color:var(--muted);margin-top:2px}
     .btn-reglas{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .18s;white-space:nowrap}
     .btn-reglas:hover{background:var(--navy2)}
-    .btn-premios{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;background:var(--gold);color:#fff;border:none;cursor:pointer;font-size:.74rem;font-weight:800;white-space:nowrap;transition:background .18s;flex-shrink:0}
+    .btn-premios{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:12px;background:var(--gold);color:#fff;border:none;cursor:pointer;font-size:.85rem;font-weight:800;white-space:nowrap;transition:background .18s;flex-shrink:0;align-self:stretch;box-shadow:0 2px 8px rgba(245,158,11,.25)}
     .btn-premios:hover{background:var(--gold2)}
     .tablero-controls{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
     #premios-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(10,24,48,.55);backdrop-filter:blur(3px)}
@@ -294,12 +294,10 @@
     <div class="page-title"><span>📊</span> Tablero Principal — Fase de Grupos</div>
     <div class="tablero-infobar">
       <div class="info-card info-card-bolsa">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <div class="info-card-label">💰 Bolsa Acumulada</div>
-          <button class="btn-premios" onclick="openPremiosModal()">🏆 Premios</button>
-        </div>
+        <div class="info-card-label">💰 Bolsa Acumulada</div>
         <div class="info-card-value" id="info-bolsa">—</div>
       </div>
+      <button class="btn-premios" onclick="openPremiosModal()">🏆 Ver Premios</button>
       <div class="info-card info-card-goles">
         <div class="info-card-label">⚽ Goles del Mundial</div>
         <div class="info-card-value" id="info-goles-mundial">—</div>
@@ -606,7 +604,7 @@ function renderRanking(){
   document.getElementById('ranking-pts-body').innerHTML=buildRankTable(rankRows(rows,'totalPts'),'totalPts','pts','');
   document.getElementById('ranking-exact-body').innerHTML=buildRankTable(rankRows(rows,'exactCount'),'exactCount','exactos','rank-pts-gold');
   const goalsEl=document.getElementById('ranking-goals-body');const totalGoalsScored=Object.values(results).reduce((sum,r)=>sum+(r.h||0)+(r.a||0),0);const matchesWithResults=Object.keys(results).length;
-  goalsEl.innerHTML=`<div style="display:flex;align-items:center;gap:24px;padding:18px 20px;background:linear-gradient(90deg,#0c2244,#1e3860);border-radius:12px;flex-wrap:wrap"><div style="text-align:center;min-width:70px"><div style="font-size:3.2rem;font-weight:900;color:var(--green2);line-height:1">${totalGoalsScored}</div><div style="font-size:.72rem;color:rgba(255,255,255,.55);margin-top:3px;text-transform:uppercase;letter-spacing:.4px">Goles anotados</div></div><div style="width:1px;height:54px;background:rgba(255,255,255,.15)"></div><div style="color:rgba(255,255,255,.85);font-size:.9rem;line-height:1.8"><div><strong style="color:#fff;font-size:1.1rem">${matchesWithResults}</strong><span style="color:rgba(255,255,255,.5)"> / ${matches.length}</span> partidos con resultado</div><div style="font-size:.8rem;color:rgba(255,255,255,.5)">Promedio: <strong style="color:rgba(255,255,255,.75)">${matchesWithResults?((totalGoalsScored/matchesWithResults).toFixed(2)):'-'}</strong> goles/partido</div></div></div>`;
+  goalsEl.innerHTML=`<div style="display:flex;justify-content:center;align-items:center;padding:24px 20px;background:linear-gradient(90deg,#0c2244,#1e3860);border-radius:12px"><div style="text-align:center"><div style="font-size:4rem;font-weight:900;color:var(--green2);line-height:1">${totalGoalsScored||'—'}</div><div style="font-size:.78rem;color:rgba(255,255,255,.55);margin-top:6px;text-transform:uppercase;letter-spacing:.5px">Goles anotados en el Mundial</div></div></div>`;
 }
 
 // ═══════════════════════════════════════════════════════════

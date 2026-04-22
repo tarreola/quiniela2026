@@ -678,6 +678,23 @@
       <div id="pending-list"></div>
     </div>
 
+    <!-- Datos del Tablero — compacto, ancho completo -->
+    <div class="card" style="margin-bottom:20px;padding:14px 24px;border-left:4px solid var(--gold)">
+      <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:4px">💰 Bolsa Acumulada</div>
+          <div id="admin-bolsa-display" style="font-size:1.6rem;font-weight:900;color:var(--gold);line-height:1">—</div>
+          <div style="font-size:.7rem;color:var(--muted);margin-top:3px">Participantes pagados × $3,000 MXN</div>
+        </div>
+        <div style="width:1px;height:44px;background:var(--border);flex-shrink:0"></div>
+        <div>
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:4px">⚽ Goles del Mundial</div>
+          <div style="font-size:.82rem;color:var(--muted)">Calculados automáticamente de los resultados capturados.</div>
+          <div id="admin-datos-status" style="font-size:.76rem;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="admin-grid">
 
       <!-- Participantes -->
@@ -705,21 +722,6 @@
         <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
           <h4 style="font-size:.82rem;font-weight:800;color:var(--navy);margin-bottom:10px">📊 Resumen de Pagos</h4>
           <div id="pago-summary"></div>
-        </div>
-      </div>
-
-      <!-- Datos del Tablero -->
-      <div class="card">
-        <h3 style="color:var(--green);margin-bottom:16px">📊 Datos del Tablero</h3>
-        <div style="margin-bottom:20px">
-          <label style="font-size:.8rem;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">💰 Bolsa Acumulada ($ MXN)</label>
-          <div id="admin-bolsa-display" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:1rem;font-weight:700;color:var(--gold)">—</div>
-          <p style="font-size:.75rem;color:var(--muted);margin-top:4px">Calculado automáticamente: participantes pagados × $3,000 MXN</p>
-        </div>
-        <div>
-          <label style="font-size:.8rem;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">⚽ Goles Acumulados del Mundial</label>
-          <p style="font-size:.75rem;color:var(--muted);margin-top:4px">Los goles se calculan automáticamente de los resultados capturados.</p>
-          <div id="admin-datos-status" style="font-size:.76rem;color:var(--muted)"></div>
         </div>
       </div>
     </div>
@@ -1034,12 +1036,7 @@ function renderTablero(){
 
   // Stats bar
   const statsEl=document.getElementById('tablero-stats');
-  const resultCount=Object.keys(results).length;
-  statsEl.innerHTML=`
-    <span class="badge badge-green">👥 ${participants.length} participantes</span>
-    <span class="badge badge-gold">⚽ ${matches.length} partidos</span>
-    ${resultCount>0?`<span class="badge" style="background:var(--green);color:#fff">✅ ${resultCount} resultados</span>`:''}
-  `;
+  if(statsEl)statsEl.innerHTML='';
 
   const searchQ=(document.getElementById('tablero-search')?.value||'').toLowerCase();
   const visibleParticipants=searchQ
@@ -2117,10 +2114,11 @@ function renderMissingTable(){
       if(picks.length<r.count)missingKO+=(r.count-picks.length);
     });
     return {p, done, missingGroups, missingKO, isLocked:locked.includes(p)};
-  }).sort((a,b)=>(b.missingGroups+b.missingKO)-(a.missingGroups+a.missingKO));
+  }).filter(r=>r.missingGroups>0||r.missingKO>0)
+    .sort((a,b)=>(b.missingGroups+b.missingKO)-(a.missingGroups+a.missingKO));
 
   if(!rows.length){
-    el.innerHTML='<p style="padding:16px;color:var(--muted);font-size:.85rem">Sin participantes.</p>';
+    el.innerHTML='<p style="padding:16px;color:var(--green);font-size:.88rem;font-weight:700">✅ Todas las quinielas están completas.</p>';
     return;
   }
   const tableRows=rows.map(r=>{
