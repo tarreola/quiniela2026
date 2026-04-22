@@ -702,10 +702,8 @@
         <h3 style="color:var(--green);margin-bottom:16px">📊 Datos del Tablero</h3>
         <div style="margin-bottom:20px">
           <label style="font-size:.8rem;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">💰 Bolsa Acumulada ($ MXN)</label>
-          <div style="display:flex;gap:8px">
-            <input type="number" id="admin-bolsa" placeholder="Ej: 120000" style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);padding:9px 12px;font-size:.9rem;outline:none">
-            <button class="btn btn-primary btn-sm" onclick="saveBolsa()">💾 Guardar</button>
-          </div>
+          <div id="admin-bolsa-display" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:1rem;font-weight:700;color:var(--gold)">—</div>
+          <p style="font-size:.75rem;color:var(--muted);margin-top:4px">Calculado automáticamente: participantes pagados × $3,000 MXN</p>
         </div>
         <div>
           <label style="font-size:.8rem;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">⚽ Goles Acumulados del Mundial</label>
@@ -1813,13 +1811,6 @@ function lockPredictions(p){
 // ═══════════════════════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════════════════════
-function saveBolsa(){
-  const v=parseInt(document.getElementById('admin-bolsa').value)||0;
-  _db.ref('q26_bolsa').set(v).then(()=>{
-    showToast('✅ Bolsa guardada');
-    document.getElementById('admin-datos-status').textContent='Bolsa actualizada: $'+v.toLocaleString('es-MX')+' MXN';
-  });
-}
 
 function saveGolesMundial(){
   const goles=parseInt(document.getElementById('admin-goles-mundial').value)||0;
@@ -1891,13 +1882,16 @@ function renderConfig(){
   renderParticipants();
   renderNoPago();
   renderPending();
+  // Bolsa auto-calculada
+  const PAID=new Set(['efectivo','transferencia','mp']);
+  const payments=getPayments();
+  const paidCount=getParticipants().filter(p=>PAID.has(payments[p]||'')).length;
+  const bolsaDisplay=document.getElementById('admin-bolsa-display');
+  if(bolsaDisplay)bolsaDisplay.textContent='$'+(paidCount*3000).toLocaleString('es-MX')+' MXN ('+paidCount+' pagados)';
   // Pre-poblar inputs desde cache
-  const bolsa=_cache.q26_bolsa;
   const golesM=_cache.q26_goles_mundial;
-  const bolsaInput=document.getElementById('admin-bolsa');
   const golesMInput=document.getElementById('admin-goles-mundial');
   const fechaInput=document.getElementById('admin-goles-fecha');
-  if(bolsaInput&&bolsa)bolsaInput.value=bolsa;
   if(golesMInput&&golesM?.goles!==undefined)golesMInput.value=golesM.goles;
   if(fechaInput&&golesM?.fecha)fechaInput.value=golesM.fecha;
 }
