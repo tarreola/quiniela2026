@@ -238,6 +238,12 @@
     .rank-pts-gold{color:var(--gold)}
     .search-box{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:7px 12px;margin-bottom:12px}
     .search-box input{border:none;background:transparent;outline:none;flex:1;font-size:.88rem;color:var(--text);font-family:inherit}
+    /* Clickable participant cell */
+    td.col-participant{cursor:pointer}
+    td.col-participant:hover{background:#e0f0ff!important}
+    td.col-participant:hover .p-apodo{color:#1247a0}
+    .p-ver{display:none;font-size:.6rem;color:#60a5fa;font-weight:600;margin-top:2px}
+    td.col-participant:hover .p-ver{display:block}
     /* Loading */
     #loading-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--green);z-index:9999;transition:width .4s}
     #loading-bar.done{opacity:0;transition:opacity .5s}
@@ -523,7 +529,7 @@ function renderTablero(){
     const rankCls=rank===1?'rank-num-1':rank===2?'rank-num-2':rank===3?'rank-num-3':'';
     return `<tr>
       <td class="col-rank"><span class="${rankCls}">${rankLabel}</span></td>
-      <td class="col-participant"><span class="p-apodo">${p}</span>${nombre?`<span class="p-name">${nombre}</span>`:''}</td>
+      <td class="col-participant" onclick="window.open('/quiniela?p='+encodeURIComponent('${p.replace(/'/g,"\\'")}'),'_blank')"><span class="p-apodo">${p}</span>${nombre?`<span class="p-name">${nombre}</span>`:''}<span class="p-ver">👁 ver quiniela</span></td>
       <td class="col-total" title="Grupos: ${groupPts}pts + Fase Eliminatoria: ${koPts}pts">${(hasResults||hasKoResults)?totalPts:'—'}</td>
       <td class="col-exact">${(hasResults||hasKoResults)?exactCount:'—'}</td>
       <td class="col-spacer"></td>
