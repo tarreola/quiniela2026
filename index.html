@@ -358,11 +358,12 @@ function renderTablero(){
   // Info cards: bolsa y goles del mundial
   const bolsa=participants.length*3000;
   const golesM=_cache.q26_goles_mundial;
+  const totalGoles=Object.values(results).reduce((s,r)=>s+(r.h||0)+(r.a||0),0);
   const bolsaEl=document.getElementById('info-bolsa');
   const golesMEl=document.getElementById('info-goles-mundial');
   const golesFechaEl=document.getElementById('info-goles-fecha');
   if(bolsaEl)bolsaEl.textContent=bolsa>0?'$'+bolsa.toLocaleString('es-MX')+' MXN':'—';
-  if(golesMEl)golesMEl.textContent=(golesM&&golesM.goles!==undefined)?golesM.goles:'—';
+  if(golesMEl)golesMEl.textContent=totalGoles>0?totalGoles:'—';
   if(golesFechaEl)golesFechaEl.textContent=golesM?.fecha?'Última actualización: '+golesM.fecha:'';
 
   const statsEl=document.getElementById('tablero-stats');

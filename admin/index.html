@@ -708,10 +708,10 @@
         <div>
           <label style="font-size:.8rem;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">⚽ Goles Acumulados del Mundial</label>
           <div style="display:flex;gap:8px;margin-bottom:6px">
-            <input type="number" id="admin-goles-mundial" placeholder="Goles" style="width:90px;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);padding:9px 12px;font-size:.9rem;outline:none">
             <input type="text" id="admin-goles-fecha" placeholder="Fecha de actualización (ej: 25 Jun)" style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);padding:9px 12px;font-size:.9rem;outline:none">
             <button class="btn btn-primary btn-sm" onclick="saveGolesMundial()">💾 Guardar</button>
           </div>
+          <p style="font-size:.75rem;color:var(--muted);margin-top:4px">Los goles se calculan automáticamente de los resultados capturados.</p>
           <div id="admin-datos-status" style="font-size:.76rem;color:var(--muted)"></div>
         </div>
       </div>
@@ -1813,11 +1813,10 @@ function lockPredictions(p){
 // ═══════════════════════════════════════════════════════════
 
 function saveGolesMundial(){
-  const goles=parseInt(document.getElementById('admin-goles-mundial').value)||0;
   const fecha=document.getElementById('admin-goles-fecha').value.trim();
-  _db.ref('q26_goles_mundial').set({goles,fecha}).then(()=>{
-    showToast('✅ Goles del mundial guardados');
-    document.getElementById('admin-datos-status').textContent='Goles actualizados: '+goles+(fecha?' ('+fecha+')':'');
+  _db.ref('q26_goles_mundial').set({fecha}).then(()=>{
+    showToast('✅ Fecha de goles guardada');
+    document.getElementById('admin-datos-status').textContent=fecha?'Fecha actualizada: '+fecha:'Fecha guardada';
   });
 }
 
@@ -1888,11 +1887,9 @@ function renderConfig(){
   const paidCount=getParticipants().filter(p=>PAID.has(payments[p]||'')).length;
   const bolsaDisplay=document.getElementById('admin-bolsa-display');
   if(bolsaDisplay)bolsaDisplay.textContent='$'+(paidCount*3000).toLocaleString('es-MX')+' MXN ('+paidCount+' pagados)';
-  // Pre-poblar inputs desde cache
+  // Pre-poblar fecha desde cache
   const golesM=_cache.q26_goles_mundial;
-  const golesMInput=document.getElementById('admin-goles-mundial');
   const fechaInput=document.getElementById('admin-goles-fecha');
-  if(golesMInput&&golesM?.goles!==undefined)golesMInput.value=golesM.goles;
   if(fechaInput&&golesM?.fecha)fechaInput.value=golesM.fecha;
 }
 
