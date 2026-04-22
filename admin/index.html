@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -910,6 +911,10 @@ function flag(name){const c=TEAM_CODES[name];return c?`<span class="fi fi-${c}">
 // ═══════════════════════════════════════════════════════════
 const ADMIN_EMAIL='admin@tarreola.com';
 const ADMIN_PASS='Frida24';
+const EMAILJS_PUBLIC_KEY='jhPh1tHrhtaraxn-x';
+const EMAILJS_SERVICE_ID='service_7lkek3e';
+const EMAILJS_TEMPLATE_ID='template_0iad1md';
+try{emailjs.init(EMAILJS_PUBLIC_KEY);}catch(e){}
 
 const firebaseConfig={
   apiKey:'AIzaSyBbaCAODAbhgjSEUaA8Hzf31vf8K6ek1zU',
@@ -1970,6 +1975,18 @@ function unlockParticipant(name){
   save('q26_locked',locked);
   renderParticipants();
   showToast('🔓 Desbloqueado: '+name);
+  const now=new Date();
+  const fechaHora=now.toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' '+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const bodyMsg=`Se desbloquearon las predicciones de la quiniela:\n\nApodo: ${name}\nFecha y hora: ${fechaHora}\n\n— Sistema Quiniela entre Amigos Mundial 2026`;
+  emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
+    subject:`🔓 Quiniela desbloqueada: ${name}`,
+    from_name:'Admin Quiniela',
+    apodo:name,
+    to_email:ADMIN_EMAIL,
+    predictions:bodyMsg,
+    pago_label:'',
+    total_filled:''
+  }).catch(err=>console.warn('EmailJS unlock:',err));
 }
 
 function savePayment(name,val){
