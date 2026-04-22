@@ -191,9 +191,6 @@
       .info-card-value{font-size:1.3rem}
       .btn-reglas{margin-left:0;align-self:stretch;justify-content:center;padding:10px 14px}
       #tablero-stats{gap:6px}
-      /* Table → hide, show cards */
-      .table-wrap{display:none!important}
-      #tablero-mobile{display:block!important}
       thead th{font-size:.62rem;padding:5px 3px}
       thead tr:nth-child(1) th{border-bottom:2px solid rgba(255,255,255,.18)}
       thead tr:nth-child(2) th{top:120px;height:28px;padding:4px 3px}
@@ -241,22 +238,6 @@
     .search-box{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:7px 12px;margin-bottom:12px}
     .search-box input{border:none;background:transparent;outline:none;flex:1;font-size:.88rem;color:var(--text);font-family:inherit}
     /* Mobile cards */
-    #tablero-mobile{display:none}
-    .tm-card{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);cursor:pointer;text-decoration:none;color:inherit;transition:background .15s}
-    .tm-card:hover{background:#edf7f2}
-    .tm-rank{font-size:1.3rem;font-weight:900;min-width:36px;text-align:center;flex-shrink:0}
-    .tm-rank.r1{color:#92400e}.tm-rank.r2{color:#475569}.tm-rank.r3{color:#78350f}
-    .tm-info{flex:1;min-width:0}
-    .tm-apodo{font-size:.95rem;font-weight:800;color:#1a5fc4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .tm-nombre{font-size:.72rem;color:var(--muted);font-style:italic;margin-top:1px}
-    .tm-pts{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-    .tm-pts-val{font-size:1.2rem;font-weight:900;color:var(--green);line-height:1}
-    .tm-pts-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-    .tm-meta{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
-    .tm-badge{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:6px}
-    .tm-badge-exact{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold)}
-    .tm-badge-goles{background:#eff8ff;color:#0369a1;border:1px solid #bae6fd}
-    .tm-badge-ver{background:var(--navy);color:#fff;border:1px solid var(--navy2)}
     /* Clickable participant cell */
     td.col-participant{cursor:pointer}
     td.col-participant:hover{background:#e0f0ff!important}
@@ -316,7 +297,6 @@
         <tbody id="tablero-tbody"></tbody>
       </table>
     </div>
-    <div id="tablero-mobile"></div>
     <div id="tablero-empty" class="empty" style="display:none">
       <span class="empty-icon">👥</span>
       <h3>Sin participantes</h3>
@@ -549,33 +529,6 @@ function renderTablero(){
     </tr>`;
   }).join('');
 
-  // ── Mobile cards ──
-  const mobileEl=document.getElementById('tablero-mobile');
-  if(!mobileEl)return;
-  const sortedRows=[...rows].sort((a,b)=>{const dir=tableroSort.dir==='desc'?-1:1;return tableroSort.by==='exact'?dir*(a.exactCount-b.exactCount):dir*(a.totalPts-b.totalPts);});
-  if(!sortedRows.length){mobileEl.innerHTML='';return;}
-  mobileEl.innerHTML=sortedRows.map(({p,totalPts,groupPts,koPts,exactCount,nombre},i)=>{
-    const rank=i+1;
-    const rankEmoji=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':null;
-    const rankCls=rank===1?'r1':rank===2?'r2':rank===3?'r3':'';
-    const rankHtml=rankEmoji?`<span class="tm-rank ${rankCls}">${rankEmoji}</span>`:`<span class="tm-rank" style="font-size:.95rem;color:var(--muted)">${rank}</span>`;
-    const ptsHtml=(hasResults||hasKoResults)?totalPts:'—';
-    const exactHtml=(hasResults||hasKoResults)?`<span class="tm-badge tm-badge-exact">🎯 ${exactCount} exactos</span>`:'';
-    const golesHtml=goalsMap[p]!==undefined?`<span class="tm-badge tm-badge-goles">⚽ ${goalsMap[p]} pron.</span>`:'';
-    const koPtsHtml=(hasKoResults&&koPts>0)?`<span class="tm-badge" style="background:var(--green-light);color:var(--green);border:1px solid var(--green)">🏆 +${koPts} KO</span>`:'';
-    return `<a class="tm-card" href="/quiniela?p=${encodeURIComponent(p)}" target="_blank">
-      ${rankHtml}
-      <div class="tm-info">
-        <div class="tm-apodo">${p}</div>
-        ${nombre?`<div class="tm-nombre">${nombre}</div>`:''}
-        <div class="tm-meta">${exactHtml}${golesHtml}${koPtsHtml}<span class="tm-badge tm-badge-ver">👁 Ver quiniela</span></div>
-      </div>
-      <div class="tm-pts">
-        <div class="tm-pts-val">${ptsHtml}</div>
-        <div class="tm-pts-label">pts</div>
-      </div>
-    </a>`;
-  }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════
