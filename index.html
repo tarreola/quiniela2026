@@ -166,8 +166,27 @@
     .info-card-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
     .info-card-value{font-size:1.5rem;font-weight:900;color:var(--navy);line-height:1.1}
     .info-card-sub{font-size:.68rem;color:var(--muted);margin-top:2px}
-    .btn-reglas{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .18s;white-space:nowrap;align-self:center;margin-left:auto}
+    .btn-reglas{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .18s;white-space:nowrap}
     .btn-reglas:hover{background:var(--navy2)}
+    .btn-premios{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;background:var(--gold);color:#fff;border:none;cursor:pointer;font-size:.74rem;font-weight:800;white-space:nowrap;transition:background .18s;flex-shrink:0}
+    .btn-premios:hover{background:var(--gold2)}
+    .tablero-controls{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
+    #premios-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(10,24,48,.55);backdrop-filter:blur(3px)}
+    #premios-overlay.open{display:block}
+    #premios-modal{display:none;position:fixed;z-index:601;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.22);width:min(520px,94vw);max-height:82vh;flex-direction:column;overflow:hidden}
+    #premios-modal.open{display:flex}
+    .pmx-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;background:var(--navy);border-radius:18px 18px 0 0}
+    .pmx-header h3{color:#fff;font-size:1.05rem;font-weight:900;margin:0}
+    .pmx-header p{color:rgba(255,255,255,.55);font-size:.78rem;margin-top:3px}
+    .pmx-close{background:rgba(255,255,255,.1);border:none;cursor:pointer;color:#fff;font-size:1rem;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+    .pmx-close:hover{background:rgba(255,255,255,.22)}
+    .pmx-body{padding:20px;overflow-y:auto;flex:1}
+    .pmx-intro{font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:16px}
+    .pmx-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:10px;margin-bottom:8px;background:var(--surface2);border:1px solid var(--border)}
+    .pmx-row:last-child{margin-bottom:0}
+    .pmx-label{font-size:.88rem;font-weight:700;color:var(--text)}
+    .pmx-pct{font-size:1rem;font-weight:900;color:var(--green)}
+    .pmx-note{margin-top:14px;padding:12px 14px;background:#fff8e6;border:1px solid var(--gold);border-radius:10px;font-size:.8rem;color:var(--text);line-height:1.6}
     @media(max-width:700px){.ranking-grid{grid-template-columns:1fr}}
     /* ── MOBILE ── */
     @media(max-width:600px){
@@ -189,7 +208,9 @@
       .info-card-goles .info-card-value{flex:1}
       .info-card-goles .info-card-sub{flex:0 0 100%;margin-top:-4px}
       .info-card-value{font-size:1.3rem}
-      .btn-reglas{margin-left:0;align-self:stretch;justify-content:center;padding:10px 14px}
+      .tablero-controls{flex-direction:column;margin-left:0;width:100%}
+      .btn-reglas{align-self:stretch;justify-content:center;padding:10px 14px}
+      .search-box{width:100%}
       #tablero-stats{gap:6px}
       thead th{font-size:.62rem;padding:5px 3px}
       thead tr:nth-child(1) th{border-bottom:2px solid rgba(255,255,255,.18)}
@@ -273,18 +294,18 @@
     <div class="page-title"><span>📊</span> Tablero Principal — Fase de Grupos</div>
     <div class="tablero-infobar">
       <div class="info-card info-card-bolsa">
-        <div class="info-card-label">💰 Bolsa Acumulada</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <div class="info-card-label">💰 Bolsa Acumulada</div>
+          <button class="btn-premios" onclick="openPremiosModal()">🏆 Premios</button>
+        </div>
         <div class="info-card-value" id="info-bolsa">—</div>
       </div>
       <div class="info-card info-card-goles">
         <div class="info-card-label">⚽ Goles del Mundial</div>
         <div class="info-card-value" id="info-goles-mundial">—</div>
-        <div class="info-card-sub" id="info-goles-fecha"></div>
       </div>
-      <a href="/reglas" class="btn-reglas">📋 Ver Reglas</a>
-    </div>
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+      <div class="tablero-controls">
+        <a href="/reglas" class="btn-reglas">📋 Ver Reglas</a>
         <div class="search-box" style="margin-bottom:0;min-width:200px">
           <span style="color:var(--muted)">🔍</span>
           <input type="text" id="tablero-search" placeholder="Buscar participante…" oninput="renderTablero()">
@@ -316,6 +337,24 @@
   </div>
 
 </main>
+
+<!-- Premios modal -->
+<div id="premios-overlay" onclick="closePremiosModal()"></div>
+<div id="premios-modal">
+  <div class="pmx-header">
+    <div><h3>🏆 Premios</h3><p>Distribución de la bolsa al finalizar el torneo</p></div>
+    <button class="pmx-close" onclick="closePremiosModal()">✕</button>
+  </div>
+  <div class="pmx-body">
+    <p class="pmx-intro">El <strong>98% de la bolsa acumulada</strong> se repartirá entre los ganadores al finalizar el Mundial. El 2% restante cubre gastos administrativos.</p>
+    <div class="pmx-row"><span class="pmx-label">🥇 1er lugar</span><span class="pmx-pct">60%</span></div>
+    <div class="pmx-row"><span class="pmx-label">🥈 2do lugar</span><span class="pmx-pct">15%</span></div>
+    <div class="pmx-row"><span class="pmx-label">⚽ Líder al cierre de fase de grupos</span><span class="pmx-pct">15%</span></div>
+    <div class="pmx-row"><span class="pmx-label">🎯 Pronóstico de goles del mundial</span><span class="pmx-pct">5%</span></div>
+    <div class="pmx-row"><span class="pmx-label">🪦 Premio al "más saldo" (menos puntos)</span><span class="pmx-pct">3%</span></div>
+    <div class="pmx-note"><strong>NOTA:</strong> La bolsa acumulada a repartir se anunciará antes del partido inaugural. Los premios se otorgarán hasta que haya finalizado el mundial. La comisión generada por Mercado Pago no es parte de la bolsa.</div>
+  </div>
+</div>
 
 <!-- Picks viewer modal (read-only) -->
 <div id="picks-overlay" onclick="closePicksViewer()"></div>
@@ -420,10 +459,8 @@ function renderTablero(){
   const totalGoles=Object.values(results).reduce((s,r)=>s+(r.h||0)+(r.a||0),0);
   const bolsaEl=document.getElementById('info-bolsa');
   const golesMEl=document.getElementById('info-goles-mundial');
-  const golesFechaEl=document.getElementById('info-goles-fecha');
   if(bolsaEl)bolsaEl.textContent=bolsa>0?'$'+bolsa.toLocaleString('es-MX')+' MXN':'—';
   if(golesMEl)golesMEl.textContent=totalGoles>0?totalGoles:'—';
-  if(golesFechaEl)golesFechaEl.textContent=golesM?.fecha?'Última actualización: '+golesM.fecha:'';
 
   const searchQ=(document.getElementById('tablero-search')?.value||'').toLowerCase();
   const visibleParticipants=searchQ?participants.filter(p=>{const nombre=(profiles[p]?.nombre||'').toLowerCase();return p.toLowerCase().includes(searchQ)||nombre.includes(searchQ);}):participants;
@@ -552,7 +589,9 @@ function openPicksViewer(roundId,participant){
   document.getElementById('picks-modal').classList.add('open');
 }
 function closePicksViewer(){document.getElementById('picks-overlay').classList.remove('open');document.getElementById('picks-modal').classList.remove('open');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePicksViewer();});
+function openPremiosModal(){document.getElementById('premios-overlay').classList.add('open');document.getElementById('premios-modal').classList.add('open');}
+function closePremiosModal(){document.getElementById('premios-overlay').classList.remove('open');document.getElementById('premios-modal').classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePicksViewer();closePremiosModal();}});
 
 // ═══════════════════════════════════════════════════════════
 //  RANKING

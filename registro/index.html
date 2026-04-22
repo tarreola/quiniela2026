@@ -1184,7 +1184,7 @@ function submitQuiniela(){
     if(emailConfigured){
       try{emailjs.init(EMAILJS_PUBLIC_KEY);}catch(e){}
       const pagoLabel=selectedPago==='mp'?'MercadoPago (pendiente)':'Efectivo (pendiente)';
-      emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{from_name:nombre,apodo,reply_to:email,to_email:email,predictions:bodyText,total_filled:Object.keys(preds).length,pago_label:pagoLabel})
+      emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{subject:'Quiniela entre Amigos Mundial 2026',from_name:nombre,apodo,reply_to:email,to_email:email,cc_email:'admin@tarreola.com',predictions:bodyText,total_filled:Object.keys(preds).length,pago_label:pagoLabel})
         .then(()=>showStep(8),(err)=>{console.warn('EmailJS:',err);fallbackMailto(nombre,apodo,email,preds);showStep(8);});
     }else{fallbackMailto(nombre,apodo,email,preds);showStep(8);}
   };
@@ -1192,48 +1192,14 @@ function submitQuiniela(){
 }
 
 function fallbackMailto(nombre,apodo,email,preds){
-  const subject=`Quiniela Mundial 2026 — ${apodo}`;
+  const subject='Quiniela entre Amigos Mundial 2026';
   const body=formatEmailBody(nombre,apodo,preds,null,koPicks);
   const mailtoUrl=`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.substring(0,1800))}`;
   try{window.open(mailtoUrl,'_blank');}catch(e){}
 }
 
 function formatEmailBody(nombre,apodo,preds,pago,picks){
-  const matches=generateMatches();
-  const byGroup={};
-  matches.forEach(m=>{
-    if(!byGroup[m.group])byGroup[m.group]=[];
-    byGroup[m.group].push(m);
-  });
-  let body='';
-  Object.keys(byGroup).sort().forEach(grp=>{
-    body+=`── GRUPO ${grp} ──────────────────────────\n`;
-    byGroup[grp].forEach(m=>{
-      const p=preds[m.id];
-      const score=(p&&p.h!==''&&p.a!=='')?`${p.h} - ${p.a}`:'?';
-      const home=m.home.padEnd(22);
-      const away=m.away;
-      body+=`  ${home}  ${score.padStart(5)}  ${away}\n`;
-    });
-    body+='\n';
-  });
-
-  // Fase Eliminatoria picks
-  const kp=picks||{};
-  const hasKo=KNOCKOUT_ROUNDS.some(r=>(kp[r.id]||[]).length>0);
-  if(hasKo){
-    body+=`\n${'═'.repeat(44)}\n`;
-    body+=`FASE ELIMINATORIA\n`;
-    body+=`${'═'.repeat(44)}\n`;
-    KNOCKOUT_ROUNDS.forEach(r=>{
-      const teams=kp[r.id]||[];
-      if(!teams.length)return;
-      body+=`\n── ${r.label} (${r.pts} pt/equipo) ──\n`;
-      teams.forEach(t=>{ body+=`  • ${t}\n`; });
-    });
-  }
-
-  return body.trimEnd();
+  return `¡Hola ${nombre}!\n\nTu quiniela con apodo "${apodo}" ha sido registrada exitosamente.\n\nTe contactaremos pronto para confirmar tu pago y participación.\n\n¡Buena suerte! ⚽`;
 }
 
 // ═══════════════════════════════════════════════════════════

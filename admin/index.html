@@ -697,6 +697,17 @@
         </div>
       </div>
 
+      <!-- No Pago + Resumen -->
+      <div class="card">
+        <h3 style="color:var(--red);margin-bottom:4px">⚠️ Pendientes de Pago</h3>
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Participantes con pago sin confirmar.</p>
+        <div id="nopago-list"></div>
+        <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
+          <h4 style="font-size:.82rem;font-weight:800;color:var(--navy);margin-bottom:10px">📊 Resumen de Pagos</h4>
+          <div id="pago-summary"></div>
+        </div>
+      </div>
+
       <!-- Datos del Tablero -->
       <div class="card">
         <h3 style="color:var(--green);margin-bottom:16px">📊 Datos del Tablero</h3>
@@ -707,23 +718,8 @@
         </div>
         <div>
           <label style="font-size:.8rem;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">⚽ Goles Acumulados del Mundial</label>
-          <div style="display:flex;gap:8px;margin-bottom:6px">
-            <input type="text" id="admin-goles-fecha" placeholder="Fecha de actualización (ej: 25 Jun)" style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);padding:9px 12px;font-size:.9rem;outline:none">
-            <button class="btn btn-primary btn-sm" onclick="saveGolesMundial()">💾 Guardar</button>
-          </div>
           <p style="font-size:.75rem;color:var(--muted);margin-top:4px">Los goles se calculan automáticamente de los resultados capturados.</p>
           <div id="admin-datos-status" style="font-size:.76rem;color:var(--muted)"></div>
-        </div>
-      </div>
-
-      <!-- No Pago + Resumen -->
-      <div class="card">
-        <h3 style="color:var(--red);margin-bottom:4px">⚠️ Pendientes de Pago</h3>
-        <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Participantes con pago sin confirmar.</p>
-        <div id="nopago-list"></div>
-        <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
-          <h4 style="font-size:.82rem;font-weight:800;color:var(--navy);margin-bottom:10px">📊 Resumen de Pagos</h4>
-          <div id="pago-summary"></div>
         </div>
       </div>
     </div>
@@ -1812,13 +1808,7 @@ function lockPredictions(p){
 //  CONFIG
 // ═══════════════════════════════════════════════════════════
 
-function saveGolesMundial(){
-  const fecha=document.getElementById('admin-goles-fecha').value.trim();
-  _db.ref('q26_goles_mundial').set({fecha}).then(()=>{
-    showToast('✅ Fecha de goles guardada');
-    document.getElementById('admin-datos-status').textContent=fecha?'Fecha actualizada: '+fecha:'Fecha guardada';
-  });
-}
+function saveGolesMundial(){}
 
 function renderPending(){
   const pending=_cache.q26_pending||{};
@@ -1887,10 +1877,6 @@ function renderConfig(){
   const paidCount=getParticipants().filter(p=>PAID.has(payments[p]||'')).length;
   const bolsaDisplay=document.getElementById('admin-bolsa-display');
   if(bolsaDisplay)bolsaDisplay.textContent='$'+(paidCount*3000).toLocaleString('es-MX')+' MXN ('+paidCount+' pagados)';
-  // Pre-poblar fecha desde cache
-  const golesM=_cache.q26_goles_mundial;
-  const fechaInput=document.getElementById('admin-goles-fecha');
-  if(fechaInput&&golesM?.fecha)fechaInput.value=golesM.fecha;
 }
 
 function renderParticipants(){
