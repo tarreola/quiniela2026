@@ -49,12 +49,15 @@
     thead tr:nth-child(2) th{top:168px;height:34px;padding:5px 4px;border-top:2px solid rgba(255,255,255,.18);border-bottom:3px solid var(--green)}
     .col-rank{width:var(--cw-rank);min-width:var(--cw-rank);max-width:var(--cw-rank)}
     .col-participant{width:var(--cw-part);min-width:var(--cw-part);max-width:var(--cw-part)}
+    .col-total{width:var(--cw-pts);min-width:var(--cw-pts);max-width:var(--cw-pts)}
     .col-exact{width:var(--cw-pts);min-width:var(--cw-pts);max-width:var(--cw-pts)}
     .col-goals{width:var(--cw-goals);min-width:var(--cw-goals);max-width:var(--cw-goals)}
     .col-spacer{width:var(--cw-sp);min-width:var(--cw-sp);max-width:var(--cw-sp);padding:0}
     thead th.col-rank{position:sticky;left:0;z-index:22;background:#0a1e3a;text-align:center}
     thead th.col-participant{position:sticky;left:var(--cw-rank);z-index:22;background:#132d55;text-align:left;padding-left:12px;cursor:pointer}
     thead th.col-participant:hover{background:#1a3f70}
+    thead th.col-total{background:#0c2244;text-align:center;color:var(--gold);cursor:pointer}
+    thead th.col-total:hover{background:#143060}
     thead th.col-exact{background:#0c2244;text-align:center;color:var(--gold2);cursor:pointer}
     thead th.col-exact:hover{background:#143060}
     thead th.col-goals{background:#0c2244;text-align:center;color:#7dd3fc}
@@ -66,6 +69,7 @@
     tbody tr:nth-child(even){background:#f6f9fc}
     tbody tr:hover{background:#edf7f2}
     tbody tr:hover td.col-participant{background:#edf7f2}
+    tbody tr:hover td.col-total{background:#d4f0e0}
     tbody tr:hover td.col-exact{background:#fef9e8}
     td{padding:8px 6px;font-size:.82rem;border-bottom:1px solid #e8edf3;overflow:hidden;white-space:nowrap;height:52px;vertical-align:middle;color:var(--text);text-align:center}
     td.col-rank{position:sticky;left:0;z-index:5;background:#f8fafc;text-align:center;font-weight:900;font-size:.82rem;color:var(--muted);border-right:1px solid var(--border)}
@@ -76,6 +80,8 @@
     .rank-num-3{color:#92400e;font-size:.88rem}
     td.col-participant{position:sticky;left:var(--cw-rank);z-index:5;background:#fff;border-right:2px solid var(--border);text-align:left;padding-left:12px;overflow:hidden}
     tbody tr:nth-child(even) td.col-participant{background:#f6f9fc}
+    td.col-total{background:var(--green-light);font-weight:900;font-size:1rem;color:var(--green);text-align:center}
+    tbody tr:nth-child(even) td.col-total{background:#daf0e6}
     td.col-exact{background:#fffbef;font-weight:800;font-size:.92rem;color:var(--gold);text-align:center}
     tbody tr:nth-child(even) td.col-exact{background:#fef5d8}
     td.col-goals{background:#eff8ff;font-weight:800;font-size:.92rem;color:#0369a1;text-align:center;border-right:3px solid #bae6fd}
@@ -453,7 +459,7 @@ function renderTablero(){
   const sortDir=tableroSort.dir==='desc'?'↓':'↑';
   const CW_RANK=44,CW_PART=170,CW_PTS=68,CW_SP=10,CW_MATCH=100,CW_EXP=180,CW_GOALS=72;
   let colHtml='<colgroup>';
-  colHtml+=`<col style="width:${CW_RANK}px"><col style="width:${CW_PART}px"><col style="width:${CW_SP}px"><col style="width:${CW_GOALS}px"><col style="width:${CW_PTS}px">`;
+  colHtml+=`<col style="width:${CW_RANK}px"><col style="width:${CW_PART}px"><col style="width:${CW_SP}px"><col style="width:${CW_GOALS}px"><col style="width:${CW_PTS}px"><col style="width:${CW_PTS}px">`;
   dateOrder.forEach(d=>{dateMatchMap[d].forEach(()=>colHtml+=`<col style="width:${CW_MATCH}px">`);colHtml+=`<col style="width:${CW_SP}px">`;});
   KNOCKOUT_ROUNDS.forEach((r,i)=>{if(i>0)colHtml+=`<col style="width:${CW_SP}px">`;const exp=koExpanded.has(r.id)||!KO_PREVIEW_ROUNDS.has(r.id);colHtml+=`<col style="width:${exp?CW_EXP:CW_MATCH}px">`;});
   colHtml+='</colgroup>';
@@ -461,8 +467,9 @@ function renderTablero(){
 
   const thead=document.getElementById('tablero-thead');
   let row1=`<tr><th class="col-rank" style="font-size:.7rem;vertical-align:middle">#</th>`;
-  row1+=`<th class="col-participant" onclick="setTableroSort('total')" style="text-align:left;padding-left:12px;font-size:.8rem;vertical-align:middle">👤 Participante &amp; Pts<span class="sort-arrow">${tableroSort.by==='total'?sortDir:'⇅'}</span></th>`;
+  row1+=`<th class="col-participant" style="text-align:left;padding-left:12px;font-size:.8rem;vertical-align:middle">👤 Participante</th>`;
   row1+=`<th class="col-spacer"></th><th class="col-goals" style="font-size:.63rem;line-height:1.5;vertical-align:middle">⚽ Goles<br>Totales</th>`;
+  row1+=`<th class="col-total" onclick="setTableroSort('total')" style="font-size:.68rem;line-height:1.5;vertical-align:middle">Total<br>Pts<span class="sort-arrow">${tableroSort.by==='total'?sortDir:'⇅'}</span></th>`;
   row1+=`<th class="col-exact" onclick="setTableroSort('exact')" style="font-size:.63rem;line-height:1.5;vertical-align:middle">Marc.<br>Exactos<span class="sort-arrow">${tableroSort.by==='exact'?sortDir:'⇅'}</span></th>`;
   dateOrder.forEach(d=>{dateMatchMap[d].forEach(m=>{row1+=`<th class="match-col"><div class="match-header-info"><span class="match-date-label">${m.date}</span><span class="match-group-badge">Grupo ${m.group}</span><span class="match-teams">${flag(m.home)} ${m.home}</span><span class="vs-text" style="color:rgba(255,255,255,.38);font-size:.63rem">vs</span><span class="match-teams">${flag(m.away)} ${m.away}</span></div></th>`;});row1+=`<th class="col-spacer"></th>`;});
   KNOCKOUT_ROUNDS.forEach((r,i)=>{const isModal=KO_PREVIEW_ROUNDS.has(r.id);if(i>0)row1+=`<th class="col-spacer"></th>`;if(isModal){row1+=`<th class="ko-col-col" style="background:#0e2245"><div class="match-header-info" style="gap:4px"><span style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45)">🏆 Fase KO</span><span style="font-size:.72rem;font-weight:800;color:var(--gold)">${r.short}</span><span style="font-size:.57rem;color:rgba(255,255,255,.35)">${r.count} eq · ${r.pts}pt c/u</span></div></th>`;}else{row1+=`<th class="ko-col-exp" style="background:#0e2245"><div class="match-header-info" style="gap:4px"><span style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45)">🏆 Fase KO</span><span style="font-size:.72rem;font-weight:800;color:var(--gold)">${r.label}</span><span style="font-size:.59rem;opacity:.5">${r.count} eq · ${r.pts}pt c/u</span></div></th>`;}});
@@ -471,7 +478,7 @@ function renderTablero(){
   // Row 2: results (read-only, no onclick)
   let row2=`<tr><th class="result-th col-rank" style="background:#091830"></th>`;
   row2+=`<th class="result-th col-participant" style="color:rgba(255,255,255,.45);text-align:left;padding-left:12px">Marcador Final</th>`;
-  row2+=`<th class="result-th col-spacer" style="background:#091830"></th><th class="result-th col-goals"></th><th class="result-th col-exact"></th>`;
+  row2+=`<th class="result-th col-spacer" style="background:#091830"></th><th class="result-th col-goals"></th><th class="result-th col-total"></th><th class="result-th col-exact"></th>`;
   dateOrder.forEach(d=>{dateMatchMap[d].forEach(m=>{const r=results[m.id];const label=r!==undefined?`<span class="result-score">${r.h} — ${r.a}</span>`:`<span class="result-empty">—</span>`;row2+=`<th class="result-th">${label}</th>`;});row2+=`<th class="result-th col-spacer" style="background:#091830"></th>`;});
   KNOCKOUT_ROUNDS.forEach((r,i)=>{const cur=koResults[r.id]||[];const label=cur.length>=r.count?`<span class="result-score" style="font-size:.63rem">✅${r.count}</span>`:`<span class="result-empty">${cur.length?cur.length+'/'+r.count:'—'}</span>`;if(i>0)row2+=`<th class="result-th col-spacer" style="background:#091830"></th>`;row2+=`<th class="result-th">${label}</th>`;});
   row2+=`</tr>`;
@@ -536,6 +543,7 @@ function renderTablero(){
       <td class="col-participant" onclick="window.open('/quiniela?p='+encodeURIComponent('${p.replace(/'/g,"\\'")}'),'_blank')"><span class="p-apodo">${p}</span>${nombre?`<span class="p-name">${nombre}</span>`:''}<span class="p-pts" title="Grupos: ${groupPts}pts + KO: ${koPts}pts">${(hasResults||hasKoResults)?totalPts+'pts':'—'}</span><span class="p-ver">👁 ver quiniela</span></td>
       <td class="col-spacer"></td>
       <td class="col-goals">${goalsMap[p]!==undefined?goalsMap[p]:'—'}</td>
+      <td class="col-total" title="Grupos: ${groupPts}pts + KO: ${koPts}pts">${(hasResults||hasKoResults)?totalPts:'—'}</td>
       <td class="col-exact">${(hasResults||hasKoResults)?exactCount:'—'}</td>
       ${dateCells}${koCells}
     </tr>`;
