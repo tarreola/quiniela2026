@@ -298,10 +298,6 @@
         <div class="info-card-value" id="info-bolsa">—</div>
       </div>
       <button class="btn-premios" onclick="openPremiosModal()">🏆 Ver Premios</button>
-      <div class="info-card info-card-goles">
-        <div class="info-card-label">⚽ Goles del Mundial</div>
-        <div class="info-card-value" id="info-goles-mundial">—</div>
-      </div>
       <div class="tablero-controls">
         <a href="/reglas" class="btn-reglas">📋 Ver Reglas</a>
         <div class="search-box" style="margin-bottom:0;min-width:200px">
@@ -456,9 +452,7 @@ function renderTablero(){
   const golesM=_cache.q26_goles_mundial;
   const totalGoles=Object.values(results).reduce((s,r)=>s+(r.h||0)+(r.a||0),0);
   const bolsaEl=document.getElementById('info-bolsa');
-  const golesMEl=document.getElementById('info-goles-mundial');
   if(bolsaEl)bolsaEl.textContent=bolsa>0?'$'+bolsa.toLocaleString('es-MX')+' MXN':'—';
-  if(golesMEl)golesMEl.textContent=totalGoles>0?totalGoles:'—';
 
   const searchQ=(document.getElementById('tablero-search')?.value||'').toLowerCase();
   const visibleParticipants=searchQ?participants.filter(p=>{const nombre=(profiles[p]?.nombre||'').toLowerCase();return p.toLowerCase().includes(searchQ)||nombre.includes(searchQ);}):participants;
