@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiniela — Quiniela Mundial 2026</title>
+<title>Quiniela — Quiniela Entre Amigos Mundial 2026</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -97,7 +97,7 @@ main{max-width:900px;margin:0 auto;padding:24px 16px}
 <div id="loading-bar" style="width:50%"></div>
 <header>
   <div class="hdr">
-    <div class="logo"><span class="logo-ball">⚽</span>Quiniela Mundial 2026</div>
+    <div class="logo"><span class="logo-ball">⚽</span>Quiniela Entre Amigos Mundial 2026</div>
     <a href="/" class="btn-back">← Tablero</a>
   </div>
 </header>
@@ -117,7 +117,7 @@ firebase.initializeApp({
 });
 
 const apodo=new URLSearchParams(location.search).get('p')||'';
-if(apodo)document.title=apodo+' — Quiniela Mundial 2026';
+if(apodo)document.title=apodo+' — Quiniela Entre Amigos Mundial 2026';
 
 const DEFAULT_TEAMS={
   A:['México','Corea del Sur','Sudáfrica','Rep. Checa'],
