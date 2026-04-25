@@ -414,11 +414,11 @@
             <thead><tr><th>Fases Eliminatorias</th><th style="text-align:center;width:80px">Punto por equipo acertado</th></tr></thead>
             <tbody>
               <tr><td>16vos de Final</td><td style="text-align:center"><span class="ko-pts-badge">1</span></td></tr>
-              <tr><td>Octavos de Final</td><td style="text-align:center"><span class="ko-pts-badge">2</span></td></tr>
-              <tr><td>Cuartos de Final</td><td style="text-align:center"><span class="ko-pts-badge">3</span></td></tr>
-              <tr><td>Semifinales</td><td style="text-align:center"><span class="ko-pts-badge">4</span></td></tr>
-              <tr><td>Final</td><td style="text-align:center"><span class="ko-pts-badge">5</span></td></tr>
-              <tr><td>Campeón</td><td style="text-align:center"><span class="ko-pts-badge" style="background:var(--gold);color:var(--navy)">10</span></td></tr>
+              <tr><td>Octavos de Final</td><td style="text-align:center"><span class="ko-pts-badge">1</span></td></tr>
+              <tr><td>Cuartos de Final</td><td style="text-align:center"><span class="ko-pts-badge">1</span></td></tr>
+              <tr><td>Semifinales</td><td style="text-align:center"><span class="ko-pts-badge">2</span></td></tr>
+              <tr><td>Final</td><td style="text-align:center"><span class="ko-pts-badge">3</span></td></tr>
+              <tr><td>Campeón</td><td style="text-align:center"><span class="ko-pts-badge" style="background:var(--gold);color:var(--navy)">5</span></td></tr>
             </tbody>
           </table>
           <div class="rule-body" style="margin-bottom:10px">
@@ -784,11 +784,11 @@ const TOTAL_MATCHES = DEFAULT_MATCHES.length;
 
 const KNOCKOUT_ROUNDS=[
   {id:'r16',label:'16vos de Final',short:'R16',count:32,pts:1,desc:'Pasan los dos primeros de cada grupo y los 8 mejores terceros lugares.'},
-  {id:'r8', label:'Octavos de Final',      short:'Octavos',count:16,pts:2},
-  {id:'r4', label:'Cuartos de Final',      short:'Cuartos',count:8, pts:3},
-  {id:'r2', label:'Semifinal',             short:'Semi',   count:4, pts:4},
-  {id:'rf', label:'Final',                 short:'Final',  count:2, pts:5},
-  {id:'rc', label:'Campeón',               short:'Campeón',count:1, pts:10},
+  {id:'r8', label:'Octavos de Final',      short:'Octavos',count:16,pts:1},
+  {id:'r4', label:'Cuartos de Final',      short:'Cuartos',count:8, pts:1},
+  {id:'r2', label:'Semifinal',             short:'Semi',   count:4, pts:2},
+  {id:'rf', label:'Final',                 short:'Final',  count:2, pts:3},
+  {id:'rc', label:'Campeón',               short:'Campeón',count:1, pts:5},
 ];
 
 // KO picks stored in memory during session, saved to localStorage on submit
