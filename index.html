@@ -399,7 +399,7 @@ const TEAM_CODES={'México':'mx','Corea del Sur':'kr','Sudáfrica':'za','Rep. Ch
 function flag(name){const c=TEAM_CODES[name];return c?`<span class="fi fi-${c}"></span>`:''}
 function generateMatches(teams){return DEFAULT_MATCHES.map(m=>{const ts=teams[m.group]||['','','',''];return {...m,home:ts[m.hi]||`Equipo ${m.hi+1}`,away:ts[m.ai]||`Equipo ${m.ai+1}`};})}
 function calcPoints(pred,result){if(!pred||result===undefined||result===null)return null;if(pred.h===result.h&&pred.a===result.a)return 3;const winner=s=>s.h>s.a?'H':s.h<s.a?'A':'D';return winner(pred)===winner(result)?1:0;}
-function calcKoRoundPts(picks,actual,ptsEach){if(!picks||!actual||!actual.length)return null;return picks.filter(t=>actual.includes(t)).length*ptsEach;}
+function calcKoRoundPts(picks,actual,ptsEach){const p=_toArr(picks);const a=_toArr(actual);if(!p.length||!a.length)return null;return p.filter(t=>a.includes(t)).length*ptsEach;}
 function getTeams(){return load('q26_teams',DEFAULT_TEAMS)}
 function getParticipants(){return load('q26_participants',[])}
 function getPredictions(){return load('q26_predictions',{})}

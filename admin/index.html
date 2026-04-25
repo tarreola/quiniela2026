@@ -993,10 +993,7 @@ function calcPoints(pred,result){
   return winner(pred)===winner(result)?1:0;
 }
 
-function calcKoRoundPts(picks,actual,ptsEach){
-  if(!picks||!actual||!actual.length)return null;
-  return picks.filter(t=>actual.includes(t)).length*ptsEach;
-}
+function calcKoRoundPts(picks,actual,ptsEach){const p=_toArr(picks);const a=_toArr(actual);if(!p.length||!a.length)return null;return p.filter(t=>a.includes(t)).length*ptsEach;}
 
 // ═══════════════════════════════════════════════════════════
 //  GENERAR PARTIDOS (desde lista oficial + nombres editables)
