@@ -1219,28 +1219,44 @@ function submitQuiniela(){
 
     // 3. Send email via EmailJS
     const pagoLabel=selectedPago==='mp'?'MercadoPago':'Efectivo';
-    const filled=Object.keys(preds).length;
     const golesVal=document.getElementById('reg-goles')?.value||'--';
     const kp=koPicks||{};
     const matches=generateMatches();
+
+    // Agrupar partidos por grupo
     const byGroup={};
     matches.forEach(m=>{if(!byGroup[m.group])byGroup[m.group]=[];byGroup[m.group].push(m);});
+
+    // Contar predicciones válidas (número entero >= 0)
+    const filled=matches.filter(m=>{const p=preds[m.id];return p&&Number.isFinite(p.h)&&Number.isFinite(p.a);}).length;
+
+    // Construir fase de grupos
     let groupsHtml='';
     Object.keys(byGroup).sort().forEach(grp=>{
-      groupsHtml+=`<b>Grupo ${grp}</b><br>`;
+      groupsHtml+=`<b>— Grupo ${grp} —</b><br>`;
       byGroup[grp].forEach(m=>{
         const p=preds[m.id];
-        const score=(p&&p.h!==''&&p.a!=='')?`${p.h}-${p.a}`:'?-?';
-        groupsHtml+=`${m.home} ${score} ${m.away}<br>`;
+        const ok=p&&Number.isFinite(p.h)&&Number.isFinite(p.a);
+        groupsHtml+=`${m.home} <b>${ok?p.h+'-'+p.a:'?-?'}</b> ${m.away}<br>`;
       });
       groupsHtml+='<br>';
     });
+
+    // Construir fase eliminatoria
     let koHtml='';
     KNOCKOUT_ROUNDS.forEach(r=>{
       const t=kp[r.id]||[];
-      if(t.length) koHtml+=`<b>${r.label}</b> (${r.pts}pt): ${t.join(', ')}<br>`;
+      if(!t.length)return;
+      koHtml+=`<b>${r.label}</b> &nbsp;<i>(${r.pts} pt por equipo)</i><br>`;
+      koHtml+=t.join(' &nbsp;·&nbsp; ')+'<br><br>';
     });
-    const body=`<b>Partidos completados:</b> ${filled}/72 &nbsp;|&nbsp; <b>Goles al torneo:</b> ${golesVal} &nbsp;|&nbsp; <b>Pago:</b> ${pagoLabel}<br><br><b>── FASE DE GRUPOS ──</b><br><br>${groupsHtml}${koHtml?`<b>── FASE ELIMINATORIA ──</b><br>${koHtml}<br>`:''}Ver tablero: <a href="https://quiniela.tarreola.com">quiniela.tarreola.com</a>`;
+
+    const body=
+      `<b>Respuestas:</b> ${filled}/72 &nbsp;&nbsp; <b>Goles al torneo:</b> ${golesVal} &nbsp;&nbsp; <b>Pago:</b> ${pagoLabel}`+
+      `<br><br><b>═══ FASE DE GRUPOS ═══</b><br><br>${groupsHtml}`+
+      (koHtml?`<b>═══ FASE ELIMINATORIA ═══</b><br><br>${koHtml}`:'(Fase eliminatoria no registrada)<br><br>')+
+      `Ver tablero: <a href="https://quiniela.tarreola.com">quiniela.tarreola.com</a>`;
+
     emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
       from_name:nombre,apodo,reply_to:email,to_email:email,predictions:body
     }).then(()=>showStep(8),(err)=>{
