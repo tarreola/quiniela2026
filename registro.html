@@ -258,8 +258,14 @@
     .pick-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px 3px 7px;border-radius:16px;background:var(--green-light);border:1.5px solid var(--green);font-size:.78rem;font-weight:700;color:var(--navy)}
     .pick-pill .fi{width:14px;height:10px}
     .pick-pill-remove{cursor:pointer;color:var(--muted);font-size:.72rem;font-weight:900;padding-left:2px}
-    .ko-picker-select{width:100%;padding:12px;font-size:.88rem;border-radius:10px;background:var(--surface2);border:1.5px solid var(--border);color:var(--text);outline:none;font-family:'Inter',sans-serif}
-    .ko-picker-select:focus{border-color:var(--green)}
+    /* ── KO TEAM GRID ─── */
+    .ko-team-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+    .ko-team-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface2);font-size:.78rem;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;line-height:1}
+    .ko-team-btn .fi{width:16px;height:11px;flex-shrink:0}
+    .ko-team-btn.selected{background:var(--green-light);border-color:var(--green);color:var(--navy);font-weight:700}
+    .ko-team-btn.dimmed{opacity:.28;pointer-events:none}
+    .ko-lock-msg{font-size:.8rem;color:var(--muted);padding:8px 0;display:flex;align-items:center;gap:6px}
+    .ko-round-card.locked{opacity:.55}
   </style>
 </head>
 <body>
@@ -992,19 +998,28 @@ function goToKO(){
   showStep(5);
 }
 
-function buildRegPickerOptions(excludeList){
-  const excl=new Set(excludeList||[]);
-  return Object.keys(DEFAULT_TEAMS).map(g=>{
-    const avail=(DEFAULT_TEAMS[g]||[]).filter(t=>t&&!excl.has(t));
-    if(!avail.length)return '';
-    return `<optgroup label="Grupo ${g}">${avail.map(t=>`<option value="${t}">${t}</option>`).join('')}</optgroup>`;
-  }).join('');
+function getKoAvailableTeams(roundId){
+  const idx=KNOCKOUT_ROUNDS.findIndex(r=>r.id===roundId);
+  if(idx===0) return Object.keys(DEFAULT_TEAMS).sort().flatMap(g=>DEFAULT_TEAMS[g].filter(t=>t));
+  return koPicks[KNOCKOUT_ROUNDS[idx-1].id]||[];
+}
+
+function isKoRoundLocked(roundId){
+  const idx=KNOCKOUT_ROUNDS.findIndex(r=>r.id===roundId);
+  if(idx===0)return false;
+  const prev=KNOCKOUT_ROUNDS[idx-1];
+  return (koPicks[prev.id]||[]).length<prev.count;
 }
 
 function renderKoRoundCard(r){
   const picks=koPicks[r.id]||[];
   const isFull=picks.length>=r.count;
-  return `<div class="ko-round-card ${isFull?'complete':''}" id="ko-card-${r.id}">
+  const locked=isKoRoundLocked(r.id);
+  const roundIdx=KNOCKOUT_ROUNDS.findIndex(x=>x.id===r.id);
+  const prevR=roundIdx>0?KNOCKOUT_ROUNDS[roundIdx-1]:null;
+  const available=locked?[]:getKoAvailableTeams(r.id);
+
+  return `<div class="ko-round-card ${isFull?'complete':''} ${locked?'locked':''}" id="ko-card-${r.id}">
     <div class="ko-round-header">
       <div class="ko-badge">${r.short}</div>
       <span class="ko-round-title">${r.label}</span>
@@ -1012,19 +1027,33 @@ function renderKoRoundCard(r){
       <span class="ko-count-chip ${isFull?'done':''}">${picks.length}/${r.count}</span>
     </div>
     ${r.desc?`<p style="font-size:.78rem;color:var(--muted);margin:6px 0 10px">${r.desc}</p>`:''}
-    <div class="picked-pills">
-      ${picks.map(t=>`<span class="pick-pill">
-        <span class="fi fi-${TEAM_CODES[t]||''}"></span> ${t}
-        <span class="pick-pill-remove" onclick="removeRegKoPick('${r.id}','${t.replace(/'/g,"\\'")}')">✕</span>
-      </span>`).join('')}
-      ${!picks.length?`<span style="font-size:.78rem;color:var(--muted)">Ningún equipo seleccionado aún.</span>`:''}
-    </div>
-    ${!isFull
-      ?`<select class="ko-picker-select" id="ko-sel-${r.id}" onchange="addRegKoPick('${r.id}',this)">
-          <option value="">+ Seleccionar equipo (${r.count-picks.length} restantes)...</option>
-          ${buildRegPickerOptions(picks)}
-        </select>`
-      :`<p style="font-size:.78rem;font-weight:700;color:var(--green)">✅ Completaste los ${r.count} equipos</p>`}
+    ${locked
+      ?`<p class="ko-lock-msg">🔒 Selecciona los ${prevR.count} equipos de <strong>${prevR.label}</strong> primero.</p>`
+      :`<p style="font-size:.73rem;color:var(--muted);margin-bottom:10px">${isFull?`✅ ¡Listo! Toca un equipo para deseleccionarlo.`:`Toca los equipos para seleccionar · <strong>${r.count-picks.length}</strong> restantes`}</p>
+       <div class="ko-team-grid">
+         ${roundIdx===0
+           ?Object.keys(DEFAULT_TEAMS).sort().map(g=>{
+               const teams=DEFAULT_TEAMS[g].filter(t=>t);
+               return `<div style="width:100%;margin:6px 0 2px;display:flex;align-items:center;gap:6px">
+                 <span style="font-size:.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 7px">Grupo ${g}</span>
+               </div>`+teams.map(t=>{
+                 const sel=picks.includes(t);
+                 const dim=!sel&&isFull;
+                 return `<button class="ko-team-btn${sel?' selected':''}${dim?' dimmed':''}" onclick="toggleKoPick('${r.id}','${t.replace(/'/g,"\\'")}')">
+                   ${flag(t)} ${t}
+                 </button>`;
+               }).join('');
+             }).join('')
+           :available.map(t=>{
+               const sel=picks.includes(t);
+               const dim=!sel&&isFull;
+               return `<button class="ko-team-btn${sel?' selected':''}${dim?' dimmed':''}" onclick="toggleKoPick('${r.id}','${t.replace(/'/g,"\\'")}')">
+                 ${flag(t)} ${t}
+               </button>`;
+             }).join('')
+         }
+       </div>`
+    }
   </div>`;
 }
 
@@ -1034,24 +1063,23 @@ function renderKoCards(){
   container.innerHTML=KNOCKOUT_ROUNDS.map(r=>renderKoRoundCard(r)).join('');
 }
 
-function addRegKoPick(roundId,selectEl){
-  const team=selectEl.value;
-  if(!team)return;
+function toggleKoPick(roundId,team){
   if(!koPicks[roundId])koPicks[roundId]=[];
   const r=KNOCKOUT_ROUNDS.find(x=>x.id===roundId);
-  if(koPicks[roundId].length>=r.count){showToast(`⚠️ Límite: ${r.count} equipos`);selectEl.value='';return;}
-  if(!koPicks[roundId].includes(team))koPicks[roundId].push(team);
-  selectEl.value='';
-  // Refresh only this card without scrolling
-  const card=document.getElementById('ko-card-'+roundId);
-  if(card)card.outerHTML=renderKoRoundCard(r);
-}
-
-function removeRegKoPick(roundId,team){
-  if(koPicks[roundId])koPicks[roundId]=koPicks[roundId].filter(t=>t!==team);
-  const r=KNOCKOUT_ROUNDS.find(x=>x.id===roundId);
-  const card=document.getElementById('ko-card-'+roundId);
-  if(card)card.outerHTML=renderKoRoundCard(r);
+  const roundIdx=KNOCKOUT_ROUNDS.findIndex(x=>x.id===roundId);
+  const idx=koPicks[roundId].indexOf(team);
+  if(idx>=0){
+    koPicks[roundId].splice(idx,1);
+    // cascade: remove this team from all later rounds
+    for(let i=roundIdx+1;i<KNOCKOUT_ROUNDS.length;i++){
+      const nr=KNOCKOUT_ROUNDS[i];
+      if(koPicks[nr.id]) koPicks[nr.id]=koPicks[nr.id].filter(t=>t!==team);
+    }
+  } else {
+    if(koPicks[roundId].length>=r.count){showToast(`⚠️ Ya completaste los ${r.count} equipos`);return;}
+    koPicks[roundId].push(team);
+  }
+  renderKoCards();
 }
 
 // ═══════════════════════════════════════════════════════════
