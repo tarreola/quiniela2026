@@ -1219,18 +1219,15 @@ function submitQuiniela(){
 
     // 3. Send email via EmailJS
     const bodyText=formatEmailBody(nombre,apodo,preds,selectedPago,koPicks);
-    const emailConfigured=EMAILJS_PUBLIC_KEY!=='TU_PUBLIC_KEY';
-    if(emailConfigured){
-      try{emailjs.init(EMAILJS_PUBLIC_KEY);}catch(e){}
-      const pagoLabel=selectedPago==='mp'?'MercadoPago (pendiente)':'Efectivo (pendiente)';
-      emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
-        from_name:nombre,apodo,reply_to:email,to_email:email,
-        predictions:bodyText,total_filled:Object.keys(preds).length,pago_label:pagoLabel
-      }).then(()=>showStep(8),(err)=>{console.warn('EmailJS:',err);fallbackMailto(nombre,apodo,email,preds);showStep(8);});
-    }else{
-      fallbackMailto(nombre,apodo,email,preds);
+    const pagoLabel=selectedPago==='mp'?'MercadoPago (pendiente)':'Efectivo (pendiente)';
+    emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
+      from_name:nombre,apodo,reply_to:email,to_email:email,
+      predictions:bodyText,total_filled:Object.keys(preds).length,pago_label:pagoLabel
+    }).then(()=>showStep(8),(err)=>{
+      console.warn('EmailJS error:',err);
+      showToast('⚠️ Correo no enviado: '+(err?.text||err?.message||JSON.stringify(err)));
       showStep(8);
-    }
+    });
   };
 
   _db.ref('q26_pending/'+apodo).set(pendingData)
@@ -1359,6 +1356,7 @@ function showToast(msg){
 // ═══════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════
+emailjs.init(EMAILJS_PUBLIC_KEY);
 showStep(1);
 </script>
 </body>
