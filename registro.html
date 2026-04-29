@@ -1257,7 +1257,10 @@ function submitQuiniela(){
     });
 
     const body =
-      `=========== FASE DE GRUPOS ===========\n` +
+      `Participante: ${nombre} (${apodo})\n` +
+      `Predicciones: ${filledCount}/72\n` +
+      `Pago: ${pagoLabel}\n` +
+      `\n=========== FASE DE GRUPOS ===========\n` +
       gruposLines +
       `\n=========== FASE ELIMINATORIA ===========\n` +
       (koLines || '  (no registrada)\n') +
