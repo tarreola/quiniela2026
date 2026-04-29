@@ -1858,12 +1858,34 @@ function approvePending(apodo){
   updates['q26_payments/'+apodo]=d.pago||'efectivo_pendiente';
   updates['q26_locked']=locked;
   updates['q26_pending/'+apodo]=null;
-  _db.ref('/').update(updates).then(()=>{showToast('✅ Quiniela de '+apodo+' aprobada');renderConfig();});
+  _db.ref('/').update(updates).then(()=>{
+    // Sync cache
+    if(!_cache.q26_participants) _cache.q26_participants=[];
+    if(!_cache.q26_participants.includes(apodo)) _cache.q26_participants.push(apodo);
+    if(!_cache.q26_predictions) _cache.q26_predictions={};
+    _cache.q26_predictions[apodo]=d.predictions||{};
+    if(!_cache.q26_ko_preds) _cache.q26_ko_preds={};
+    _cache.q26_ko_preds[apodo]=d.ko_preds||{};
+    if(!_cache.q26_profiles) _cache.q26_profiles={};
+    _cache.q26_profiles[apodo]={nombre:d.nombre||'',email:d.email||'',whatsapp:d.whatsapp||'',goles:d.goles||0};
+    if(!_cache.q26_goals) _cache.q26_goals={};
+    _cache.q26_goals[apodo]=d.goles||0;
+    if(!_cache.q26_payments) _cache.q26_payments={};
+    _cache.q26_payments[apodo]=d.pago||'efectivo_pendiente';
+    _cache.q26_locked=locked;
+    if(_cache.q26_pending) delete _cache.q26_pending[apodo];
+    showToast('✅ Quiniela de '+apodo+' aprobada');
+    renderConfig();
+  });
 }
 
 function rejectPending(apodo){
   if(!confirm('¿Rechazar la quiniela de '+apodo+'? Se eliminará del sistema.'))return;
-  _db.ref('q26_pending/'+apodo).remove().then(()=>{showToast('❌ Quiniela de '+apodo+' rechazada');renderConfig();});
+  _db.ref('q26_pending/'+apodo).remove().then(()=>{
+    if(_cache.q26_pending) delete _cache.q26_pending[apodo];
+    showToast('❌ Quiniela de '+apodo+' rechazada');
+    renderConfig();
+  });
 }
 
 function renderConfig(){
