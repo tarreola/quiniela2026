@@ -748,8 +748,9 @@
           <input type="text" id="new-participant" placeholder="Nombre del participante" onkeydown="if(event.key==='Enter')addParticipant()">
           <button class="btn btn-primary" onclick="addParticipant()">+ Agregar</button>
         </div>
-        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px">
           <button class="btn btn-danger btn-sm" onclick="clearAllPredictions()">🗑 Borrar todas las predicciones</button>
+          <button class="btn btn-danger btn-sm" style="background:#7f1d1d;font-weight:800" onclick="resetParaLanzamiento()">🚀 Reset para Lanzamiento</button>
         </div>
       </div>
 
@@ -2076,6 +2077,38 @@ function savePayment(name,val){
   save('q26_payments',payments);
   renderNoPago();
   showToast('💳 Pago actualizado: '+name);
+}
+
+async function resetParaLanzamiento(){
+  if(!confirm('⚠️ RESET COMPLETO\n\nEsto borrará de Firebase:\n• Todos los participantes\n• Todas las predicciones\n• Todos los pendientes\n• Todos los pagos\n• Todos los resultados\n\n¿Continuar?'))return;
+  if(!confirm('🚨 SEGUNDA CONFIRMACIÓN\n\nEsta acción NO se puede deshacer.\n\n¿Estás seguro?'))return;
+  const reset={
+    q26_participants:[],
+    q26_predictions:null,
+    q26_pending:null,
+    q26_ko_preds:null,
+    q26_profiles:null,
+    q26_goals:null,
+    q26_payments:null,
+    q26_locked:[],
+    q26_results:null,
+    q26_ko_results:null,
+  };
+  try{
+    await _db.ref('/').update(reset);
+    _cache={..._cache,...{
+      q26_participants:[],q26_predictions:{},q26_pending:{},
+      q26_ko_preds:{},q26_profiles:{},q26_goals:{},
+      q26_payments:{},q26_locked:[],q26_results:{},q26_ko_results:{}
+    }};
+    ['q26_participants','q26_predictions','q26_pending','q26_ko_preds',
+     'q26_profiles','q26_goals','q26_payments','q26_locked','q26_results','q26_ko_results']
+      .forEach(k=>localStorage.removeItem(k));
+    showToast('✅ Reset completo — quiniela lista para lanzamiento');
+    renderConfig();
+  }catch(e){
+    showToast('❌ Error en reset: '+e.message);
+  }
 }
 
 function clearAllPredictions(){
