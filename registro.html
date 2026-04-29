@@ -1217,51 +1217,62 @@ function submitQuiniela(){
       :'💵 Pago en efectivo pendiente. Entrégalo al organizador.';
     document.getElementById('success-pago-msg').textContent=pagoMsg;
 
-    // 3. Send email via EmailJS
-    const pagoLabel=selectedPago==='mp'?'MercadoPago':'Efectivo';
-    const golesVal=document.getElementById('reg-goles')?.value||'--';
-    const kp=koPicks||{};
-    const matches=generateMatches();
+    // 3. Build email body
+    const pagoLabel = selectedPago==='mp' ? 'MercadoPago' : 'Efectivo';
+    const golesVal  = document.getElementById('reg-goles')?.value || '--';
+    const kp        = koPicks || {};
+    const allMatches = generateMatches();
 
-    // Agrupar partidos por grupo
-    const byGroup={};
-    matches.forEach(m=>{if(!byGroup[m.group])byGroup[m.group]=[];byGroup[m.group].push(m);});
+    // Group matches by group letter
+    const byGroup = {};
+    allMatches.forEach(m => {
+      if (!byGroup[m.group]) byGroup[m.group] = [];
+      byGroup[m.group].push(m);
+    });
 
-    // Contar predicciones válidas (número entero >= 0)
-    const filled=matches.filter(m=>{const p=preds[m.id];return p&&Number.isFinite(p.h)&&Number.isFinite(p.a);}).length;
+    // Count valid predictions (score >= 0 on both sides)
+    const filledCount = allMatches.filter(m => {
+      const p = preds[m.id];
+      return p !== undefined && Number.isInteger(p.h) && Number.isInteger(p.a);
+    }).length;
 
-    // Construir fase de grupos
-    let groupsHtml='';
-    Object.keys(byGroup).sort().forEach(grp=>{
-      groupsHtml+=`<b>— Grupo ${grp} —</b><br>`;
-      byGroup[grp].forEach(m=>{
-        const p=preds[m.id];
-        const ok=p&&Number.isFinite(p.h)&&Number.isFinite(p.a);
-        groupsHtml+=`${m.home} <b>${ok?p.h+'-'+p.a:'?-?'}</b> ${m.away}<br>`;
+    // Build grupos section — one line per match
+    let gruposLines = '';
+    Object.keys(byGroup).sort().forEach(grp => {
+      gruposLines += `\nGrupo ${grp}:\n`;
+      byGroup[grp].forEach(m => {
+        const p = preds[m.id];
+        const score = (p !== undefined && Number.isInteger(p.h) && Number.isInteger(p.a))
+          ? `${p.h} - ${p.a}` : '? - ?';
+        gruposLines += `  ${m.home}  ${score}  ${m.away}\n`;
       });
-      groupsHtml+='<br>';
     });
 
-    // Construir fase eliminatoria
-    let koHtml='';
-    KNOCKOUT_ROUNDS.forEach(r=>{
-      const t=kp[r.id]||[];
-      if(!t.length)return;
-      koHtml+=`<b>${r.label}</b> &nbsp;<i>(${r.pts} pt por equipo)</i><br>`;
-      koHtml+=t.join(' &nbsp;·&nbsp; ')+'<br><br>';
+    // Build eliminatoria section — one round per block
+    let koLines = '';
+    KNOCKOUT_ROUNDS.forEach(r => {
+      const t = kp[r.id] || [];
+      if (!t.length) return;
+      koLines += `\n${r.label} (${r.pts}pt por equipo):\n  ${t.join(', ')}\n`;
     });
 
-    const body=
-      `<b>Respuestas:</b> ${filled}/72 &nbsp;&nbsp; <b>Goles al torneo:</b> ${golesVal} &nbsp;&nbsp; <b>Pago:</b> ${pagoLabel}`+
-      `<br><br><b>═══ FASE DE GRUPOS ═══</b><br><br>${groupsHtml}`+
-      (koHtml?`<b>═══ FASE ELIMINATORIA ═══</b><br><br>${koHtml}`:'(Fase eliminatoria no registrada)<br><br>')+
-      `Ver tablero: <a href="https://quiniela.tarreola.com">quiniela.tarreola.com</a>`;
+    const body =
+      `Respuestas: ${filledCount}/72\n` +
+      `Goles al torneo: ${golesVal}\n` +
+      `Pago: ${pagoLabel}\n` +
+      `\n=========== FASE DE GRUPOS ===========\n` +
+      gruposLines +
+      `\n=========== FASE ELIMINATORIA ===========\n` +
+      (koLines || '  (no registrada)\n') +
+      `\nVer tablero: https://quiniela.tarreola.com`;
 
-    emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
-      from_name:nombre,apodo,reply_to:email,to_email:email,predictions:body
-    }).then(()=>showStep(8),(err)=>{
-      console.warn('EmailJS error:',err);
-      showToast('⚠️ Correo no enviado: '+(err?.text||err?.message||JSON.stringify(err)));
+    console.log(`[Email] preds count: ${filledCount}, body chars: ${body.length}`);
+
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      from_name: nombre, apodo, reply_to: email, to_email: email, predictions: body
+    }).then(() => showStep(8), (err) => {
+      console.warn('EmailJS error:', err);
+      showToast('⚠️ Correo no enviado: ' + (err?.text || err?.message || JSON.stringify(err)));
       showStep(8);
     });
   };
