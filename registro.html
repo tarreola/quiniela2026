@@ -1240,47 +1240,116 @@ function submitQuiniela(){
 
 function fallbackMailto(nombre,apodo,email,preds){
   const subject=`Quiniela Mundial 2026 — ${apodo}`;
-  const body=formatEmailBody(nombre,apodo,preds,null,koPicks);
-  const mailtoUrl=`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.substring(0,1800))}`;
+  const matches=generateMatches();
+  let txt=`Quiniela de ${apodo}\n\nFase de Grupos:\n`;
+  matches.forEach(m=>{const p=preds[m.id];txt+=`${m.home} ${p?p.h:'?'} - ${p?p.a:'?'} ${m.away}\n`;});
+  const kp=koPicks||{};
+  KNOCKOUT_ROUNDS.forEach(r=>{const t=kp[r.id]||[];if(t.length)txt+=`\n${r.label}: ${t.join(', ')}`;});
+  const mailtoUrl=`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(txt.substring(0,1800))}`;
   try{window.open(mailtoUrl,'_blank');}catch(e){}
 }
 
 function formatEmailBody(nombre,apodo,preds,pago,picks){
   const matches=generateMatches();
   const byGroup={};
-  matches.forEach(m=>{
-    if(!byGroup[m.group])byGroup[m.group]=[];
-    byGroup[m.group].push(m);
-  });
-  let body='';
-  Object.keys(byGroup).sort().forEach(grp=>{
-    body+=`── GRUPO ${grp} ──────────────────────────\n`;
-    byGroup[grp].forEach(m=>{
-      const p=preds[m.id];
-      const score=(p&&p.h!==''&&p.a!=='')?`${p.h} - ${p.a}`:'?';
-      const home=m.home.padEnd(22);
-      const away=m.away;
-      body+=`  ${home}  ${score.padStart(5)}  ${away}\n`;
-    });
-    body+='\n';
-  });
+  matches.forEach(m=>{if(!byGroup[m.group])byGroup[m.group]=[];byGroup[m.group].push(m);});
+  const filled=Object.keys(preds).length;
+  const golesVal=document.getElementById('reg-goles')?.value||'—';
+  const pagoLabel=pago==='mp'?'💳 MercadoPago':pago==='efectivo'?'💵 Efectivo':pago||'—';
 
-  // Fase Eliminatoria picks
+  const flagImg=(name)=>{
+    const c=TEAM_CODES[name];
+    if(!c)return '';
+    return `<img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${c}.svg" width="18" height="13" style="border-radius:2px;vertical-align:middle;margin:0 3px 1px">`;
+  };
+
+  const groupsHtml=Object.keys(byGroup).sort().map(grp=>{
+    const rows=byGroup[grp].map(m=>{
+      const p=preds[m.id];
+      const ok=p&&p.h!==''&&p.a!=='';
+      const score=ok?`${p.h} — ${p.a}`:'? — ?';
+      const bg=ok?'#e6f9ee':'#f7f9fc';
+      const bc=ok?'#00a550':'#e2e8f0';
+      const tc=ok?'#0d1f3c':'#94a3b8';
+      return `<tr>
+        <td style="padding:7px 10px;font-size:.8rem;color:#1a2333;border-bottom:1px solid #f1f5f9;text-align:right;white-space:nowrap">${m.home} ${flagImg(m.home)}</td>
+        <td style="padding:7px 6px;text-align:center;border-bottom:1px solid #f1f5f9">
+          <span style="display:inline-block;background:${bg};border:1px solid ${bc};color:${tc};font-weight:800;font-size:.8rem;padding:3px 10px;border-radius:7px;white-space:nowrap">${score}</span>
+        </td>
+        <td style="padding:7px 10px;font-size:.8rem;color:#1a2333;border-bottom:1px solid #f1f5f9;white-space:nowrap">${flagImg(m.away)} ${m.away}</td>
+      </tr>`;
+    }).join('');
+    return `<div style="margin-bottom:14px">
+      <div style="background:#0d1f3c;color:#fff;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:6px 12px;border-radius:8px 8px 0 0">Grupo ${grp}</div>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px">${rows}</table>
+    </div>`;
+  }).join('');
+
   const kp=picks||{};
   const hasKo=KNOCKOUT_ROUNDS.some(r=>(kp[r.id]||[]).length>0);
-  if(hasKo){
-    body+=`\n${'═'.repeat(44)}\n`;
-    body+=`FASE ELIMINATORIA\n`;
-    body+=`${'═'.repeat(44)}\n`;
-    KNOCKOUT_ROUNDS.forEach(r=>{
-      const teams=kp[r.id]||[];
-      if(!teams.length)return;
-      body+=`\n── ${r.label} (${r.pts} pt/equipo) ──\n`;
-      teams.forEach(t=>{ body+=`  • ${t}\n`; });
-    });
-  }
+  const koHtml=hasKo?`
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px">
+      <div style="font-size:1rem;font-weight:900;color:#0d1f3c;margin-bottom:14px">🏆 Fase Eliminatoria</div>
+      ${KNOCKOUT_ROUNDS.map(r=>{
+        const teams=kp[r.id]||[];
+        if(!teams.length)return '';
+        const pills=teams.map(t=>`<span style="display:inline-block;background:#e6f9ee;border:1.5px solid #00a550;color:#0d1f3c;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;margin:2px 3px 2px 0">${flagImg(t)} ${t}</span>`).join('');
+        return `<div style="padding:10px 0;border-bottom:1px solid #f1f5f9">
+          <table style="width:100%;border-collapse:collapse"><tr>
+            <td style="font-size:.83rem;font-weight:800;color:#0d1f3c">${r.label}</td>
+            <td style="text-align:right"><span style="font-size:.7rem;font-weight:700;background:#fffbeb;color:#d97706;border:1px solid #f59e0b;padding:2px 8px;border-radius:5px">${r.pts} pt/equipo · ${teams.length}/${r.count}</span></td>
+          </tr></table>
+          <div style="margin-top:6px">${pills}</div>
+        </div>`;
+      }).join('')}
+    </div>`:'';
 
-  return body.trimEnd();
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f0f4f8;font-family:Arial,Helvetica,sans-serif">
+<div style="max-width:600px;margin:0 auto">
+  <div style="background:linear-gradient(110deg,#0d1f3c 0%,#1a3358 60%,#1e4a7a 100%);border-bottom:3px solid #00a550;padding:20px 24px 18px">
+    <div style="font-size:1.1rem;font-weight:900;color:#fff">⚽ Quiniela Mundial 2026</div>
+    <div style="font-size:.75rem;color:rgba(255,255,255,.6);margin-top:3px">Confirmación de registro · ${apodo}</div>
+  </div>
+  <div style="padding:20px 16px">
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin-bottom:16px">
+      <p style="margin:0 0 8px;font-size:.95rem;color:#1a2333">Hola <strong>${nombre}</strong>,</p>
+      <p style="margin:0;font-size:.85rem;color:#64748b;line-height:1.6">Tu quiniela fue recibida y está <strong style="color:#0d1f3c">pendiente de aprobación</strong> por el organizador. Aquí está el resumen completo de tus predicciones.</p>
+    </div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:16px"><tr>
+      <td style="padding-right:8px;width:33%">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-left:4px solid #00a550;border-radius:10px;padding:12px 14px">
+          <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b">Partidos</div>
+          <div style="font-size:1.3rem;font-weight:900;color:#0d1f3c;line-height:1.2">${filled}<span style="font-size:.78rem;color:#64748b;font-weight:600"> / 72</span></div>
+        </div>
+      </td>
+      <td style="padding-right:8px;width:33%">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-left:4px solid #f59e0b;border-radius:10px;padding:12px 14px">
+          <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b">Goles predichos</div>
+          <div style="font-size:1.3rem;font-weight:900;color:#0d1f3c;line-height:1.2">${golesVal}</div>
+        </div>
+      </td>
+      <td style="width:33%">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-left:4px solid #0d1f3c;border-radius:10px;padding:12px 14px">
+          <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b">Pago</div>
+          <div style="font-size:.85rem;font-weight:700;color:#0d1f3c;line-height:1.4;margin-top:2px">${pagoLabel}</div>
+        </div>
+      </td>
+    </tr></table>
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px">
+      <div style="font-size:1rem;font-weight:900;color:#0d1f3c;margin-bottom:16px">⚽ Fase de Grupos</div>
+      ${groupsHtml}
+    </div>
+    ${koHtml}
+    <div style="text-align:center;padding:16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:16px">
+      <p style="margin:0 0 12px;font-size:.82rem;color:#64748b">Una vez aprobada tu quiniela, visita el tablero:</p>
+      <a href="https://quiniela.tarreola.com" style="display:inline-block;background:#0d1f3c;color:#fff;padding:10px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.88rem">🏆 Ver Tablero</a>
+    </div>
+    <p style="text-align:center;font-size:.7rem;color:#94a3b8;margin:0">Quiniela Entre Amigos · Mundial 2026 · admin@tarreola.com</p>
+  </div>
+</div>
+</body></html>`;
 }
 
 // ═══════════════════════════════════════════════════════════
