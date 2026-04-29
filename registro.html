@@ -1230,11 +1230,8 @@ function submitQuiniela(){
       byGroup[m.group].push(m);
     });
 
-    // Count valid predictions (score >= 0 on both sides)
-    const filledCount = allMatches.filter(m => {
-      const p = preds[m.id];
-      return p !== undefined && Number.isInteger(p.h) && Number.isInteger(p.a);
-    }).length;
+    // Count filled predictions
+    const filledCount = Object.keys(preds).length;
 
     // Build grupos section — one line per match
     let gruposLines = '';
@@ -1266,7 +1263,7 @@ function submitQuiniela(){
       (koLines || '  (no registrada)\n') +
       `\nVer tablero: https://quiniela.tarreola.com`;
 
-    console.log(`[Email] preds count: ${filledCount}, body chars: ${body.length}`);
+    console.log(`[Email] total_filled=${filledCount}, pago_label="${pagoLabel}", body chars: ${body.length}`);
 
     const titulo = `Quiniela Entre Amigos Mundial 2026 | Confirmacion de Registro | ${nombre} (${apodo})`;
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
