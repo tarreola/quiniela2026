@@ -1257,7 +1257,6 @@ function submitQuiniela(){
     });
 
     const body =
-      `${nombre} (${apodo})\n\n` +
       `=========== FASE DE GRUPOS ===========\n` +
       gruposLines +
       `\n=========== FASE ELIMINATORIA ===========\n` +
@@ -1266,8 +1265,9 @@ function submitQuiniela(){
 
     console.log(`[Email] preds count: ${filledCount}, body chars: ${body.length}`);
 
+    const titulo = `Quiniela Entre Amigos Mundial 2026 | Confirmacion de Registro | ${nombre} (${apodo})`;
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      from_name: nombre, apodo, reply_to: email, to_email: email, predictions: body
+      from_name: nombre, apodo, reply_to: email, to_email: email, predictions: body, titulo
     }).then(() => showStep(8), (err) => {
       console.warn('EmailJS error:', err);
       showToast('⚠️ Correo no enviado: ' + (err?.text || err?.message || JSON.stringify(err)));
