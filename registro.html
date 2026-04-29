@@ -1257,12 +1257,6 @@ function formatEmailBody(nombre,apodo,preds,pago,picks){
   const golesVal=document.getElementById('reg-goles')?.value||'—';
   const pagoLabel=pago==='mp'?'💳 MercadoPago':pago==='efectivo'?'💵 Efectivo':pago||'—';
 
-  const flagImg=(name)=>{
-    const c=TEAM_CODES[name];
-    if(!c)return '';
-    return `<img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/${c}.svg" width="18" height="13" style="border-radius:2px;vertical-align:middle;margin:0 3px 1px">`;
-  };
-
   const groupsHtml=Object.keys(byGroup).sort().map(grp=>{
     const rows=byGroup[grp].map(m=>{
       const p=preds[m.id];
@@ -1272,11 +1266,11 @@ function formatEmailBody(nombre,apodo,preds,pago,picks){
       const bc=ok?'#00a550':'#e2e8f0';
       const tc=ok?'#0d1f3c':'#94a3b8';
       return `<tr>
-        <td style="padding:7px 10px;font-size:.8rem;color:#1a2333;border-bottom:1px solid #f1f5f9;text-align:right;white-space:nowrap">${m.home} ${flagImg(m.home)}</td>
+        <td style="padding:7px 10px;font-size:.8rem;color:#1a2333;border-bottom:1px solid #f1f5f9;text-align:right;white-space:nowrap">${m.home}</td>
         <td style="padding:7px 6px;text-align:center;border-bottom:1px solid #f1f5f9">
           <span style="display:inline-block;background:${bg};border:1px solid ${bc};color:${tc};font-weight:800;font-size:.8rem;padding:3px 10px;border-radius:7px;white-space:nowrap">${score}</span>
         </td>
-        <td style="padding:7px 10px;font-size:.8rem;color:#1a2333;border-bottom:1px solid #f1f5f9;white-space:nowrap">${flagImg(m.away)} ${m.away}</td>
+        <td style="padding:7px 10px;font-size:.8rem;color:#1a2333;border-bottom:1px solid #f1f5f9;white-space:nowrap">${m.away}</td>
       </tr>`;
     }).join('');
     return `<div style="margin-bottom:14px">
@@ -1293,7 +1287,7 @@ function formatEmailBody(nombre,apodo,preds,pago,picks){
       ${KNOCKOUT_ROUNDS.map(r=>{
         const teams=kp[r.id]||[];
         if(!teams.length)return '';
-        const pills=teams.map(t=>`<span style="display:inline-block;background:#e6f9ee;border:1.5px solid #00a550;color:#0d1f3c;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;margin:2px 3px 2px 0">${flagImg(t)} ${t}</span>`).join('');
+        const pills=teams.map(t=>`<span style="display:inline-block;background:#e6f9ee;border:1.5px solid #00a550;color:#0d1f3c;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;margin:2px 3px 2px 0">${t}</span>`).join('');
         return `<div style="padding:10px 0;border-bottom:1px solid #f1f5f9">
           <table style="width:100%;border-collapse:collapse"><tr>
             <td style="font-size:.83rem;font-weight:800;color:#0d1f3c">${r.label}</td>
