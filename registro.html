@@ -1218,11 +1218,15 @@ function submitQuiniela(){
     document.getElementById('success-pago-msg').textContent=pagoMsg;
 
     // 3. Send email via EmailJS
-    const bodyText=formatEmailBody(nombre,apodo,preds,selectedPago,koPicks);
-    const pagoLabel=selectedPago==='mp'?'MercadoPago (pendiente)':'Efectivo (pendiente)';
+    const pagoLabel=selectedPago==='mp'?'MercadoPago':'Efectivo';
+    const filled=Object.keys(preds).length;
+    const golesVal=document.getElementById('reg-goles')?.value||'--';
+    const kp=koPicks||{};
+    let koLines='';
+    KNOCKOUT_ROUNDS.forEach(r=>{const t=kp[r.id]||[];if(t.length)koLines+=r.label+': '+t.join(', ')+'\n';});
+    const summary=`Partidos: ${filled}/72\nGoles al torneo: ${golesVal}\nPago: ${pagoLabel}\n\nFase Eliminatoria:\n${koLines||'(no registrada)'}\nVer tablero: https://quiniela.tarreola.com`;
     emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
-      from_name:nombre,apodo,reply_to:email,to_email:email,
-      predictions:bodyText,total_filled:Object.keys(preds).length,pago_label:pagoLabel
+      from_name:nombre,apodo,reply_to:email,to_email:email,predictions:summary
     }).then(()=>showStep(8),(err)=>{
       console.warn('EmailJS error:',err);
       showToast('⚠️ Correo no enviado: '+(err?.text||err?.message||JSON.stringify(err)));
@@ -1246,20 +1250,6 @@ function fallbackMailto(nombre,apodo,email,preds){
   try{window.open(mailtoUrl,'_blank');}catch(e){}
 }
 
-function formatEmailBody(nombre,apodo,preds,pago,picks){
-  const filled=Object.keys(preds).length;
-  const golesVal=document.getElementById('reg-goles')?.value||'--';
-  const pagoLabel=pago==='mp'?'MercadoPago':pago==='efectivo'?'Efectivo':pago||'--';
-  const kp=picks||{};
-  const hasKo=KNOCKOUT_ROUNDS.some(r=>(kp[r.id]||[]).length>0);
-  const koRows=hasKo?KNOCKOUT_ROUNDS.map(r=>{
-    const t=kp[r.id]||[];
-    if(!t.length)return '';
-    return `<tr><td style="padding:7px 0;font-size:.83rem;font-weight:700;color:#0d1f3c;border-bottom:1px solid #f1f5f9">${r.label}</td><td style="padding:7px 0;text-align:right;border-bottom:1px solid #f1f5f9"><span style="font-size:.7rem;font-weight:700;background:#fffbeb;color:#d97706;border:1px solid #f59e0b;padding:2px 8px;border-radius:5px">${r.pts}pt x eq</span></td><td style="padding:7px 0 7px 10px;border-bottom:1px solid #f1f5f9;font-size:.78rem;color:#334155">${t.join(', ')}</td></tr>`;
-  }).join(''):'';
-  const koSection=hasKo?`<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin-bottom:16px"><div style="font-size:1rem;font-weight:900;color:#0d1f3c;margin-bottom:14px">&#127942; Fase Eliminatoria</div><table style="width:100%;border-collapse:collapse">${koRows}</table></div>`:'';
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f0f4f8;font-family:Arial,sans-serif"><div style="max-width:600px;margin:0 auto"><div style="background:#0d1f3c;border-bottom:3px solid #00a550;padding:20px 24px 18px"><div style="font-size:1.1rem;font-weight:900;color:#fff">Quiniela Mundial 2026</div><div style="font-size:.75rem;color:rgba(255,255,255,.6);margin-top:3px">Confirmacion de registro - ${apodo}</div></div><div style="padding:20px 16px"><div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin-bottom:16px"><p style="margin:0 0 8px;font-size:.95rem;color:#1a2333">Hola <strong>${nombre}</strong>,</p><p style="margin:0;font-size:.85rem;color:#64748b;line-height:1.6">Tu quiniela fue recibida y esta <strong style="color:#0d1f3c">pendiente de aprobacion</strong>.</p></div><table style="width:100%;border-collapse:collapse;margin-bottom:16px"><tr><td style="padding-right:8px;width:33%"><div style="border-radius:10px;padding:12px 14px;background:#fff;border:1px solid #e2e8f0;border-left:4px solid #00a550"><div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b">Partidos</div><div style="font-size:1.3rem;font-weight:900;color:#0d1f3c">${filled} / 72</div></div></td><td style="padding-right:8px;width:33%"><div style="border-radius:10px;padding:12px 14px;background:#fff;border:1px solid #e2e8f0;border-left:4px solid #f59e0b"><div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b">Goles predichos</div><div style="font-size:1.3rem;font-weight:900;color:#0d1f3c">${golesVal}</div></div></td><td style="width:33%"><div style="border-radius:10px;padding:12px 14px;background:#fff;border:1px solid #e2e8f0;border-left:4px solid #0d1f3c"><div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b">Pago</div><div style="font-size:.85rem;font-weight:700;color:#0d1f3c;margin-top:2px">${pagoLabel}</div></div></td></tr></table>${koSection}<div style="text-align:center;padding:16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:16px"><p style="margin:0 0 12px;font-size:.82rem;color:#64748b">Una vez aprobada tu quiniela, visita el tablero:</p><a href="https://quiniela.tarreola.com" style="display:inline-block;background:#0d1f3c;color:#fff;padding:10px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.88rem">Ver Tablero</a></div><p style="text-align:center;font-size:.7rem;color:#94a3b8;margin:0">Quiniela Entre Amigos - Mundial 2026 - admin@tarreola.com</p></div></div></body></html>`;
-}
 
 // ═══════════════════════════════════════════════════════════
 //  TOAST
