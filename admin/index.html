@@ -754,18 +754,18 @@
         </div>
       </div>
 
-      <!-- Pendiente de Publicar -->
+      <!-- Pendientes (publicar + pago) + Resumen -->
       <div class="card">
         <h3 style="color:#b45309;margin-bottom:4px">🔒 Pendientes de Publicar</h3>
         <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Participantes con pago recibido pero quiniela aún no publicada.</p>
         <div id="pendiente-publicar-list"></div>
-      </div>
 
-      <!-- No Pago + Resumen -->
-      <div class="card">
-        <h3 style="color:var(--red);margin-bottom:4px">⚠️ Pendientes de Pago</h3>
-        <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Participantes con pago sin confirmar.</p>
-        <div id="nopago-list"></div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+          <h3 style="color:var(--red);margin-bottom:4px">⚠️ Pendientes de Pago</h3>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Participantes con pago sin confirmar.</p>
+          <div id="nopago-list"></div>
+        </div>
+
         <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
           <h4 style="font-size:.82rem;font-weight:800;color:var(--navy);margin-bottom:10px">📊 Resumen de Pagos</h4>
           <div id="pago-summary"></div>
