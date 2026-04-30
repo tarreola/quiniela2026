@@ -1549,7 +1549,7 @@ function openResultEditor(matchId,e){
   document.getElementById('re-a').value=r!==undefined?r.a:'';
   const matches=generateMatches(getTeams());
   const m=matches.find(x=>x.id===matchId);
-  document.getElementById('re-title').textContent=m?`${flag(m.home)} ${m.home}  vs  ${flag(m.away)} ${m.away}`:'Resultado';
+  document.getElementById('re-title').innerHTML=m?`${flag(m.home)} ${m.home}  vs  ${flag(m.away)} ${m.away}`:'Resultado';
   const ed=document.getElementById('result-editor');
   ed.style.display='block';
   const rect=e.target.getBoundingClientRect();
