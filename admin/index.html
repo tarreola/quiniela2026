@@ -1958,7 +1958,7 @@ function renderConfig(){
   renderNoPago();
   renderPending();
   // Bolsa auto-calculada
-  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
+  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente','pagado_sin_publicar']);
   const payments=getPayments();
   const paidCount=getParticipants().filter(p=>PAID.has(payments[p]||'')).length;
   const bolsaText='$'+(paidCount*3000).toLocaleString('es-MX')+' MXN';
@@ -2352,7 +2352,7 @@ function renderNoPago(){
     {label:'🔒 Pagado - Pendiente de Publicar',val:counts.pagado_sin_publicar,  color:'#b45309'},
     {label:'🟡 Efectivo Pendiente',            val:counts.efectivo_pendiente,   color:'#92400e'},
   ];
-  const totalPaid=counts.mp+counts.efectivo_jr+counts.efectivo_paps+counts.publicado_pendiente;
+  const totalPaid=counts.mp+counts.efectivo_jr+counts.efectivo_paps+counts.publicado_pendiente+counts.pagado_sin_publicar;
   sumEl.innerHTML=`<table class="nopago-table">
     <thead><tr><th>Método</th><th style="text-align:center">Cantidad</th></tr></thead>
     <tbody>
