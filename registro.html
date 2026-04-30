@@ -1000,28 +1000,22 @@ function goToKO(){
   showStep(5);
 }
 
+const ALL_TEAMS = Object.keys(DEFAULT_TEAMS).sort().flatMap(g=>DEFAULT_TEAMS[g].filter(t=>t));
+
 function getKoAvailableTeams(roundId){
   const idx=KNOCKOUT_ROUNDS.findIndex(r=>r.id===roundId);
-  if(idx===0) return Object.keys(DEFAULT_TEAMS).sort().flatMap(g=>DEFAULT_TEAMS[g].filter(t=>t));
-  return koPicks[KNOCKOUT_ROUNDS[idx-1].id]||[];
-}
-
-function isKoRoundLocked(roundId){
-  const idx=KNOCKOUT_ROUNDS.findIndex(r=>r.id===roundId);
-  if(idx===0)return false;
-  const prev=KNOCKOUT_ROUNDS[idx-1];
-  return (koPicks[prev.id]||[]).length<prev.count;
+  if(idx===0) return ALL_TEAMS;
+  const prevPicks=koPicks[KNOCKOUT_ROUNDS[idx-1].id]||[];
+  return prevPicks.length>0 ? prevPicks : ALL_TEAMS;
 }
 
 function renderKoRoundCard(r){
   const picks=koPicks[r.id]||[];
   const isFull=picks.length>=r.count;
-  const locked=isKoRoundLocked(r.id);
   const roundIdx=KNOCKOUT_ROUNDS.findIndex(x=>x.id===r.id);
-  const prevR=roundIdx>0?KNOCKOUT_ROUNDS[roundIdx-1]:null;
-  const available=locked?[]:getKoAvailableTeams(r.id);
+  const available=getKoAvailableTeams(r.id);
 
-  return `<div class="ko-round-card ${isFull?'complete':''} ${locked?'locked':''}" id="ko-card-${r.id}">
+  return `<div class="ko-round-card ${isFull?'complete':''}" id="ko-card-${r.id}">
     <div class="ko-round-header">
       <div class="ko-badge">${r.short}</div>
       <span class="ko-round-title">${r.label}</span>
@@ -1029,33 +1023,30 @@ function renderKoRoundCard(r){
       <span class="ko-count-chip ${isFull?'done':''}">${picks.length}/${r.count}</span>
     </div>
     ${r.desc?`<p style="font-size:.78rem;color:var(--muted);margin:6px 0 10px">${r.desc}</p>`:''}
-    ${locked
-      ?`<p class="ko-lock-msg">🔒 Selecciona los ${prevR.count} equipos de <strong>${prevR.label}</strong> primero.</p>`
-      :`<p style="font-size:.73rem;color:var(--muted);margin-bottom:10px">${isFull?`✅ ¡Listo! Toca un equipo para deseleccionarlo.`:`Toca los equipos para seleccionar · <strong>${r.count-picks.length}</strong> restantes`}</p>
-       <div class="ko-team-grid">
-         ${roundIdx===0
-           ?Object.keys(DEFAULT_TEAMS).sort().map(g=>{
-               const teams=DEFAULT_TEAMS[g].filter(t=>t);
-               return `<div style="width:100%;margin:6px 0 2px;display:flex;align-items:center;gap:6px">
-                 <span style="font-size:.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 7px">Grupo ${g}</span>
-               </div>`+teams.map(t=>{
-                 const sel=picks.includes(t);
-                 const dim=!sel&&isFull;
-                 return `<button class="ko-team-btn${sel?' selected':''}${dim?' dimmed':''}" onclick="toggleKoPick('${r.id}','${t.replace(/'/g,"\\'")}')">
-                   ${flag(t)} ${t}
-                 </button>`;
-               }).join('');
-             }).join('')
-           :available.map(t=>{
-               const sel=picks.includes(t);
-               const dim=!sel&&isFull;
-               return `<button class="ko-team-btn${sel?' selected':''}${dim?' dimmed':''}" onclick="toggleKoPick('${r.id}','${t.replace(/'/g,"\\'")}')">
-                 ${flag(t)} ${t}
-               </button>`;
-             }).join('')
-         }
-       </div>`
-    }
+    <p style="font-size:.73rem;color:var(--muted);margin-bottom:10px">${isFull?`✅ ¡Listo! Toca un equipo para deseleccionarlo.`:`Toca los equipos para seleccionar · <strong>${r.count-picks.length}</strong> restantes`}</p>
+    <div class="ko-team-grid">
+      ${roundIdx===0
+        ?Object.keys(DEFAULT_TEAMS).sort().map(g=>{
+            const teams=DEFAULT_TEAMS[g].filter(t=>t);
+            return `<div style="width:100%;margin:6px 0 2px;display:flex;align-items:center;gap:6px">
+              <span style="font-size:.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 7px">Grupo ${g}</span>
+            </div>`+teams.map(t=>{
+              const sel=picks.includes(t);
+              const dim=!sel&&isFull;
+              return `<button class="ko-team-btn${sel?' selected':''}${dim?' dimmed':''}" onclick="toggleKoPick('${r.id}','${t.replace(/'/g,"\\'")}')">
+                ${flag(t)} ${t}
+              </button>`;
+            }).join('');
+          }).join('')
+        :available.map(t=>{
+            const sel=picks.includes(t);
+            const dim=!sel&&isFull;
+            return `<button class="ko-team-btn${sel?' selected':''}${dim?' dimmed':''}" onclick="toggleKoPick('${r.id}','${t.replace(/'/g,"\\'")}')">
+              ${flag(t)} ${t}
+            </button>`;
+          }).join('')
+      }
+    </div>
   </div>`;
 }
 
