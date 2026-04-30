@@ -602,6 +602,7 @@
         <a id="mp-link" href="#" target="_blank" class="mp-btn" onclick="markMpClicked()">
           <span class="mp-logo">💳</span> Ir a pagar a MercadoPago
         </a>
+        <p style="font-size:.78rem;color:var(--muted);margin:6px 0 0;text-align:center">Comisión de Mercado Pago: $94.00</p>
         <div id="mp-confirm-box" class="hidden">
           <div class="info-box" style="margin-bottom:0">
             <p>✅ Después de completar tu pago en MercadoPago, regresa aquí y presiona <strong>"Confirmar y Enviar"</strong>.</p>
@@ -651,7 +652,7 @@ const EMAILJS_SERVICE_ID  = 'service_7lkek3e';
 const EMAILJS_TEMPLATE_ID = 'template_0iad1md';
 
 // ── MercadoPago: pega aquí el link de tu botón de cobro ──
-const MP_PAYMENT_LINK = 'https://mpago.la/2yG3KZ1';
+const MP_PAYMENT_LINK = 'https://mpago.la/342xDos';
 
 // ═══════════════════════════════════════════════════════════
 //  DATOS COMPARTIDOS (igual que index.html)
@@ -901,7 +902,7 @@ function validateAndGoStep4(){
   inp.classList.toggle('error',!ok);
   err.classList.toggle('show',!ok);
   if(ok){
-    renderMatchCards();
+    if(!document.getElementById('matches-container').hasChildNodes()) renderMatchCards();
     showStep(4);
   }
 }
