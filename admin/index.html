@@ -1972,11 +1972,12 @@ function renderParticipants(){
   const locked=getLocked();
   const payments=getPayments();
   const PAGO_OPTS=[
-    {val:'efectivo_pendiente', label:'Efectivo Pendiente',         color:'#92400e', icon:'🟡'},
-    {val:'mp',                 label:'Mercado Pago',               color:'#009ee3', icon:'💳'},
-    {val:'efectivo_jr',        label:'Efectivo Pagado TA JR',      color:'#0e7c2f', icon:'💵'},
-    {val:'efectivo_paps',      label:'Efectivo Pagado TA PAPS',    color:'#15803d', icon:'💵'},
-    {val:'publicado_pendiente',label:'Publicado - Pago Pendiente', color:'#7c3aed', icon:'📋'},
+    {val:'efectivo_pendiente',  label:'Efectivo Pendiente',           color:'#92400e', icon:'🟡'},
+    {val:'pagado_sin_publicar', label:'Pagado - Pendiente de Publicar',color:'#b45309', icon:'🔒'},
+    {val:'mp',                  label:'Mercado Pago',                  color:'#009ee3', icon:'💳'},
+    {val:'efectivo_jr',         label:'Efectivo Pagado TA JR',         color:'#0e7c2f', icon:'💵'},
+    {val:'efectivo_paps',       label:'Efectivo Pagado TA PAPS',       color:'#15803d', icon:'💵'},
+    {val:'publicado_pendiente', label:'Publicado - Pago Pendiente',    color:'#7c3aed', icon:'📋'},
   ];
   const profiles=load('q26_profiles',{});
   const searchQ=(document.getElementById('participant-search')?.value||'').toLowerCase();
@@ -2309,14 +2310,15 @@ function renderNoPago(){
   // Payment summary
   const sumEl=document.getElementById('pago-summary');
   if(!sumEl)return;
-  const counts={mp:0,efectivo_jr:0,efectivo_paps:0,publicado_pendiente:0,efectivo_pendiente:0};
+  const counts={mp:0,efectivo_jr:0,efectivo_paps:0,publicado_pendiente:0,efectivo_pendiente:0,pagado_sin_publicar:0};
   participants.forEach(p=>{const v=payments[p]||'efectivo_pendiente';if(counts[v]!==undefined)counts[v]++;});
   const summaryRows=[
-    {label:'💳 Mercado Pago',                val:counts.mp,                 color:'#009ee3'},
-    {label:'💵 Efectivo Pagado TA JR',       val:counts.efectivo_jr,        color:'#0e7c2f'},
-    {label:'💵 Efectivo Pagado TA PAPS',     val:counts.efectivo_paps,      color:'#15803d'},
-    {label:'📋 Publicado - Pago Pendiente',  val:counts.publicado_pendiente,color:'#7c3aed'},
-    {label:'🟡 Efectivo Pendiente',          val:counts.efectivo_pendiente, color:'#92400e'},
+    {label:'💳 Mercado Pago',                  val:counts.mp,                   color:'#009ee3'},
+    {label:'💵 Efectivo Pagado TA JR',         val:counts.efectivo_jr,          color:'#0e7c2f'},
+    {label:'💵 Efectivo Pagado TA PAPS',       val:counts.efectivo_paps,        color:'#15803d'},
+    {label:'📋 Publicado - Pago Pendiente',    val:counts.publicado_pendiente,  color:'#7c3aed'},
+    {label:'🔒 Pagado - Pendiente de Publicar',val:counts.pagado_sin_publicar,  color:'#b45309'},
+    {label:'🟡 Efectivo Pendiente',            val:counts.efectivo_pendiente,   color:'#92400e'},
   ];
   const totalPaid=counts.mp+counts.efectivo_jr+counts.efectivo_paps+counts.publicado_pendiente;
   sumEl.innerHTML=`<table class="nopago-table">
