@@ -1246,12 +1246,11 @@ function submitQuiniela(){
       });
     });
 
-    // Build eliminatoria section — one round per block
+    // Build eliminatoria section — all rounds always shown
     let koLines = '';
     KNOCKOUT_ROUNDS.forEach(r => {
       const t = kp[r.id] || [];
-      if (!t.length) return;
-      koLines += `\n${r.label} (${r.pts}pt por equipo):\n  ${t.join(', ')}\n`;
+      koLines += `\n${r.label} (${r.pts}pt por equipo):\n  ${t.length ? t.join(', ') : '(no registrada)'}\n`;
     });
 
     const body =
