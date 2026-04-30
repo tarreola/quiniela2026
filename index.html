@@ -437,7 +437,7 @@ function renderTablero(){
   const allParticipants=getParticipants();
   const payments=load('q26_payments',{});
   const PAID=new Set(['efectivo','transferencia','mp']);
-  const participants=allParticipants.filter(p=>PAID.has(payments[p]||''));
+  const participants=allParticipants;
   const predictions=getPredictions();
   const results=getResults();
   const matches=generateMatches(teams);
