@@ -1950,7 +1950,7 @@ function renderConfig(){
   renderNoPago();
   renderPending();
   // Bolsa auto-calculada
-  const PAID=new Set(['efectivo','transferencia','mp']);
+  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
   const payments=getPayments();
   const paidCount=getParticipants().filter(p=>PAID.has(payments[p]||'')).length;
   const bolsaText='$'+(paidCount*3000).toLocaleString('es-MX')+' MXN';
@@ -1972,11 +1972,11 @@ function renderParticipants(){
   const locked=getLocked();
   const payments=getPayments();
   const PAGO_OPTS=[
-    {val:'sin_pago',           label:'Sin pago',              color:'#b91c1c', icon:'⚪'},
-    {val:'efectivo_pendiente', label:'Efectivo pendiente',    color:'#92400e', icon:'🟡'},
-    {val:'efectivo',           label:'Pagado en efectivo',    color:'#0e7c2f', icon:'💵'},
-    {val:'transferencia',      label:'Transferencia bancaria',color:'#7c3aed', icon:'🏦'},
-    {val:'mp',                 label:'Pagado con MP',         color:'#009ee3', icon:'💳'},
+    {val:'efectivo_pendiente', label:'Efectivo Pendiente',         color:'#92400e', icon:'🟡'},
+    {val:'mp',                 label:'Mercado Pago',               color:'#009ee3', icon:'💳'},
+    {val:'efectivo_jr',        label:'Efectivo Pagado TA JR',      color:'#0e7c2f', icon:'💵'},
+    {val:'efectivo_paps',      label:'Efectivo Pagado TA PAPS',    color:'#15803d', icon:'💵'},
+    {val:'publicado_pendiente',label:'Publicado - Pago Pendiente', color:'#7c3aed', icon:'📋'},
   ];
   const profiles=load('q26_profiles',{});
   const searchQ=(document.getElementById('participant-search')?.value||'').toLowerCase();
@@ -2284,7 +2284,7 @@ function renderNoPago(){
   const payments=getPayments();
   const profiles=load('q26_profiles',{});
 
-  const UNPAID=new Set(['sin_pago','efectivo_pendiente']);
+  const UNPAID=new Set(['efectivo_pendiente','sin_pago','mp_pendiente']);
   const unpaid=participants
     .filter(p=>UNPAID.has(payments[p]||'sin_pago'))
     .map(p=>({p, status:payments[p]||'sin_pago', nombre:(profiles[p]||{}).nombre||''}));
@@ -2309,16 +2309,16 @@ function renderNoPago(){
   // Payment summary
   const sumEl=document.getElementById('pago-summary');
   if(!sumEl)return;
-  const counts={mp:0,transferencia:0,efectivo:0,efectivo_pendiente:0,sin_pago:0};
-  participants.forEach(p=>{const v=payments[p]||'sin_pago';if(counts[v]!==undefined)counts[v]++;});
+  const counts={mp:0,efectivo_jr:0,efectivo_paps:0,publicado_pendiente:0,efectivo_pendiente:0};
+  participants.forEach(p=>{const v=payments[p]||'efectivo_pendiente';if(counts[v]!==undefined)counts[v]++;});
   const summaryRows=[
-    {label:'💳 Mercado Pago',         val:counts.mp,           color:'#009ee3'},
-    {label:'🏦 Transferencia bancaria',val:counts.transferencia,color:'#7c3aed'},
-    {label:'💵 Efectivo confirmado',   val:counts.efectivo,     color:'#0e7c2f'},
-    {label:'🟡 Efectivo pendiente',    val:counts.efectivo_pendiente, color:'#92400e'},
-    {label:'⚪ Sin pago',              val:counts.sin_pago,     color:'#b91c1c'},
+    {label:'💳 Mercado Pago',                val:counts.mp,                 color:'#009ee3'},
+    {label:'💵 Efectivo Pagado TA JR',       val:counts.efectivo_jr,        color:'#0e7c2f'},
+    {label:'💵 Efectivo Pagado TA PAPS',     val:counts.efectivo_paps,      color:'#15803d'},
+    {label:'📋 Publicado - Pago Pendiente',  val:counts.publicado_pendiente,color:'#7c3aed'},
+    {label:'🟡 Efectivo Pendiente',          val:counts.efectivo_pendiente, color:'#92400e'},
   ];
-  const totalPaid=counts.mp+counts.transferencia+counts.efectivo;
+  const totalPaid=counts.mp+counts.efectivo_jr+counts.efectivo_paps+counts.publicado_pendiente;
   sumEl.innerHTML=`<table class="nopago-table">
     <thead><tr><th>Método</th><th style="text-align:center">Cantidad</th></tr></thead>
     <tbody>
