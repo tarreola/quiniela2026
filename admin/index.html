@@ -754,6 +754,13 @@
         </div>
       </div>
 
+      <!-- Pendiente de Publicar -->
+      <div class="card">
+        <h3 style="color:#b45309;margin-bottom:4px">🔒 Pendientes de Publicar</h3>
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">Participantes con pago recibido pero quiniela aún no publicada.</p>
+        <div id="pendiente-publicar-list"></div>
+      </div>
+
       <!-- No Pago + Resumen -->
       <div class="card">
         <h3 style="color:var(--red);margin-bottom:4px">⚠️ Pendientes de Pago</h3>
@@ -1947,6 +1954,7 @@ function rejectPending(apodo){
 
 function renderConfig(){
   renderParticipants();
+  renderPendientePublicar();
   renderNoPago();
   renderPending();
   // Bolsa auto-calculada
@@ -2076,6 +2084,7 @@ function savePayment(name,val){
   const payments=getPayments();
   payments[name]=val;
   save('q26_payments',payments);
+  renderPendientePublicar();
   renderNoPago();
   showToast('💳 Pago actualizado: '+name);
 }
@@ -2278,6 +2287,29 @@ function renderMissingTable(){
 // ═══════════════════════════════════════════════════════════
 //  NO PAGO TABLE (Admin view)
 // ═══════════════════════════════════════════════════════════
+function renderPendientePublicar(){
+  const el=document.getElementById('pendiente-publicar-list');
+  if(!el)return;
+  const participants=getParticipants();
+  const payments=getPayments();
+  const profiles=load('q26_profiles',{});
+  const lista=participants
+    .filter(p=>(payments[p]||'')==='pagado_sin_publicar')
+    .map(p=>({p,nombre:(profiles[p]||{}).nombre||''}));
+  if(!lista.length){
+    el.innerHTML='<p style="color:var(--green);font-size:.88rem;font-weight:700;padding:8px 0">✅ Ninguno pendiente de publicar.</p>';
+  } else {
+    const rows=lista.map(r=>`<tr>
+      <td><strong>${r.p}</strong>${r.nombre?`<br><span style="font-size:.7rem;color:var(--muted);font-style:italic">${r.nombre}</span>`:''}</td>
+      <td><span class="pago-badge" style="background:#fff3cd;color:#b45309;border:1px solid #b45309">🔒 Pendiente de publicar</span></td>
+    </tr>`).join('');
+    el.innerHTML=`<table class="nopago-table">
+      <thead><tr><th>Participante</th><th>Estado</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+}
+
 function renderNoPago(){
   const el=document.getElementById('nopago-list');
   if(!el)return;
