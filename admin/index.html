@@ -2293,16 +2293,23 @@ function renderPendientePublicar(){
   const participants=getParticipants();
   const payments=getPayments();
   const profiles=load('q26_profiles',{});
+  const PENDIENTE_PUBLICAR=new Set(['pagado_sin_publicar','efectivo_pendiente']);
   const lista=participants
-    .filter(p=>(payments[p]||'')==='pagado_sin_publicar')
-    .map(p=>({p,nombre:(profiles[p]||{}).nombre||''}));
+    .filter(p=>PENDIENTE_PUBLICAR.has(payments[p]||''))
+    .map(p=>({p,nombre:(profiles[p]||{}).nombre||'',status:payments[p]||''}));
   if(!lista.length){
     el.innerHTML='<p style="color:var(--green);font-size:.88rem;font-weight:700;padding:8px 0">✅ Ninguno pendiente de publicar.</p>';
   } else {
-    const rows=lista.map(r=>`<tr>
-      <td><strong>${r.p}</strong>${r.nombre?`<br><span style="font-size:.7rem;color:var(--muted);font-style:italic">${r.nombre}</span>`:''}</td>
-      <td><span class="pago-badge" style="background:#fff3cd;color:#b45309;border:1px solid #b45309">🔒 Pendiente de publicar</span></td>
-    </tr>`).join('');
+    const rows=lista.map(r=>{
+      const isEfectivo=r.status==='efectivo_pendiente';
+      const badge=isEfectivo
+        ? `<span class="pago-badge" style="background:#fef9c3;color:#92400e;border:1px solid #92400e">🟡 Efectivo Pendiente</span>`
+        : `<span class="pago-badge" style="background:#fff3cd;color:#b45309;border:1px solid #b45309">🔒 Pendiente de publicar</span>`;
+      return `<tr>
+        <td><strong>${r.p}</strong>${r.nombre?`<br><span style="font-size:.7rem;color:var(--muted);font-style:italic">${r.nombre}</span>`:''}</td>
+        <td>${badge}</td>
+      </tr>`;
+    }).join('');
     el.innerHTML=`<table class="nopago-table">
       <thead><tr><th>Participante</th><th>Estado</th></tr></thead>
       <tbody>${rows}</tbody>
