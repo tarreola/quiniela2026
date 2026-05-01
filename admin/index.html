@@ -554,6 +554,18 @@
     .login-btn{width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .2s;margin-top:6px}
     .login-btn:hover{background:var(--green2)}
     #login-error{color:var(--red);font-size:.82rem;text-align:center;margin-top:10px;display:none;font-weight:600}
+    /* ── AUTH CONFIRM MODAL ── */
+    #auth-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(13,31,60,.85);align-items:center;justify-content:center;padding:20px}
+    #auth-modal.show{display:flex}
+    .auth-box{background:#fff;border-radius:18px;padding:30px 28px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+    .auth-box h3{font-size:1.05rem;font-weight:900;color:var(--navy);margin-bottom:4px}
+    .auth-box p{font-size:.8rem;color:var(--muted);margin-bottom:20px;line-height:1.4}
+    .auth-box .login-field{margin-bottom:14px}
+    #auth-error{color:var(--red);font-size:.8rem;font-weight:700;text-align:center;margin-top:8px;display:none}
+    .auth-actions{display:flex;gap:10px;margin-top:18px}
+    .auth-actions button{flex:1;padding:11px;border:none;border-radius:10px;font-size:.9rem;font-weight:800;cursor:pointer}
+    .auth-confirm{background:var(--red);color:#fff}
+    .auth-cancel{background:var(--surface2);color:var(--text)}
     /* ── INFOBAR (igual que tablero público) ─── */
     .tablero-infobar{display:flex;align-items:stretch;gap:12px;margin-bottom:16px;flex-wrap:wrap}
     .info-card{display:flex;flex-direction:column;gap:3px;padding:12px 18px;border-radius:12px;background:var(--surface);box-shadow:var(--shadow)}
@@ -584,6 +596,26 @@
   </style>
 </head>
 <body>
+
+<div id="auth-modal">
+  <div class="auth-box">
+    <h3 id="auth-modal-title">🔐 Confirmar acción</h3>
+    <p id="auth-modal-desc">Esta acción es irreversible. Ingresa las credenciales de administrador para continuar.</p>
+    <div class="login-field">
+      <label>Correo</label>
+      <input type="email" id="auth-email" placeholder="admin@tarreola.com" onkeydown="if(event.key==='Enter')document.getElementById('auth-pass').focus()">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="auth-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')_authSubmit()">
+    </div>
+    <div id="auth-error">Credenciales incorrectas</div>
+    <div class="auth-actions">
+      <button class="auth-cancel" onclick="_authClose()">Cancelar</button>
+      <button class="auth-confirm" onclick="_authSubmit()" id="auth-confirm-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
 
 <div id="login-screen">
   <div class="login-box">
@@ -2089,9 +2121,39 @@ function savePayment(name,val){
   showToast('💳 Pago actualizado: '+name);
 }
 
+let _authCallback=null;
+function requireAdminAuth(title,desc,callback){
+  _authCallback=callback;
+  document.getElementById('auth-modal-title').textContent=title;
+  document.getElementById('auth-modal-desc').textContent=desc;
+  document.getElementById('auth-email').value='';
+  document.getElementById('auth-pass').value='';
+  document.getElementById('auth-error').style.display='none';
+  document.getElementById('auth-modal').classList.add('show');
+  setTimeout(()=>document.getElementById('auth-email').focus(),100);
+}
+function _authClose(){
+  document.getElementById('auth-modal').classList.remove('show');
+  _authCallback=null;
+}
+function _authSubmit(){
+  const e=document.getElementById('auth-email').value.trim();
+  const p=document.getElementById('auth-pass').value;
+  if(e===ADMIN_EMAIL&&p===ADMIN_PASS){
+    _authClose();
+    if(_authCallback)_authCallback();
+  } else {
+    document.getElementById('auth-error').style.display='block';
+    document.getElementById('auth-pass').value='';
+    document.getElementById('auth-pass').focus();
+  }
+}
+
 async function resetParaLanzamiento(){
-  if(!confirm('⚠️ RESET COMPLETO\n\nEsto borrará de Firebase:\n• Todos los participantes\n• Todas las predicciones\n• Todos los pendientes\n• Todos los pagos\n• Todos los resultados\n\n¿Continuar?'))return;
-  if(!confirm('🚨 SEGUNDA CONFIRMACIÓN\n\nEsta acción NO se puede deshacer.\n\n¿Estás seguro?'))return;
+  requireAdminAuth(
+    '🚀 Reset para Lanzamiento',
+    '⚠️ Esto borrará TODOS los participantes, predicciones, pagos y resultados de Firebase. Esta acción NO se puede deshacer.',
+    async()=>{
   const reset={
     q26_participants:[],
     q26_predictions:null,
@@ -2119,15 +2181,21 @@ async function resetParaLanzamiento(){
   }catch(e){
     showToast('❌ Error en reset: '+e.message);
   }
+  });
 }
 
 function clearAllPredictions(){
-  if(!confirm('¿Borrar TODAS las predicciones (grupos y fase eliminatoria) de todos los participantes? Los participantes y pagos se mantienen.'))return;
-  save('q26_predictions',{});
-  save('q26_locked',[]);
-  save('q26_ko_preds',{});
-  renderParticipants();
-  showToast('🗑 Todas las predicciones borradas');
+  requireAdminAuth(
+    '🗑 Borrar todas las predicciones',
+    'Se borrarán las predicciones de grupos y fase eliminatoria de todos los participantes. Los participantes y pagos se mantienen.',
+    ()=>{
+      save('q26_predictions',{});
+      save('q26_locked',[]);
+      save('q26_ko_preds',{});
+      renderParticipants();
+      showToast('🗑 Todas las predicciones borradas');
+    }
+  );
 }
 
 function renderTeamsEditor(){
