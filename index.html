@@ -268,11 +268,21 @@
     /* Loading */
     #loading-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--green);z-index:9999;transition:width .4s}
     #loading-bar.done{opacity:0;transition:opacity .5s}
+    #conn-error{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,31,60,.92);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#fff;text-align:center;padding:24px}
+    #conn-error.show{display:flex}
+    #conn-error h2{font-size:1.3rem;font-weight:800}
+    #conn-error p{font-size:.9rem;color:rgba(255,255,255,.75);max-width:320px;line-height:1.5}
+    #conn-error button{padding:12px 28px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer}
   </style>
 </head>
 <body>
 
 <div id="loading-bar" style="width:60%"></div>
+<div id="conn-error">
+  <h2>⚽ Sin conexión</h2>
+  <p>No se pudo conectar con el servidor. Revisa tu internet e intenta de nuevo.</p>
+  <button onclick="location.reload()">Reintentar</button>
+</div>
 
 <header>
   <div class="hdr">
@@ -612,12 +622,21 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 // ═══════════════════════════════════════════════════════════
 //  INIT — real-time listener
 // ═══════════════════════════════════════════════════════════
+const _connTimeout=setTimeout(()=>{
+  document.getElementById('conn-error').classList.add('show');
+},10000);
 firebase.database().ref('/').on('value',snap=>{
+  clearTimeout(_connTimeout);
+  document.getElementById('conn-error').classList.remove('show');
   _cache=snap.val()||{};
   const lb=document.getElementById('loading-bar');
   if(lb){lb.style.width='100%';setTimeout(()=>lb.classList.add('done'),400);}
   if(activeView==='tablero')renderTablero();
   else if(activeView==='ranking')renderRanking();
+},err=>{
+  clearTimeout(_connTimeout);
+  console.error('Firebase error:',err);
+  document.getElementById('conn-error').classList.add('show');
 });
 
 // Auto-select tab from URL hash
