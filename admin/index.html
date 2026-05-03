@@ -898,92 +898,82 @@ const KNOCKOUT_ROUNDS=[
 // Partidos en orden oficial (jornada 1→2→3, simultáneos en J3)
 // hi/ai = índice del equipo en el array del grupo (0-3)
 const DEFAULT_MATCHES = [
-  // ── GRUPO A (11–24 Jun) ────────────────────────────────
-  {id:'A1',group:'A',matchday:1,date:'11 Jun',hi:0,ai:2},  // México vs Sudáfrica
-  {id:'A2',group:'A',matchday:1,date:'11 Jun',hi:1,ai:3},  // Corea del Sur vs Rep. Checa
-  {id:'A3',group:'A',matchday:2,date:'18 Jun',hi:0,ai:1},  // México vs Corea del Sur
-  {id:'A4',group:'A',matchday:2,date:'18 Jun',hi:3,ai:2},  // Rep. Checa vs Sudáfrica
-  {id:'A5',group:'A',matchday:3,date:'24 Jun',hi:0,ai:3},  // México vs Rep. Checa *
-  {id:'A6',group:'A',matchday:3,date:'24 Jun',hi:1,ai:2},  // Corea del Sur vs Sudáfrica *
-  // ── GRUPO B (12–24 Jun) ────────────────────────────────
-  {id:'B1',group:'B',matchday:1,date:'12 Jun',hi:0,ai:1},  // Canadá vs Bosnia-Herz.
-  {id:'B2',group:'B',matchday:1,date:'13 Jun',hi:2,ai:3},  // Catar vs Suiza
-  {id:'B3',group:'B',matchday:2,date:'18 Jun',hi:3,ai:1},  // Suiza vs Bosnia-Herz.
-  {id:'B4',group:'B',matchday:2,date:'18 Jun',hi:0,ai:2},  // Canadá vs Catar
-  {id:'B5',group:'B',matchday:3,date:'24 Jun',hi:0,ai:3},  // Canadá vs Suiza *
-  {id:'B6',group:'B',matchday:3,date:'24 Jun',hi:1,ai:2},  // Bosnia-Herz. vs Catar *
-  // ── GRUPO C (13–26 Jun) ────────────────────────────────
-  {id:'C1',group:'C',matchday:1,date:'13 Jun',hi:0,ai:1},  // Brasil vs Marruecos
-  {id:'C2',group:'C',matchday:1,date:'13 Jun',hi:2,ai:3},  // Haití vs Escocia
-  {id:'C3',group:'C',matchday:2,date:'19 Jun',hi:0,ai:2},  // Brasil vs Haití
-  {id:'C4',group:'C',matchday:2,date:'19 Jun',hi:3,ai:1},  // Escocia vs Marruecos
-  {id:'C5',group:'C',matchday:3,date:'26 Jun',hi:0,ai:3},  // Brasil vs Escocia *
-  {id:'C6',group:'C',matchday:3,date:'26 Jun',hi:1,ai:2},  // Marruecos vs Haití *
-  // ── GRUPO D (12–25 Jun) ────────────────────────────────
-  {id:'D1',group:'D',matchday:1,date:'12 Jun',hi:0,ai:1},  // Estados Unidos vs Paraguay
-  {id:'D2',group:'D',matchday:1,date:'13 Jun',hi:2,ai:3},  // Australia vs Turquía
-  {id:'D3',group:'D',matchday:2,date:'19 Jun',hi:0,ai:2},  // Estados Unidos vs Australia
-  {id:'D4',group:'D',matchday:2,date:'19 Jun',hi:3,ai:1},  // Turquía vs Paraguay
-  {id:'D5',group:'D',matchday:3,date:'25 Jun',hi:0,ai:3},  // Estados Unidos vs Turquía *
-  {id:'D6',group:'D',matchday:3,date:'25 Jun',hi:1,ai:2},  // Paraguay vs Australia *
-  // ── GRUPO E (14–25 Jun) ────────────────────────────────
-  {id:'E1',group:'E',matchday:1,date:'14 Jun',hi:0,ai:1},  // Alemania vs Curazao
-  {id:'E2',group:'E',matchday:1,date:'14 Jun',hi:2,ai:3},  // Costa de Marfil vs Ecuador
-  {id:'E3',group:'E',matchday:2,date:'20 Jun',hi:0,ai:2},  // Alemania vs Costa de Marfil
-  {id:'E4',group:'E',matchday:2,date:'20 Jun',hi:3,ai:1},  // Ecuador vs Curazao
-  {id:'E5',group:'E',matchday:3,date:'25 Jun',hi:0,ai:3},  // Alemania vs Ecuador *
-  {id:'E6',group:'E',matchday:3,date:'25 Jun',hi:1,ai:2},  // Curazao vs Costa de Marfil *
-  // ── GRUPO F (14–25 Jun) ────────────────────────────────
-  {id:'F1',group:'F',matchday:1,date:'14 Jun',hi:0,ai:1},  // Países Bajos vs Japón
-  {id:'F2',group:'F',matchday:1,date:'15 Jun',hi:2,ai:3},  // Suecia vs Túnez
-  {id:'F3',group:'F',matchday:2,date:'20 Jun',hi:0,ai:2},  // Países Bajos vs Suecia
-  {id:'F4',group:'F',matchday:2,date:'21 Jun',hi:3,ai:1},  // Túnez vs Japón
-  {id:'F5',group:'F',matchday:3,date:'25 Jun',hi:0,ai:3},  // Países Bajos vs Túnez *
-  {id:'F6',group:'F',matchday:3,date:'25 Jun',hi:1,ai:2},  // Japón vs Suecia *
-  // ── GRUPO G (15–26 Jun) ────────────────────────────────
-  {id:'G1',group:'G',matchday:1,date:'15 Jun',hi:0,ai:1},  // Bélgica vs Egipto
-  {id:'G2',group:'G',matchday:1,date:'15 Jun',hi:2,ai:3},  // Irán vs Nueva Zelanda
-  {id:'G3',group:'G',matchday:2,date:'21 Jun',hi:0,ai:2},  // Bélgica vs Irán
-  {id:'G4',group:'G',matchday:2,date:'21 Jun',hi:3,ai:1},  // Nueva Zelanda vs Egipto
-  {id:'G5',group:'G',matchday:3,date:'26 Jun',hi:0,ai:3},  // Bélgica vs Nueva Zelanda *
-  {id:'G6',group:'G',matchday:3,date:'26 Jun',hi:1,ai:2},  // Egipto vs Irán *
-  // ── GRUPO H (15–26 Jun) ────────────────────────────────
-  {id:'H1',group:'H',matchday:1,date:'15 Jun',hi:0,ai:1},  // España vs Cabo Verde
-  {id:'H2',group:'H',matchday:1,date:'15 Jun',hi:2,ai:3},  // Arabia Saudita vs Uruguay
-  {id:'H3',group:'H',matchday:2,date:'21 Jun',hi:0,ai:2},  // España vs Arabia Saudita
-  {id:'H4',group:'H',matchday:2,date:'21 Jun',hi:3,ai:1},  // Uruguay vs Cabo Verde
-  {id:'H5',group:'H',matchday:3,date:'26 Jun',hi:0,ai:3},  // España vs Uruguay *
-  {id:'H6',group:'H',matchday:3,date:'26 Jun',hi:1,ai:2},  // Cabo Verde vs Arabia Saudita *
-  // ── GRUPO I (16–26 Jun) ────────────────────────────────
-  {id:'I1',group:'I',matchday:1,date:'16 Jun',hi:0,ai:1},  // Francia vs Senegal
-  {id:'I2',group:'I',matchday:1,date:'16 Jun',hi:2,ai:3},  // Irak vs Noruega
-  {id:'I3',group:'I',matchday:2,date:'22 Jun',hi:0,ai:2},  // Francia vs Irak
-  {id:'I4',group:'I',matchday:2,date:'22 Jun',hi:3,ai:1},  // Noruega vs Senegal
-  {id:'I5',group:'I',matchday:3,date:'26 Jun',hi:0,ai:3},  // Francia vs Noruega *
-  {id:'I6',group:'I',matchday:3,date:'26 Jun',hi:1,ai:2},  // Senegal vs Irak *
-  // ── GRUPO J (16–26 Jun) ────────────────────────────────
-  {id:'J1',group:'J',matchday:1,date:'16 Jun',hi:0,ai:2},  // Argentina vs Argelia
-  {id:'J2',group:'J',matchday:1,date:'16 Jun',hi:1,ai:3},  // Austria vs Jordania
-  {id:'J3',group:'J',matchday:2,date:'22 Jun',hi:0,ai:1},  // Argentina vs Austria
-  {id:'J4',group:'J',matchday:2,date:'22 Jun',hi:2,ai:3},  // Argelia vs Jordania
-  {id:'J5',group:'J',matchday:3,date:'26 Jun',hi:0,ai:3},  // Argentina vs Jordania *
-  {id:'J6',group:'J',matchday:3,date:'26 Jun',hi:1,ai:2},  // Austria vs Argelia *
-  // ── GRUPO K (17–27 Jun) ────────────────────────────────
-  {id:'K1',group:'K',matchday:1,date:'17 Jun',hi:0,ai:2},  // Portugal vs Rep. Dem. Congo
-  {id:'K2',group:'K',matchday:1,date:'17 Jun',hi:3,ai:1},  // Uzbekistán vs Colombia
-  {id:'K3',group:'K',matchday:2,date:'23 Jun',hi:0,ai:1},  // Portugal vs Colombia
-  {id:'K4',group:'K',matchday:2,date:'23 Jun',hi:2,ai:3},  // Rep. Dem. Congo vs Uzbekistán
-  {id:'K5',group:'K',matchday:3,date:'27 Jun',hi:0,ai:3},  // Portugal vs Uzbekistán *
-  {id:'K6',group:'K',matchday:3,date:'27 Jun',hi:1,ai:2},  // Colombia vs Rep. Dem. Congo *
-  // ── GRUPO L (17–27 Jun) ────────────────────────────────
-  {id:'L1',group:'L',matchday:1,date:'17 Jun',hi:0,ai:1},  // Inglaterra vs Croacia
-  {id:'L2',group:'L',matchday:1,date:'17 Jun',hi:2,ai:3},  // Ghana vs Panamá
-  {id:'L3',group:'L',matchday:2,date:'23 Jun',hi:0,ai:2},  // Inglaterra vs Ghana
-  {id:'L4',group:'L',matchday:2,date:'23 Jun',hi:3,ai:1},  // Panamá vs Croacia
-  {id:'L5',group:'L',matchday:3,date:'27 Jun',hi:0,ai:3},  // Inglaterra vs Panamá *
-  {id:'L6',group:'L',matchday:3,date:'27 Jun',hi:1,ai:2},  // Croacia vs Ghana *
+  // Jornada 1 — orden cronológico por hora FIFA
+  {id:'A1',group:'A',matchday:1,date:'11 Jun',hi:0,ai:2},  // México vs Sudáfrica        13:00
+  {id:'A2',group:'A',matchday:1,date:'11 Jun',hi:1,ai:3},  // Corea del Sur vs Rep. Checa 20:00
+  {id:'B1',group:'B',matchday:1,date:'12 Jun',hi:0,ai:1},  // Canadá vs Bosnia-Herz.     13:00
+  {id:'D1',group:'D',matchday:1,date:'12 Jun',hi:0,ai:1},  // Estados Unidos vs Paraguay  19:00
+  {id:'B2',group:'B',matchday:1,date:'13 Jun',hi:2,ai:3},  // Catar vs Suiza             13:00
+  {id:'C1',group:'C',matchday:1,date:'13 Jun',hi:0,ai:1},  // Brasil vs Marruecos         16:00
+  {id:'C2',group:'C',matchday:1,date:'13 Jun',hi:2,ai:3},  // Haití vs Escocia            19:00
+  {id:'D2',group:'D',matchday:1,date:'13 Jun',hi:2,ai:3},  // Australia vs Turquía        22:00
+  {id:'E1',group:'E',matchday:1,date:'14 Jun',hi:0,ai:1},  // Alemania vs Curazao         11:00
+  {id:'F1',group:'F',matchday:1,date:'14 Jun',hi:0,ai:1},  // Países Bajos vs Japón       14:00
+  {id:'E2',group:'E',matchday:1,date:'14 Jun',hi:2,ai:3},  // Costa de Marfil vs Ecuador  17:00
+  {id:'F2',group:'F',matchday:1,date:'14 Jun',hi:2,ai:3},  // Suecia vs Túnez             20:00
+  {id:'H1',group:'H',matchday:1,date:'15 Jun',hi:0,ai:1},  // España vs Cabo Verde        10:00
+  {id:'G1',group:'G',matchday:1,date:'15 Jun',hi:0,ai:1},  // Bélgica vs Egipto           13:00
+  {id:'H2',group:'H',matchday:1,date:'15 Jun',hi:2,ai:3},  // Arabia Saudita vs Uruguay   16:00
+  {id:'G2',group:'G',matchday:1,date:'15 Jun',hi:2,ai:3},  // Irán vs Nueva Zelanda       19:00
+  {id:'I1',group:'I',matchday:1,date:'16 Jun',hi:0,ai:1},  // Francia vs Senegal          13:00
+  {id:'I2',group:'I',matchday:1,date:'16 Jun',hi:2,ai:3},  // Irak vs Noruega             16:00
+  {id:'J1',group:'J',matchday:1,date:'16 Jun',hi:0,ai:2},  // Argentina vs Argelia        19:00
+  {id:'J2',group:'J',matchday:1,date:'16 Jun',hi:1,ai:3},  // Austria vs Jordania         22:00
+  {id:'K1',group:'K',matchday:1,date:'17 Jun',hi:0,ai:2},  // Portugal vs Rep. Dem. Congo 11:00
+  {id:'L1',group:'L',matchday:1,date:'17 Jun',hi:0,ai:1},  // Inglaterra vs Croacia       14:00
+  {id:'L2',group:'L',matchday:1,date:'17 Jun',hi:2,ai:3},  // Ghana vs Panamá             17:00
+  {id:'K2',group:'K',matchday:1,date:'17 Jun',hi:3,ai:1},  // Uzbekistán vs Colombia      20:00
+  // Jornada 2
+  {id:'A3',group:'A',matchday:2,date:'18 Jun',hi:3,ai:2},  // Rep. Checa vs Sudáfrica     10:00
+  {id:'B3',group:'B',matchday:2,date:'18 Jun',hi:3,ai:1},  // Suiza vs Bosnia-Herz.       13:00
+  {id:'B4',group:'B',matchday:2,date:'18 Jun',hi:0,ai:2},  // Canadá vs Catar             16:00
+  {id:'A4',group:'A',matchday:2,date:'18 Jun',hi:0,ai:1},  // México vs Corea del Sur     19:00
+  {id:'D3',group:'D',matchday:2,date:'19 Jun',hi:0,ai:2},  // Estados Unidos vs Australia 13:00
+  {id:'C3',group:'C',matchday:2,date:'19 Jun',hi:3,ai:1},  // Escocia vs Marruecos        16:00
+  {id:'C4',group:'C',matchday:2,date:'19 Jun',hi:0,ai:2},  // Brasil vs Haití             18:30
+  {id:'D4',group:'D',matchday:2,date:'19 Jun',hi:3,ai:1},  // Turquía vs Paraguay         21:00
+  {id:'F3',group:'F',matchday:2,date:'20 Jun',hi:0,ai:2},  // Países Bajos vs Suecia      11:00
+  {id:'E3',group:'E',matchday:2,date:'20 Jun',hi:0,ai:2},  // Alemania vs Costa de Marfil 14:00
+  {id:'E4',group:'E',matchday:2,date:'20 Jun',hi:3,ai:1},  // Ecuador vs Curazao          18:00
+  {id:'F4',group:'F',matchday:2,date:'20 Jun',hi:3,ai:1},  // Túnez vs Japón              22:00
+  {id:'H3',group:'H',matchday:2,date:'21 Jun',hi:0,ai:2},  // España vs Arabia Saudita    10:00
+  {id:'G3',group:'G',matchday:2,date:'21 Jun',hi:0,ai:2},  // Bélgica vs Irán             13:00
+  {id:'H4',group:'H',matchday:2,date:'21 Jun',hi:3,ai:1},  // Uruguay vs Cabo Verde       16:00
+  {id:'G4',group:'G',matchday:2,date:'21 Jun',hi:3,ai:1},  // Nueva Zelanda vs Egipto     19:00
+  {id:'J3',group:'J',matchday:2,date:'22 Jun',hi:0,ai:1},  // Argentina vs Austria        11:00
+  {id:'I3',group:'I',matchday:2,date:'22 Jun',hi:0,ai:2},  // Francia vs Irak             15:00
+  {id:'I4',group:'I',matchday:2,date:'22 Jun',hi:3,ai:1},  // Noruega vs Senegal          18:00
+  {id:'J4',group:'J',matchday:2,date:'22 Jun',hi:3,ai:2},  // Jordania vs Argelia         21:00
+  {id:'K3',group:'K',matchday:2,date:'23 Jun',hi:0,ai:3},  // Portugal vs Uzbekistán      11:00
+  {id:'L3',group:'L',matchday:2,date:'23 Jun',hi:0,ai:2},  // Inglaterra vs Ghana         14:00
+  {id:'L4',group:'L',matchday:2,date:'23 Jun',hi:3,ai:1},  // Panamá vs Croacia           17:00
+  {id:'K4',group:'K',matchday:2,date:'23 Jun',hi:1,ai:2},  // Colombia vs Rep. Dem. Congo 20:00
+  // Jornada 3 — partidos simultáneos por par
+  {id:'B5',group:'B',matchday:3,date:'24 Jun',hi:3,ai:0},  // Suiza vs Canadá             13:00 *
+  {id:'B6',group:'B',matchday:3,date:'24 Jun',hi:1,ai:2},  // Bosnia-Herz. vs Catar       13:00 *
+  {id:'C5',group:'C',matchday:3,date:'24 Jun',hi:3,ai:0},  // Escocia vs Brasil           16:00 *
+  {id:'C6',group:'C',matchday:3,date:'24 Jun',hi:1,ai:2},  // Marruecos vs Haití          16:00 *
+  {id:'A5',group:'A',matchday:3,date:'24 Jun',hi:3,ai:0},  // Rep. Checa vs México        19:00 *
+  {id:'A6',group:'A',matchday:3,date:'24 Jun',hi:2,ai:1},  // Sudáfrica vs Corea del Sur  19:00 *
+  {id:'E5',group:'E',matchday:3,date:'25 Jun',hi:1,ai:2},  // Curazao vs Costa de Marfil  14:00 *
+  {id:'E6',group:'E',matchday:3,date:'25 Jun',hi:3,ai:0},  // Ecuador vs Alemania         14:00 *
+  {id:'F5',group:'F',matchday:3,date:'25 Jun',hi:1,ai:2},  // Japón vs Suecia             17:00 *
+  {id:'F6',group:'F',matchday:3,date:'25 Jun',hi:3,ai:0},  // Túnez vs Países Bajos       17:00 *
+  {id:'D5',group:'D',matchday:3,date:'25 Jun',hi:3,ai:0},  // Turquía vs Estados Unidos   20:00 *
+  {id:'D6',group:'D',matchday:3,date:'25 Jun',hi:1,ai:2},  // Paraguay vs Australia       20:00 *
+  {id:'I5',group:'I',matchday:3,date:'26 Jun',hi:3,ai:0},  // Noruega vs Francia          13:00 *
+  {id:'I6',group:'I',matchday:3,date:'26 Jun',hi:1,ai:2},  // Senegal vs Irak             13:00 *
+  {id:'H5',group:'H',matchday:3,date:'26 Jun',hi:1,ai:2},  // Cabo Verde vs Arabia Saudita 18:00 *
+  {id:'H6',group:'H',matchday:3,date:'26 Jun',hi:3,ai:0},  // Uruguay vs España           18:00 *
+  {id:'G5',group:'G',matchday:3,date:'26 Jun',hi:1,ai:2},  // Egipto vs Irán              21:00 *
+  {id:'G6',group:'G',matchday:3,date:'26 Jun',hi:3,ai:0},  // Nueva Zelanda vs Bélgica    21:00 *
+  {id:'L5',group:'L',matchday:3,date:'27 Jun',hi:3,ai:0},  // Panamá vs Inglaterra        15:00 *
+  {id:'L6',group:'L',matchday:3,date:'27 Jun',hi:1,ai:2},  // Croacia vs Ghana            15:00 *
+  {id:'K5',group:'K',matchday:3,date:'27 Jun',hi:1,ai:0},  // Colombia vs Portugal        17:30 *
+  {id:'K6',group:'K',matchday:3,date:'27 Jun',hi:2,ai:3},  // Rep. Dem. Congo vs Uzbekistán 17:30 *
+  {id:'J5',group:'J',matchday:3,date:'27 Jun',hi:2,ai:1},  // Argelia vs Austria          20:00 *
+  {id:'J6',group:'J',matchday:3,date:'27 Jun',hi:3,ai:0},  // Jordania vs Argentina       20:00 *
 ];
-// * = partidos simultáneos (Jornada 3)
 
 // ── Banderas por equipo (ISO 3166-1 alpha-2 para flag-icons) ─
 const TEAM_CODES = {
