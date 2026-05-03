@@ -273,9 +273,44 @@
     #conn-error h2{font-size:1.3rem;font-weight:800}
     #conn-error p{font-size:.9rem;color:rgba(255,255,255,.75);max-width:320px;line-height:1.5}
     #conn-error button{padding:12px 28px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer}
+    /* ── Coming soon overlay ── */
+    #coming-soon{position:fixed;inset:0;background:linear-gradient(160deg,#0d1f3c 0%,#1a3358 55%,#0f2a1e 100%);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+    #coming-soon.hidden{display:none}
+    .cs-ball{font-size:3.5rem;margin-bottom:18px;filter:drop-shadow(0 0 20px rgba(0,192,96,.45))}
+    .cs-title{font-size:1.05rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px}
+    .cs-headline{font-size:1.6rem;font-weight:900;color:#fff;line-height:1.3;max-width:480px;margin-bottom:16px}
+    .cs-date-badge{display:inline-block;background:var(--green);color:#fff;font-size:1rem;font-weight:800;padding:8px 22px;border-radius:10px;margin-bottom:22px;box-shadow:0 0 20px rgba(0,165,80,.4)}
+    .cs-body{font-size:.92rem;color:rgba(255,255,255,.65);max-width:400px;line-height:1.6;margin-bottom:10px}
+    .cs-body a{color:var(--green2);text-decoration:none}
+    .cs-body a:hover{text-decoration:underline}
+    .cs-admin-link{margin-top:32px;font-size:.72rem;color:rgba(255,255,255,.2);cursor:pointer;letter-spacing:.04em}
+    .cs-admin-link:hover{color:rgba(255,255,255,.4)}
+    #cs-login-box{display:none;margin-top:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:18px 22px;width:min(320px,90vw);text-align:left}
+    #cs-login-box.open{display:block}
+    .cs-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;padding:9px 12px;font-size:.87rem;font-family:inherit;outline:none;margin-bottom:10px}
+    .cs-input::placeholder{color:rgba(255,255,255,.35)}
+    .cs-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,165,80,.25)}
+    .cs-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:8px;padding:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit}
+    .cs-btn:hover{background:var(--green2)}
+    #cs-login-err{display:none;color:#fca5a5;font-size:.8rem;margin-bottom:8px;font-weight:600}
   </style>
 </head>
 <body>
+
+<div id="coming-soon">
+  <div class="cs-ball">⚽</div>
+  <div class="cs-title">Quiniela Entre Amigos · Mundial 2026</div>
+  <div class="cs-headline">¡Gracias por participar!</div>
+  <div class="cs-date-badge">Lunes 8 de Junio, 2026 · 9am</div>
+  <p class="cs-body">El tablero estará disponible con los resultados de todos los participantes.<br>Cualquier duda escribe a <a href="mailto:admin@tarreola.com">admin@tarreola.com</a></p>
+  <div class="cs-admin-link" onclick="toggleCsLogin()">acceso</div>
+  <div id="cs-login-box">
+    <div id="cs-login-err">Credenciales incorrectas</div>
+    <input class="cs-input" type="email" id="cs-email" placeholder="Correo" autocomplete="username">
+    <input class="cs-input" type="password" id="cs-pass" placeholder="Contraseña" autocomplete="current-password">
+    <button class="cs-btn" onclick="csLogin()">Entrar</button>
+  </div>
+</div>
 
 <div id="loading-bar" style="width:60%"></div>
 <div id="conn-error">
@@ -638,6 +673,33 @@ firebase.database().ref('/').on('value',snap=>{
   console.error('Firebase error:',err);
   document.getElementById('conn-error').classList.add('show');
 });
+
+// ═══════════════════════════════════════════════════════════
+//  COMING SOON GATE
+// ═══════════════════════════════════════════════════════════
+(function(){
+  const KEY='q26_admin_access';
+  const CS_EMAIL='admin@tarreola.com';
+  const CS_PASS='matute';
+  if(localStorage.getItem(KEY)==='1'){
+    document.getElementById('coming-soon').classList.add('hidden');
+  }
+  window.toggleCsLogin=function(){
+    document.getElementById('cs-login-box').classList.toggle('open');
+    document.getElementById('cs-login-err').style.display='none';
+  };
+  window.csLogin=function(){
+    const e=document.getElementById('cs-email').value.trim();
+    const p=document.getElementById('cs-pass').value;
+    if(e===CS_EMAIL&&p===CS_PASS){
+      localStorage.setItem(KEY,'1');
+      document.getElementById('coming-soon').classList.add('hidden');
+    } else {
+      document.getElementById('cs-login-err').style.display='block';
+    }
+  };
+  document.getElementById('cs-pass').addEventListener('keydown',ev=>{if(ev.key==='Enter')window.csLogin();});
+})();
 
 // Auto-select tab from URL hash
 if(location.hash==='#ranking')showView('ranking');
