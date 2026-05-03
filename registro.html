@@ -673,78 +673,81 @@ const DEFAULT_TEAMS = {
 };
 
 const DEFAULT_MATCHES = [
-  {id:'A1',group:'A',matchday:1,date:'11 Jun',hi:0,ai:2},
-  {id:'A2',group:'A',matchday:1,date:'11 Jun',hi:1,ai:3},
-  {id:'A3',group:'A',matchday:2,date:'18 Jun',hi:0,ai:1},
-  {id:'A4',group:'A',matchday:2,date:'18 Jun',hi:3,ai:2},
-  {id:'A5',group:'A',matchday:3,date:'24 Jun',hi:0,ai:3},
-  {id:'A6',group:'A',matchday:3,date:'24 Jun',hi:1,ai:2},
-  {id:'B1',group:'B',matchday:1,date:'12 Jun',hi:0,ai:1},
-  {id:'B2',group:'B',matchday:1,date:'13 Jun',hi:2,ai:3},
-  {id:'B3',group:'B',matchday:2,date:'18 Jun',hi:3,ai:1},
-  {id:'B4',group:'B',matchday:2,date:'18 Jun',hi:0,ai:2},
-  {id:'B5',group:'B',matchday:3,date:'24 Jun',hi:0,ai:3},
-  {id:'B6',group:'B',matchday:3,date:'24 Jun',hi:1,ai:2},
-  {id:'C1',group:'C',matchday:1,date:'13 Jun',hi:0,ai:1},
-  {id:'C2',group:'C',matchday:1,date:'13 Jun',hi:2,ai:3},
-  {id:'C3',group:'C',matchday:2,date:'19 Jun',hi:0,ai:2},
-  {id:'C4',group:'C',matchday:2,date:'19 Jun',hi:3,ai:1},
-  {id:'C5',group:'C',matchday:3,date:'24 Jun',hi:0,ai:3},
-  {id:'C6',group:'C',matchday:3,date:'24 Jun',hi:1,ai:2},
-  {id:'D1',group:'D',matchday:1,date:'12 Jun',hi:0,ai:1},
-  {id:'D2',group:'D',matchday:1,date:'13 Jun',hi:2,ai:3},
-  {id:'D3',group:'D',matchday:2,date:'19 Jun',hi:0,ai:2},
-  {id:'D4',group:'D',matchday:2,date:'19 Jun',hi:3,ai:1},
-  {id:'D5',group:'D',matchday:3,date:'25 Jun',hi:0,ai:3},
-  {id:'D6',group:'D',matchday:3,date:'25 Jun',hi:1,ai:2},
-  {id:'E1',group:'E',matchday:1,date:'14 Jun',hi:0,ai:1},
-  {id:'E2',group:'E',matchday:1,date:'14 Jun',hi:2,ai:3},
-  {id:'E3',group:'E',matchday:2,date:'20 Jun',hi:0,ai:2},
-  {id:'E4',group:'E',matchday:2,date:'20 Jun',hi:3,ai:1},
-  {id:'E5',group:'E',matchday:3,date:'25 Jun',hi:0,ai:3},
-  {id:'E6',group:'E',matchday:3,date:'25 Jun',hi:1,ai:2},
-  {id:'F1',group:'F',matchday:1,date:'14 Jun',hi:0,ai:1},
-  {id:'F2',group:'F',matchday:1,date:'14 Jun',hi:2,ai:3},
-  {id:'F3',group:'F',matchday:2,date:'20 Jun',hi:0,ai:2},
-  {id:'F4',group:'F',matchday:2,date:'21 Jun',hi:3,ai:1},
-  {id:'F5',group:'F',matchday:3,date:'25 Jun',hi:0,ai:3},
-  {id:'F6',group:'F',matchday:3,date:'25 Jun',hi:1,ai:2},
-  {id:'G1',group:'G',matchday:1,date:'15 Jun',hi:0,ai:1},
-  {id:'G2',group:'G',matchday:1,date:'15 Jun',hi:2,ai:3},
-  {id:'G3',group:'G',matchday:2,date:'21 Jun',hi:0,ai:2},
-  {id:'G4',group:'G',matchday:2,date:'21 Jun',hi:3,ai:1},
-  {id:'G5',group:'G',matchday:3,date:'26 Jun',hi:0,ai:3},
-  {id:'G6',group:'G',matchday:3,date:'26 Jun',hi:1,ai:2},
-  {id:'H1',group:'H',matchday:1,date:'15 Jun',hi:0,ai:1},
-  {id:'H2',group:'H',matchday:1,date:'15 Jun',hi:2,ai:3},
-  {id:'H3',group:'H',matchday:2,date:'21 Jun',hi:0,ai:2},
-  {id:'H4',group:'H',matchday:2,date:'21 Jun',hi:3,ai:1},
-  {id:'H5',group:'H',matchday:3,date:'26 Jun',hi:0,ai:3},
-  {id:'H6',group:'H',matchday:3,date:'26 Jun',hi:1,ai:2},
-  {id:'I1',group:'I',matchday:1,date:'16 Jun',hi:0,ai:1},
-  {id:'I2',group:'I',matchday:1,date:'16 Jun',hi:2,ai:3},
-  {id:'I3',group:'I',matchday:2,date:'22 Jun',hi:0,ai:2},
-  {id:'I4',group:'I',matchday:2,date:'22 Jun',hi:3,ai:1},
-  {id:'I5',group:'I',matchday:3,date:'26 Jun',hi:0,ai:3},
-  {id:'I6',group:'I',matchday:3,date:'26 Jun',hi:1,ai:2},
-  {id:'J1',group:'J',matchday:1,date:'16 Jun',hi:0,ai:2},
-  {id:'J2',group:'J',matchday:1,date:'16 Jun',hi:1,ai:3},
-  {id:'J3',group:'J',matchday:2,date:'22 Jun',hi:0,ai:1},
-  {id:'J4',group:'J',matchday:2,date:'22 Jun',hi:2,ai:3},
-  {id:'J5',group:'J',matchday:3,date:'27 Jun',hi:0,ai:3},
-  {id:'J6',group:'J',matchday:3,date:'27 Jun',hi:1,ai:2},
-  {id:'K1',group:'K',matchday:1,date:'17 Jun',hi:0,ai:2},
-  {id:'K2',group:'K',matchday:1,date:'17 Jun',hi:3,ai:1},
-  {id:'K3',group:'K',matchday:2,date:'23 Jun',hi:0,ai:1},
-  {id:'K4',group:'K',matchday:2,date:'23 Jun',hi:2,ai:3},
-  {id:'K5',group:'K',matchday:3,date:'27 Jun',hi:0,ai:3},
-  {id:'K6',group:'K',matchday:3,date:'27 Jun',hi:1,ai:2},
-  {id:'L1',group:'L',matchday:1,date:'17 Jun',hi:0,ai:1},
-  {id:'L2',group:'L',matchday:1,date:'17 Jun',hi:2,ai:3},
-  {id:'L3',group:'L',matchday:2,date:'23 Jun',hi:0,ai:2},
-  {id:'L4',group:'L',matchday:2,date:'23 Jun',hi:3,ai:1},
-  {id:'L5',group:'L',matchday:3,date:'27 Jun',hi:0,ai:3},
-  {id:'L6',group:'L',matchday:3,date:'27 Jun',hi:1,ai:2},
+  // Jornada 1 — en orden cronológico por hora FIFA
+  {id:'A1',group:'A',matchday:1,date:'11 Jun',hi:0,ai:2},  // MEX vs RSA  13:00
+  {id:'A2',group:'A',matchday:1,date:'11 Jun',hi:1,ai:3},  // KOR vs CZE  20:00
+  {id:'B1',group:'B',matchday:1,date:'12 Jun',hi:0,ai:1},  // CAN vs BIH  13:00
+  {id:'D1',group:'D',matchday:1,date:'12 Jun',hi:0,ai:1},  // USA vs PAR  19:00
+  {id:'B2',group:'B',matchday:1,date:'13 Jun',hi:2,ai:3},  // QAT vs SUI  13:00
+  {id:'C1',group:'C',matchday:1,date:'13 Jun',hi:0,ai:1},  // BRA vs MAR  16:00
+  {id:'C2',group:'C',matchday:1,date:'13 Jun',hi:2,ai:3},  // HAI vs SCO  19:00
+  {id:'D2',group:'D',matchday:1,date:'13 Jun',hi:2,ai:3},  // AUS vs TUR  22:00
+  {id:'E1',group:'E',matchday:1,date:'14 Jun',hi:0,ai:1},  // GER vs CUW  11:00
+  {id:'F1',group:'F',matchday:1,date:'14 Jun',hi:0,ai:1},  // NED vs JPN  14:00
+  {id:'E2',group:'E',matchday:1,date:'14 Jun',hi:2,ai:3},  // CIV vs ECU  17:00
+  {id:'F2',group:'F',matchday:1,date:'14 Jun',hi:2,ai:3},  // SWE vs TUN  20:00
+  {id:'H1',group:'H',matchday:1,date:'15 Jun',hi:0,ai:1},  // ESP vs CPV  10:00
+  {id:'G1',group:'G',matchday:1,date:'15 Jun',hi:0,ai:1},  // BEL vs EGY  13:00
+  {id:'H2',group:'H',matchday:1,date:'15 Jun',hi:2,ai:3},  // KSA vs URU  16:00
+  {id:'G2',group:'G',matchday:1,date:'15 Jun',hi:2,ai:3},  // IRN vs NZL  19:00
+  {id:'I1',group:'I',matchday:1,date:'16 Jun',hi:0,ai:1},  // FRA vs SEN  13:00
+  {id:'I2',group:'I',matchday:1,date:'16 Jun',hi:2,ai:3},  // IRQ vs NOR  16:00
+  {id:'J1',group:'J',matchday:1,date:'16 Jun',hi:0,ai:2},  // ARG vs ALG  19:00
+  {id:'J2',group:'J',matchday:1,date:'16 Jun',hi:1,ai:3},  // AUT vs JOR  22:00
+  {id:'K1',group:'K',matchday:1,date:'17 Jun',hi:0,ai:2},  // POR vs COD  11:00
+  {id:'L1',group:'L',matchday:1,date:'17 Jun',hi:0,ai:1},  // ENG vs CRO  14:00
+  {id:'L2',group:'L',matchday:1,date:'17 Jun',hi:2,ai:3},  // GHA vs PAN  17:00
+  {id:'K2',group:'K',matchday:1,date:'17 Jun',hi:3,ai:1},  // UZB vs COL  20:00
+  // Jornada 2
+  {id:'A3',group:'A',matchday:2,date:'18 Jun',hi:3,ai:2},  // CZE vs RSA  10:00
+  {id:'B3',group:'B',matchday:2,date:'18 Jun',hi:3,ai:1},  // SUI vs BIH  13:00
+  {id:'B4',group:'B',matchday:2,date:'18 Jun',hi:0,ai:2},  // CAN vs QAT  16:00
+  {id:'A4',group:'A',matchday:2,date:'18 Jun',hi:0,ai:1},  // MEX vs KOR  19:00
+  {id:'D3',group:'D',matchday:2,date:'19 Jun',hi:0,ai:2},  // USA vs AUS  13:00
+  {id:'C3',group:'C',matchday:2,date:'19 Jun',hi:3,ai:1},  // SCO vs MAR  16:00
+  {id:'C4',group:'C',matchday:2,date:'19 Jun',hi:0,ai:2},  // BRA vs HAI  18:30
+  {id:'D4',group:'D',matchday:2,date:'19 Jun',hi:3,ai:1},  // TUR vs PAR  21:00
+  {id:'F3',group:'F',matchday:2,date:'20 Jun',hi:0,ai:2},  // NED vs SWE  11:00
+  {id:'E3',group:'E',matchday:2,date:'20 Jun',hi:0,ai:2},  // GER vs CIV  14:00
+  {id:'E4',group:'E',matchday:2,date:'20 Jun',hi:3,ai:1},  // ECU vs CUW  18:00
+  {id:'F4',group:'F',matchday:2,date:'20 Jun',hi:3,ai:1},  // TUN vs JPN  22:00
+  {id:'H3',group:'H',matchday:2,date:'21 Jun',hi:0,ai:2},  // ESP vs KSA  10:00
+  {id:'G3',group:'G',matchday:2,date:'21 Jun',hi:0,ai:2},  // BEL vs IRN  13:00
+  {id:'H4',group:'H',matchday:2,date:'21 Jun',hi:3,ai:1},  // URU vs CPV  16:00
+  {id:'G4',group:'G',matchday:2,date:'21 Jun',hi:3,ai:1},  // NZL vs EGY  19:00
+  {id:'J3',group:'J',matchday:2,date:'22 Jun',hi:0,ai:1},  // ARG vs AUT  11:00
+  {id:'I3',group:'I',matchday:2,date:'22 Jun',hi:0,ai:2},  // FRA vs IRQ  15:00
+  {id:'I4',group:'I',matchday:2,date:'22 Jun',hi:3,ai:1},  // NOR vs SEN  18:00
+  {id:'J4',group:'J',matchday:2,date:'22 Jun',hi:3,ai:2},  // JOR vs ALG  21:00
+  {id:'K3',group:'K',matchday:2,date:'23 Jun',hi:0,ai:3},  // POR vs UZB  11:00
+  {id:'L3',group:'L',matchday:2,date:'23 Jun',hi:0,ai:2},  // ENG vs GHA  14:00
+  {id:'L4',group:'L',matchday:2,date:'23 Jun',hi:3,ai:1},  // PAN vs CRO  17:00
+  {id:'K4',group:'K',matchday:2,date:'23 Jun',hi:1,ai:2},  // COL vs COD  20:00
+  // Jornada 3
+  {id:'B5',group:'B',matchday:3,date:'24 Jun',hi:3,ai:0},  // SUI vs CAN  13:00
+  {id:'B6',group:'B',matchday:3,date:'24 Jun',hi:1,ai:2},  // BIH vs QAT  13:00
+  {id:'C5',group:'C',matchday:3,date:'24 Jun',hi:3,ai:0},  // SCO vs BRA  16:00
+  {id:'C6',group:'C',matchday:3,date:'24 Jun',hi:1,ai:2},  // MAR vs HAI  16:00
+  {id:'A5',group:'A',matchday:3,date:'24 Jun',hi:3,ai:0},  // CZE vs MEX  19:00
+  {id:'A6',group:'A',matchday:3,date:'24 Jun',hi:2,ai:1},  // RSA vs KOR  19:00
+  {id:'E5',group:'E',matchday:3,date:'25 Jun',hi:1,ai:2},  // CUW vs CIV  14:00
+  {id:'E6',group:'E',matchday:3,date:'25 Jun',hi:3,ai:0},  // ECU vs GER  14:00
+  {id:'F5',group:'F',matchday:3,date:'25 Jun',hi:1,ai:2},  // JPN vs SWE  17:00
+  {id:'F6',group:'F',matchday:3,date:'25 Jun',hi:3,ai:0},  // TUN vs NED  17:00
+  {id:'D5',group:'D',matchday:3,date:'25 Jun',hi:3,ai:0},  // TUR vs USA  20:00
+  {id:'D6',group:'D',matchday:3,date:'25 Jun',hi:1,ai:2},  // PAR vs AUS  20:00
+  {id:'I5',group:'I',matchday:3,date:'26 Jun',hi:3,ai:0},  // NOR vs FRA  13:00
+  {id:'I6',group:'I',matchday:3,date:'26 Jun',hi:1,ai:2},  // SEN vs IRQ  13:00
+  {id:'H5',group:'H',matchday:3,date:'26 Jun',hi:1,ai:2},  // CPV vs KSA  18:00
+  {id:'H6',group:'H',matchday:3,date:'26 Jun',hi:3,ai:0},  // URU vs ESP  18:00
+  {id:'G5',group:'G',matchday:3,date:'26 Jun',hi:1,ai:2},  // EGY vs IRN  21:00
+  {id:'G6',group:'G',matchday:3,date:'26 Jun',hi:3,ai:0},  // NZL vs BEL  21:00
+  {id:'L5',group:'L',matchday:3,date:'27 Jun',hi:3,ai:0},  // PAN vs ENG  15:00
+  {id:'L6',group:'L',matchday:3,date:'27 Jun',hi:1,ai:2},  // CRO vs GHA  15:00
+  {id:'K5',group:'K',matchday:3,date:'27 Jun',hi:1,ai:0},  // COL vs POR  17:30
+  {id:'K6',group:'K',matchday:3,date:'27 Jun',hi:2,ai:3},  // COD vs UZB  17:30
+  {id:'J5',group:'J',matchday:3,date:'27 Jun',hi:2,ai:1},  // ALG vs AUT  20:00
+  {id:'J6',group:'J',matchday:3,date:'27 Jun',hi:3,ai:0},  // JOR vs ARG  20:00
 ];
 
 const TEAM_CODES = {
