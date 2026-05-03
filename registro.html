@@ -134,6 +134,8 @@
       box-shadow:0 1px 4px rgba(13,31,60,.05);
     }
     .match-card.filled{border-color:var(--green2);box-shadow:0 0 0 3px rgba(0,192,96,.12)}
+    .match-card.card-incomplete{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18);background:#fff5f5}
+    .ko-round-card.card-incomplete{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18);background:#fff5f5}
     .team-block{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
     .team-block .fi{width:32px;height:24px;border-radius:3px}
     .team-name{font-size:.78rem;font-weight:700;text-align:center;line-height:1.2;word-break:break-word;color:var(--text)}
@@ -999,6 +1001,41 @@ function collectPredictions(){
 //  STEP 4 — FASE ELIMINATORIA
 // ═══════════════════════════════════════════════════════════
 function goToKO(){
+  const matches=generateMatches();
+  const incomplete=matches.filter(m=>{
+    const h=document.getElementById('rh-'+m.id)?.value;
+    const a=document.getElementById('ra-'+m.id)?.value;
+    return h===''||h===undefined||a===''||a===undefined;
+  });
+
+  // Quitar marcado previo
+  matches.forEach(m=>document.getElementById('card-'+m.id)?.classList.remove('card-incomplete'));
+
+  if(incomplete.length>0){
+    // Marcar partidos incompletos en rojo
+    incomplete.forEach(m=>document.getElementById('card-'+m.id)?.classList.add('card-incomplete'));
+
+    // Mostrar / actualizar mensaje de error
+    let errEl=document.getElementById('err-groups');
+    if(!errEl){
+      errEl=document.createElement('div');
+      errEl.id='err-groups';
+      errEl.style.cssText='background:#fee2e2;border:1.5px solid var(--red);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:.88rem;font-weight:700;color:#991b1b;display:flex;align-items:center;gap:8px';
+      document.getElementById('step-4').insertBefore(errEl, document.querySelector('#step-4 .progress-wrap'));
+    }
+    errEl.innerHTML=`⚠️ Faltan <strong>${incomplete.length} partido${incomplete.length>1?'s':''}</strong> por completar. Los marcados en rojo requieren marcador.`;
+    errEl.style.display='flex';
+
+    // Scroll al primer partido incompleto
+    const firstCard=document.getElementById('card-'+incomplete[0].id);
+    if(firstCard) firstCard.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  // Limpiar error si todo está OK
+  const errEl=document.getElementById('err-groups');
+  if(errEl) errEl.style.display='none';
+
   renderKoCards();
   showStep(5);
 }
@@ -1085,10 +1122,33 @@ function goToConfirm(){
   const preds=collectPredictions();
   const filled=Object.keys(preds).length;
 
-  if(filled<TOTAL_MATCHES){
-    const missing=TOTAL_MATCHES-filled;
-    if(!confirm(`Faltan ${missing} partido${missing>1?'s':''} por completar.\n¿Deseas continuar de todas formas?`))return;
+  // Validar fase eliminatoria — todas las rondas obligatorias
+  const missingRounds=KNOCKOUT_ROUNDS.filter(r=>(koPicks[r.id]||[]).length<r.count);
+
+  // Quitar marcado previo
+  KNOCKOUT_ROUNDS.forEach(r=>document.getElementById('ko-card-'+r.id)?.classList.remove('card-incomplete'));
+
+  if(missingRounds.length>0){
+    missingRounds.forEach(r=>document.getElementById('ko-card-'+r.id)?.classList.add('card-incomplete'));
+
+    let errEl=document.getElementById('err-ko');
+    if(!errEl){
+      errEl=document.createElement('div');
+      errEl.id='err-ko';
+      errEl.style.cssText='background:#fee2e2;border:1.5px solid var(--red);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:.88rem;font-weight:700;color:#991b1b;display:flex;align-items:center;gap:8px';
+      document.getElementById('step-5').insertBefore(errEl, document.getElementById('step-5').firstElementChild);
+    }
+    const nombres=missingRounds.map(r=>`${r.label} (${(koPicks[r.id]||[]).length}/${r.count})`).join(', ');
+    errEl.innerHTML=`⚠️ Completa todas las rondas antes de continuar:<br><span style="font-weight:400;font-size:.82rem">${nombres}</span>`;
+    errEl.style.display='flex';errEl.style.flexDirection='column';
+
+    const firstMissing=document.getElementById('ko-card-'+missingRounds[0].id);
+    if(firstMissing) firstMissing.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
   }
+
+  const errEl=document.getElementById('err-ko');
+  if(errEl) errEl.style.display='none';
 
   const nombre=document.getElementById('reg-nombre').value.trim();
   const apodo=document.getElementById('reg-apodo').value.trim();
