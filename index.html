@@ -210,6 +210,7 @@
       .info-card-value{font-size:1.3rem}
       .tablero-controls{flex-direction:column;margin-left:0;width:100%}
       .btn-reglas{align-self:stretch;justify-content:center;padding:10px 14px}
+      .tablero-controls .btn-premios{align-self:stretch;justify-content:center;flex-shrink:1}
       .search-box{width:100%}
       #tablero-stats{gap:6px}
       thead th{font-size:.62rem;padding:5px 3px}
@@ -258,6 +259,106 @@
     .rank-pts-gold{color:var(--gold)}
     .search-box{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:7px 12px;margin-bottom:12px}
     .search-box input{border:none;background:transparent;outline:none;flex:1;font-size:.88rem;color:var(--text);font-family:inherit}
+    /* ══ MOBILE CARD VIEW ══ */
+    #mob-tablero-wrap{display:none}
+    @media(max-width:768px){
+      body:not([data-mob-view="table"]) .table-view-container{display:none}
+      body:not([data-mob-view="table"]) #mob-tablero-wrap{display:block}
+      body[data-mob-view="table"] #mob-tablero-wrap{display:none}
+      body[data-mob-view="table"] #desk-mob-toggle{display:inline-flex!important}
+      /* infobar en columna para toda la franja mobile (601–768px incluido) */
+      .tablero-infobar{flex-direction:column;gap:8px}
+      .tablero-controls{flex-direction:column;margin-left:0;width:100%}
+      .btn-reglas{align-self:stretch;justify-content:center;padding:10px 14px}
+      .tablero-controls .btn-premios{align-self:stretch;justify-content:center;flex-shrink:1}
+      .search-box{width:100%}
+    }
+    @media(min-width:769px){
+      #mob-tablero-wrap{display:none!important}
+      #desk-mob-toggle{display:none!important}
+    }
+    .mob-topbar{position:sticky;top:54px;z-index:150;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--border);margin-bottom:12px}
+    .mob-topbar-controls{display:flex;gap:8px;align-items:center}
+    .mob-view-btn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:10px 18px;border:none;border-radius:10px;background:#7c3aed;color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .18s;text-decoration:none;line-height:1.2}
+    .mob-view-btn:hover{background:#6d28d9}
+    .mob-view-btn small{font-size:.62rem;font-weight:500;opacity:.85;white-space:nowrap}
+    .mob-topbar-btn{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:12px 20px;border:none;border-radius:10px;background:#7c3aed;color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .18s;line-height:1.3}
+    .mob-topbar-btn:hover{background:#6d28d9}
+    .mob-topbar-btn small{font-size:.68rem;font-weight:400;opacity:.8}
+    #desk-mob-toggle{display:none}
+    .mob-cards-list{padding-bottom:24px}
+    .mob-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden;transition:border-color .2s}
+    .mob-card.expanded{border-color:var(--green)}
+    .mob-card-header{display:flex;align-items:center;gap:10px;padding:12px 14px 6px;cursor:pointer;user-select:none;-webkit-user-select:none}
+    .mob-rank-badge{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;font-weight:900;font-size:.85rem;flex-shrink:0}
+    .mob-rank-top.mob-rank-1{background:#fde68a;color:#92400e}
+    .mob-rank-top.mob-rank-2{background:#e2e8f0;color:#475569}
+    .mob-rank-top.mob-rank-3{background:#fcd9b6;color:#92400e}
+    .mob-rank-num{background:var(--surface2);color:var(--muted);font-size:.75rem}
+    .mob-card-identity{flex:1;min-width:0}
+    .mob-apodo{display:block;font-size:1rem;font-weight:800;color:#1a5fc4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mob-nombre{display:block;font-size:.72rem;color:var(--muted);font-style:italic;margin-top:1px}
+    .mob-pts-big{font-size:1.2rem;font-weight:900;color:var(--green);flex-shrink:0}
+    .mob-expand-icon{font-size:.7rem;color:var(--muted);flex-shrink:0;margin-left:2px}
+    /* Igualar tamaño btn-premios con btn-reglas dentro de tablero-controls */
+    .tablero-controls .btn-premios,.tablero-controls .btn-reglas{flex:1;min-width:0}
+    .tablero-controls .btn-premios{flex-direction:row;padding:10px 18px;border-radius:10px;font-size:.85rem;font-weight:700;letter-spacing:0;gap:7px;box-shadow:none;transform:none;flex-shrink:0}
+    .tablero-controls .btn-premios:hover{transform:none}
+    .mob-right-col{display:flex;flex-direction:column;align-items:flex-end;gap:0;flex-shrink:0;text-align:right}
+    .mob-pts-sub{font-size:.68rem;color:var(--muted);font-weight:600;white-space:nowrap;line-height:1.5;margin-top:4px}
+    .mob-goles-tag{display:inline-block;font-size:.68rem;color:#0369a1;font-weight:700;margin-top:5px;white-space:nowrap}
+    .mob-col-header{display:flex;align-items:center;gap:5px;padding:2px 6px 2px;font-size:.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+    .mob-col-header .mob-teams{color:transparent}
+    .mob-lastmatch-header{display:flex;align-items:center;gap:5px;padding:3px 14px 0;font-size:.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;border-top:1px solid var(--border)}
+    .mob-lastmatch-header span{white-space:nowrap;flex-shrink:0}
+    .mob-lastmatch{display:flex;align-items:center;gap:5px;padding:4px 14px 6px;font-size:.72rem}
+    .mob-lastmatch.exact{background:var(--green-light)}
+    .mob-lastmatch.correct{background:var(--gold-light)}
+    .mob-lastmatch.wrong{background:#f8fafc}
+    .mob-lm-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;white-space:nowrap}
+    .mob-lm-teams{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;min-width:0;font-size:.7rem}
+    .mob-lm-pred{font-weight:700;min-width:26px;text-align:center;flex-shrink:0}
+    .mob-lm-arrow{color:var(--muted);font-size:.6rem;flex-shrink:0}
+    .mob-lm-res{font-weight:700;color:var(--green);min-width:26px;text-align:center;flex-shrink:0}
+    .mob-lm-pts{font-weight:800;min-width:22px;text-align:right;flex-shrink:0}
+    .mob-lastmatch.exact .mob-lm-pts{color:var(--green)}
+    .mob-lastmatch.correct .mob-lm-pts{color:var(--gold)}
+    .mob-lastmatch.wrong .mob-lm-pts,.mob-lastmatch .mob-lm-pts{color:var(--muted)}
+    .mob-ko-inline{display:flex;flex-wrap:wrap;gap:4px;padding:4px 14px 8px;border-top:1px solid var(--border)}
+    .mob-ko-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:.69rem;font-weight:700;background:var(--gold-light);color:#92400e;border:1px solid var(--gold2)}
+    .mob-card-body{max-height:0;overflow:hidden;transition:max-height .32s ease;border-top:0 solid var(--border)}
+    .mob-card.expanded .mob-card-body{max-height:4000px;border-top:1px solid var(--border)}
+    .mob-group-phase{padding:10px 12px 6px}
+    .mob-section-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:10px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .mob-section-title button{font-size:.7rem;font-weight:700;color:#1a5fc4;background:none;border:none;cursor:pointer;padding:0;font-family:inherit;text-transform:none;letter-spacing:0}
+    .mob-group-label{font-size:.68rem;font-weight:800;color:var(--navy);background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 8px;display:inline-block;margin:8px 0 4px}
+    .mob-match-row{display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:6px;margin-bottom:2px;font-size:.74rem}
+    .mob-match-row.exact{background:var(--green-light)}
+    .mob-match-row.correct{background:var(--gold-light)}
+    .mob-match-row.wrong{background:#f8fafc;color:var(--muted)}
+    .mob-match-row.pending{background:transparent;color:var(--muted)}
+    .mob-teams{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;font-size:.7rem;min-width:0}
+    .mob-pred{font-weight:700;min-width:28px;text-align:center;font-size:.74rem;flex-shrink:0}
+    .mob-divider{color:var(--muted);font-size:.62rem;flex-shrink:0}
+    .mob-res{font-weight:700;min-width:28px;text-align:center;color:var(--green);font-size:.74rem;flex-shrink:0}
+    .mob-res-pending{color:var(--muted);font-weight:400}
+    .mob-match-pts{font-size:.68rem;font-weight:800;min-width:22px;text-align:right;flex-shrink:0}
+    .mob-match-row.exact .mob-match-pts{color:var(--green)}
+    .mob-match-row.correct .mob-match-pts{color:var(--gold)}
+    .mob-match-row.wrong .mob-match-pts,.mob-match-row.pending .mob-match-pts{color:var(--muted)}
+    .mob-ko-section{padding:6px 12px 12px;border-top:1px solid var(--border)}
+    .mob-ko-round-row{border-bottom:1px solid var(--border);padding:6px 0}
+    .mob-ko-round-row:last-child{border-bottom:none}
+    .mob-ko-summary{display:flex;align-items:center;gap:8px}
+    .mob-ko-label{font-weight:800;color:var(--navy);font-size:.8rem;min-width:64px}
+    .mob-ko-pts{flex:1;color:var(--muted);font-size:.74rem}
+    .mob-ko-toggle{font-size:.68rem;font-weight:700;color:#1a5fc4;background:none;border:none;cursor:pointer;padding:0;font-family:inherit;flex-shrink:0}
+    .mob-ko-teams{display:flex;flex-wrap:wrap;gap:4px;padding:6px 0 2px}
+    .mob-ko-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:12px;font-size:.7rem;font-weight:700}
+    .mob-ko-pill.correct{background:var(--green-light);color:#166534}
+    .mob-ko-pill.wrong{background:#fee2e2;color:#991b1b}
+    .mob-ko-pill.neutral{background:var(--surface2);color:var(--muted)}
+    .mob-empty-cards{text-align:center;padding:48px 20px;color:var(--muted);font-size:.9rem;flex-direction:column;align-items:center;gap:12px}
     /* Mobile cards */
     /* Clickable participant cell */
     td.col-participant{cursor:pointer}
@@ -342,27 +443,40 @@
         <div class="info-card-label">💰 Bolsa Acumulada</div>
         <div class="info-card-value" id="info-bolsa">—</div>
       </div>
-      <button class="btn-premios" onclick="openPremiosModal()">🏆 Ver Premios</button>
       <div class="tablero-controls">
+        <button class="btn-premios" onclick="openPremiosModal()">🏆 Ver Premios</button>
         <a href="/reglas" class="btn-reglas">📋 Ver Reglas</a>
         <div class="search-box" style="margin-bottom:0;min-width:200px">
           <span style="color:var(--muted)">🔍</span>
-          <input type="text" id="tablero-search" placeholder="Buscar participante…" oninput="renderTablero()">
+          <input type="text" id="tablero-search" placeholder="Buscar participante…" oninput="renderTablero();renderTableroMobile()">
         </div>
+        <button id="desk-mob-toggle" class="mob-topbar-btn" onclick="setMobViewMode('cards')">📱 Versión Móvil<small>recomendado si lo abres en tu iPhone</small></button>
       </div>
     </div>
-    <div class="table-wrap">
-      <table id="tablero-table">
-        <thead id="tablero-thead"></thead>
-        <tbody id="tablero-tbody"></tbody>
-      </table>
+    <div class="table-view-container">
+      <div class="table-wrap">
+        <table id="tablero-table">
+          <thead id="tablero-thead"></thead>
+          <tbody id="tablero-tbody"></tbody>
+        </table>
+      </div>
+      <div id="tablero-empty" class="empty" style="display:none">
+        <span class="empty-icon">👥</span>
+        <h3>Sin participantes</h3>
+        <p>Aún no hay datos cargados.</p>
+      </div>
+      <div id="ko-tablero-wrap"></div>
     </div>
-    <div id="tablero-empty" class="empty" style="display:none">
-      <span class="empty-icon">👥</span>
-      <h3>Sin participantes</h3>
-      <p>Aún no hay datos cargados.</p>
+    <div id="mob-tablero-wrap">
+      <div class="mob-topbar">
+        <button class="mob-topbar-btn" onclick="setMobViewMode('table')">📊 Tablero de Resultados<small>recomendado para pantallas grandes</small></button>
+      </div>
+      <div class="mob-cards-list" id="mob-cards-list"></div>
+      <div class="mob-empty-cards" id="mob-empty-cards" style="display:none">
+        <span style="font-size:2.5rem">👥</span>
+        <p>Sin participantes</p>
+      </div>
     </div>
-    <div id="ko-tablero-wrap"></div>
   </div>
 
   <!-- ══════════ RANKING ══════════ -->
@@ -462,7 +576,7 @@ function showView(v){
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.querySelectorAll('.nav-btn')[['tablero','ranking'].indexOf(v)].classList.add('active');
-  if(v==='tablero')renderTablero();
+  if(v==='tablero'){renderTablero();if(document.body.getAttribute('data-mob-view')!=='table'&&window.innerWidth<=768)renderTableroMobile();}
   if(v==='ranking')renderRanking();
 }
 
@@ -471,6 +585,11 @@ function showView(v){
 // ═══════════════════════════════════════════════════════════
 const koExpanded=new Set();
 let tableroSort={by:'total',dir:'desc'};
+// ── Mobile view state ──
+let mobSort={by:'total',dir:'desc'};
+const mobExpanded=new Set();
+const mobKoExpanded=new Set();
+const mobFutureExp=new Set();
 function setTableroSort(by){
   if(tableroSort.by===by)tableroSort.dir=tableroSort.dir==='desc'?'asc':'desc';
   else{tableroSort.by=by;tableroSort.dir='desc';}
@@ -631,6 +750,278 @@ function closePremiosModal(){document.getElementById('premios-overlay').classLis
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePicksViewer();closePremiosModal();}});
 
 // ═══════════════════════════════════════════════════════════
+//  MOBILE VIEW
+// ═══════════════════════════════════════════════════════════
+function setMobViewMode(mode){
+  document.body.setAttribute('data-mob-view',mode);
+  localStorage.setItem('q26_mob_view_pref',mode);
+  if(mode==='cards'&&activeView==='tablero')renderTableroMobile();
+}
+function toggleMobCard(apodo){
+  if(mobExpanded.has(apodo))mobExpanded.delete(apodo);else mobExpanded.add(apodo);
+  renderTableroMobile();
+}
+function toggleMobFuture(apodo){
+  if(mobFutureExp.has(apodo))mobFutureExp.delete(apodo);else mobFutureExp.add(apodo);
+  renderTableroMobile();
+}
+function toggleMobKoRound(key){
+  if(mobKoExpanded.has(key))mobKoExpanded.delete(key);else mobKoExpanded.add(key);
+  renderTableroMobile();
+}
+function toggleMobSort(){
+  const states=[{by:'total',dir:'desc'},{by:'total',dir:'asc'},{by:'exact',dir:'desc'},{by:'exact',dir:'asc'}];
+  const idx=states.findIndex(s=>s.by===mobSort.by&&s.dir===mobSort.dir);
+  mobSort=states[(idx+1)%states.length];
+  const labels={total:{desc:'↓ Pts',asc:'↑ Pts'},exact:{desc:'↓ Exactos',asc:'↑ Exactos'}};
+  const btn=document.getElementById('mob-sort-btn');
+  if(btn)btn.textContent=labels[mobSort.by][mobSort.dir];
+  renderTableroMobile();
+}
+
+function renderTableroMobile(){
+  const teams=getTeams();
+  const allParticipants=getParticipants();
+  const payments=load('q26_payments',{});
+  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
+  const participants=allParticipants.filter(p=>PAID.has(payments[p]||''));
+  const predictions=getPredictions();
+  const results=getResults();
+  const matches=generateMatches(teams);
+  const profiles=load('q26_profiles',{});
+  const goalsMap=load('q26_goals',{});
+  const koPreds=getKoPreds();
+  const koResults=getKoResults();
+  const hasResults=Object.keys(results).length>0;
+  const hasKoResults=Object.keys(koResults).length>0;
+
+  const searchQ=(document.getElementById('tablero-search')?.value||'').toLowerCase();
+  const visible=searchQ?participants.filter(p=>{const n=(profiles[p]?.nombre||'').toLowerCase();return p.toLowerCase().includes(searchQ)||n.includes(searchQ);}):participants;
+
+  // Compute ranks from all paid participants
+  const allScores=participants.map(p=>{
+    const pp=predictions[p]||{};
+    let gPts=0,exactCount=0;
+    matches.forEach(m=>{const pts=calcPoints(pp[m.id],results[m.id]);if(pts!==null){gPts+=pts;if(pts===3)exactCount++;}});
+    let kPts=0;
+    KNOCKOUT_ROUNDS.forEach(r=>{const pts=calcKoRoundPts((koPreds[p]||{})[r.id]||[],koResults[r.id]||[],r.pts);if(pts!==null)kPts+=pts;});
+    return{p,totalPts:gPts+kPts,exactCount};
+  });
+  allScores.sort((a,b)=>mobSort.dir==='desc'?(mobSort.by==='exact'?b.exactCount-a.exactCount:b.totalPts-a.totalPts):(mobSort.by==='exact'?a.exactCount-b.exactCount:a.totalPts-b.totalPts));
+  const rankMap={};allScores.forEach(({p},i)=>{rankMap[p]=i+1;});
+
+  // Build card data
+  const cardData=visible.map(p=>{
+    const pp=predictions[p]||{};
+    let gPts=0,exactCount=0;
+    const groupDetail={};
+    const matchList=[];
+    matches.forEach(m=>{
+      const pred=pp[m.id],res=results[m.id],pts=calcPoints(pred,res);
+      if(pts!==null){gPts+=pts;if(pts===3)exactCount++;}
+      if(!groupDetail[m.group])groupDetail[m.group]=[];
+      const entry={id:m.id,home:m.home,away:m.away,date:m.date,group:m.group,pred,res,pts};
+      groupDetail[m.group].push(entry);
+      matchList.push(entry);
+    });
+    let kPts=0;
+    const koDetail=KNOCKOUT_ROUNDS.map(r=>{
+      const picks=(koPreds[p]||{})[r.id]||[],actual=koResults[r.id]||[];
+      const pts=calcKoRoundPts(picks,actual,r.pts);
+      if(pts!==null)kPts+=pts;
+      return{round:r,picks,actual,pts};
+    });
+    return{p,nombre:(profiles[p]||{}).nombre||'',totalPts:gPts+kPts,exactCount,goalsVal:goalsMap[p]!=null?goalsMap[p]:null,groupDetail,matchList,koDetail,rank:rankMap[p]||0};
+  });
+  cardData.sort((a,b)=>mobSort.dir==='desc'?(mobSort.by==='exact'?b.exactCount-a.exactCount:b.totalPts-a.totalPts):(mobSort.by==='exact'?a.exactCount-b.exactCount:a.totalPts-b.totalPts));
+
+  const listEl=document.getElementById('mob-cards-list');
+  const emptyEl=document.getElementById('mob-empty-cards');
+  if(!cardData.length){
+    listEl.innerHTML='';
+    emptyEl.querySelector('p').textContent=searchQ?`Sin resultados para "${searchQ}"`:'Sin participantes';
+    emptyEl.style.display='flex';return;
+  }
+  emptyEl.style.display='none';
+  listEl.innerHTML=cardData.map(d=>buildMobCard(d,hasResults,hasKoResults)).join('');
+}
+
+function buildMobCard(d,hasResults,hasKoResults){
+  const{p,nombre,totalPts,exactCount,goalsVal,matchList,koDetail,rank}=d;
+  const isExpanded=mobExpanded.has(p);
+  const rankLabel=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+  const rankCls=rank<=3?`mob-rank-top mob-rank-${rank}`:'mob-rank-num';
+  const ptsDisplay=(hasResults||hasKoResults)?totalPts+' pts':'—';
+  const exactDisplay=(hasResults||hasKoResults)?exactCount:'—';
+
+  // Right column: pts + exactos
+  const rightCol=`<div class="mob-right-col">
+    <span class="mob-pts-big">${ptsDisplay}</span>
+    <span class="mob-pts-sub">🎯 ${exactDisplay} exactos</span>
+  </div>`;
+
+  // Último partido completado
+  const done=matchList.filter(m=>m.res);
+  let lastMatchHtml='';
+  if(done.length){
+    const lm=done[done.length-1];
+    const pred=lm.pred?`${lm.pred.h}-${lm.pred.a}`:'—';
+    const res=`${lm.res.h}-${lm.res.a}`;
+    const ptsCls=lm.pts===3?'exact':lm.pts===1?'correct':'wrong';
+    const ptsStr=lm.pts===3?'+3p':lm.pts===1?'+1p':'0p';
+    lastMatchHtml=`<div class="mob-lastmatch-header">
+      <span style="flex:1">Último partido</span>
+      <span style="min-width:26px;text-align:center">Result</span>
+      <span style="font-size:.5rem">→</span>
+      <span style="min-width:26px;text-align:center">Pred</span>
+      <span style="color:var(--muted);font-size:.55rem;flex-shrink:0">|</span>
+      <span style="min-width:22px;text-align:right">Pts</span>
+    </div>
+    <div class="mob-lastmatch ${ptsCls}">
+      <span class="mob-lm-teams">${flag(lm.home)} ${lm.home} vs ${flag(lm.away)} ${lm.away}</span>
+      <span class="mob-lm-res">${res}</span>
+      <span class="mob-lm-arrow">→</span>
+      <span class="mob-lm-pred">${pred}</span>
+      <span class="mob-lm-pts">${ptsStr}</span>
+    </div>`;
+  }
+
+  // KO totals (solo rondas con resultados cargados)
+  let koInlineHtml='';
+  const koWithRes=koDetail.filter(({actual})=>actual.length>0);
+  if(koWithRes.length){
+    const chips=koWithRes.map(({round,picks,actual})=>{
+      const c=picks.filter(t=>actual.includes(t)).length;
+      return `<span class="mob-ko-chip">${round.short} ${c}/${picks.length}</span>`;
+    }).join('');
+    koInlineHtml=`<div class="mob-ko-inline">${chips}</div>`;
+  }
+
+  const bodyHtml=isExpanded?buildMobGroupDetail(d,hasResults)+buildMobKoDetail(d,hasKoResults):'';
+  const pa=p.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  return `<div class="mob-card${isExpanded?' expanded':''}" data-apodo="${pa}">
+    <div class="mob-card-header" onclick="toggleMobCard(this.closest('[data-apodo]').dataset.apodo)">
+      <span class="mob-rank-badge ${rankCls}">${rankLabel}</span>
+      <div class="mob-card-identity">
+        <span class="mob-apodo">${p}</span>
+        ${nombre?`<span class="mob-nombre">${nombre}</span>`:''}
+        ${goalsVal!=null?`<span class="mob-goles-tag">⚽ ${goalsVal} goles</span>`:''}
+      </div>
+      ${rightCol}
+      <span class="mob-expand-icon">${isExpanded?'▲':'▼'}</span>
+    </div>
+    ${lastMatchHtml}
+    ${koInlineHtml}
+    <div class="mob-card-body">${bodyHtml}</div>
+  </div>`;
+}
+
+function buildMobGroupDetail(d,hasResults){
+  const{p,matchList}=d;
+  const showFuture=mobFutureExp.has(p);
+  const done=matchList.filter(m=>m.res);
+  const future=matchList.filter(m=>!m.res);
+  const futureCount=future.length;
+
+  // Group completed matches by date (preserve chronological order)
+  const byDate={};
+  const dateOrder=[];
+  done.forEach(m=>{
+    if(!byDate[m.date]){byDate[m.date]=[];dateOrder.push(m.date);}
+    byDate[m.date].push(m);
+  });
+
+  let html='<div class="mob-group-phase">';
+  html+=`<div class="mob-section-title"><span>Fase de Grupos</span>${futureCount>0?`<button onclick="event.stopPropagation();toggleMobFuture(this.closest('[data-apodo]').dataset.apodo)">${showFuture?'Ocultar futuros':'+ Ver futuros ('+futureCount+')'}</button>`:''}</div>`;
+
+  if(!done.length&&!showFuture){
+    html+='<p style="font-size:.78rem;color:var(--muted);padding:8px 0">Sin resultados aún.</p>';
+  }
+
+  if(done.length||showFuture){
+    html+=`<div class="mob-col-header">
+      <span class="mob-teams">Partido</span>
+      <span style="min-width:28px;text-align:center">Result</span>
+      <span style="font-size:.52rem">→</span>
+      <span style="min-width:28px;text-align:center">Pred</span>
+      <span style="color:var(--muted);font-size:.52rem;flex-shrink:0">|</span>
+      <span style="min-width:22px;text-align:right">Pts</span>
+    </div>`;
+  }
+
+  dateOrder.forEach(date=>{
+    html+=`<div><span class="mob-group-label">${date}</span>`;
+    byDate[date].forEach(m=>{
+      const cls=m.pts===3?'exact':m.pts===1?'correct':m.pts===0?'wrong':'pending';
+      const pred=m.pred?`${m.pred.h}-${m.pred.a}`:'?';
+      const res=`${m.res.h}-${m.res.a}`;
+      const pts=m.pts===3?'+3p':m.pts===1?'+1p':'0p';
+      html+=`<div class="mob-match-row ${cls}"><span class="mob-teams">${flag(m.home)} ${m.home} vs ${flag(m.away)} ${m.away}</span><span class="mob-res">${res}</span><span class="mob-divider">→</span><span class="mob-pred">${pred}</span><span class="mob-match-pts">${pts}</span></div>`;
+    });
+    html+='</div>';
+  });
+
+  if(showFuture){
+    // Group future matches by date too
+    const fByDate={},fOrder=[];
+    future.forEach(m=>{if(!fByDate[m.date]){fByDate[m.date]=[];fOrder.push(m.date);}fByDate[m.date].push(m);});
+    fOrder.forEach(date=>{
+      html+=`<div><span class="mob-group-label" style="color:var(--muted)">${date}</span>`;
+      fByDate[date].forEach(m=>{
+        const pred=m.pred?`${m.pred.h}-${m.pred.a}`:'—';
+        html+=`<div class="mob-match-row pending"><span class="mob-teams">${flag(m.home)} ${m.home} vs ${flag(m.away)} ${m.away}</span><span class="mob-res mob-res-pending">—</span><span class="mob-divider">→</span><span class="mob-pred">${pred}</span><span class="mob-match-pts">?</span></div>`;
+      });
+      html+='</div>';
+    });
+  }
+
+  html+='</div>';
+  return html;
+}
+
+function buildMobKoDetail(d,hasKoResults){
+  const{p,koDetail}=d;
+  let html='<div class="mob-ko-section"><div class="mob-section-title"><span>Fase Eliminatoria</span></div>';
+  koDetail.forEach(({round,picks,actual,pts})=>{
+    const key=`${round.id}|${p}`;
+    const isExp=mobKoExpanded.has(key);
+    const n=picks.length;
+    let summary;
+    if(pts!==null){const c=picks.filter(t=>actual.includes(t)).length;summary=`${c}/${n} correctos · ${pts} pts`;}
+    else if(n){summary=`${n} picks · sin resultados`;}
+    else{summary='Sin picks';}
+    const keyAttr=key.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    html+=`<div class="mob-ko-round-row"><div class="mob-ko-summary"><span class="mob-ko-label">${round.short}</span><span class="mob-ko-pts">${summary}</span>${n>0?`<button class="mob-ko-toggle" data-key="${keyAttr}" onclick="event.stopPropagation();toggleMobKoRound(this.dataset.key)">${isExp?'Ocultar':'Ver equipos'}</button>`:''}</div>`;
+    if(isExp&&n>0){
+      const hasA=actual.length>0;
+      if(!hasA){
+        html+='<div class="mob-ko-teams">';
+        picks.forEach(t=>{html+=`<span class="mob-ko-pill neutral">${flag(t)} ${t}</span>`;});
+        html+='</div>';
+      } else {
+        const correct=picks.filter(t=>actual.includes(t));
+        const wrong=picks.filter(t=>!actual.includes(t));
+        if(correct.length){
+          html+=`<div style="font-size:.66rem;font-weight:800;color:#166534;text-transform:uppercase;letter-spacing:.05em;margin:6px 0 3px">✅ Correctos</div>`;
+          html+='<div class="mob-ko-teams">';
+          correct.forEach(t=>{html+=`<span class="mob-ko-pill correct">${flag(t)} ${t}</span>`;});
+          html+='</div>';
+        }
+        if(wrong.length){
+          html+=`<div style="font-size:.66rem;font-weight:800;color:#991b1b;text-transform:uppercase;letter-spacing:.05em;margin:6px 0 3px">❌ Incorrectos</div>`;
+          html+='<div class="mob-ko-teams">';
+          wrong.forEach(t=>{html+=`<span class="mob-ko-pill wrong">${flag(t)} ${t}</span>`;});
+          html+='</div>';
+        }
+      }
+    }
+    html+='</div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════
 //  RANKING
 // ═══════════════════════════════════════════════════════════
 function renderRanking(){
@@ -666,13 +1057,27 @@ firebase.database().ref('/').on('value',snap=>{
   _cache=snap.val()||{};
   const lb=document.getElementById('loading-bar');
   if(lb){lb.style.width='100%';setTimeout(()=>lb.classList.add('done'),400);}
-  if(activeView==='tablero')renderTablero();
+  if(activeView==='tablero'){renderTablero();if(document.body.getAttribute('data-mob-view')!=='table'&&window.innerWidth<=768)renderTableroMobile();}
   else if(activeView==='ranking')renderRanking();
 },err=>{
   clearTimeout(_connTimeout);
   console.error('Firebase error:',err);
   document.getElementById('conn-error').classList.add('show');
 });
+
+// ═══════════════════════════════════════════════════════════
+//  MOBILE VIEW INIT
+// ═══════════════════════════════════════════════════════════
+(function(){
+  const saved=localStorage.getItem('q26_mob_view_pref');
+  if(saved)document.body.setAttribute('data-mob-view',saved);
+  let _wasNarrow=window.innerWidth<=768;
+  window.addEventListener('resize',()=>{
+    const isNarrow=window.innerWidth<=768;
+    if(isNarrow&&!_wasNarrow&&activeView==='tablero'&&document.body.getAttribute('data-mob-view')!=='table')renderTableroMobile();
+    _wasNarrow=isNarrow;
+  },{passive:true});
+})();
 
 // ═══════════════════════════════════════════════════════════
 //  COMING SOON GATE
