@@ -1024,12 +1024,21 @@ function load(key,def){
 }
 function save(key,val){
   _cache[key]=val;
-  _db.ref(key).set(val);
+  _db.ref(key).set(val).catch(e=>{
+    console.error('Firebase save error ['+key+']:', e);
+    showToast('⚠️ Error al guardar en Firebase: '+(e?.message||e?.code||'desconocido')+'. Recarga la página.');
+  });
 }
 
 async function initData(){
-  const snap=await _db.ref('/').once('value');
-  _cache=snap.val()||{};
+  try{
+    const snap=await _db.ref('/').once('value');
+    _cache=snap.val()||{};
+  }catch(e){
+    console.error('Firebase load error:', e);
+    showToast('⚠️ Error al cargar datos de Firebase. Verifica tu conexión y recarga.');
+    _cache={};
+  }
 }
 
 function doLogin(){
@@ -1972,8 +1981,12 @@ function approvePending(apodo){
     _cache.q26_payments[apodo]=d.pago||'efectivo_pendiente';
     _cache.q26_locked=locked;
     if(_cache.q26_pending) delete _cache.q26_pending[apodo];
+    _updatePendingBadge();
     showToast('✅ Quiniela de '+apodo+' aprobada');
     renderConfig();
+  }).catch(e=>{
+    console.error('approvePending error:', e);
+    showToast('⚠️ Error al aprobar a '+apodo+': '+(e?.message||e?.code||'desconocido')+'. Intenta de nuevo.');
   });
 }
 
@@ -1981,8 +1994,12 @@ function rejectPending(apodo){
   if(!confirm('¿Rechazar la quiniela de '+apodo+'? Se eliminará del sistema.'))return;
   _db.ref('q26_pending/'+apodo).remove().then(()=>{
     if(_cache.q26_pending) delete _cache.q26_pending[apodo];
+    _updatePendingBadge();
     showToast('❌ Quiniela de '+apodo+' rechazada');
     renderConfig();
+  }).catch(e=>{
+    console.error('rejectPending error:', e);
+    showToast('⚠️ Error al rechazar a '+apodo+': '+(e?.message||e?.code||'desconocido')+'. Intenta de nuevo.');
   });
 }
 
@@ -2069,8 +2086,9 @@ function addParticipant(){
   const inp=document.getElementById('new-participant');
   const name=inp.value.trim();
   if(!name)return;
+  if(/[.#$[\]/]/.test(name)){showToast('⚠️ El apodo no puede tener . # $ [ ] ni /');return;}
   const participants=getParticipants();
-  if(participants.includes(name)){showToast('⚠️ Ese nombre ya existe');return;}
+  if(participants.includes(name)){showToast('⚠️ Ese apodo ya existe');return;}
   participants.push(name);
   save('q26_participants',participants);
   inp.value='';
@@ -2090,6 +2108,16 @@ function removeParticipant(name){
   const koPreds=getKoPreds();
   delete koPreds[name];
   save('q26_ko_preds',koPreds);
+  // Limpiar datos complementarios para no dejar huérfanos
+  const profiles=load('q26_profiles',{});
+  delete profiles[name];
+  save('q26_profiles',profiles);
+  const payments=getPayments();
+  delete payments[name];
+  save('q26_payments',payments);
+  const goals=load('q26_goals',{});
+  delete goals[name];
+  save('q26_goals',goals);
   renderParticipants();
   showToast('🗑 Eliminado: '+name);
 }

@@ -887,7 +887,8 @@ function validateAndGoStep3(){
   setErr('reg-email','err-email',!emailOk,'Ingresa un correo válido');
   setErr('reg-whatsapp','err-whatsapp',!whatsapp,'Ingresa tu número de WhatsApp');
 
-  if(ok && getParticipants().includes(apodo)){
+  // Verificar duplicado contra Firebase (más confiable que localStorage)
+  if(ok && (_fbParticipants.has(apodo)||getParticipants().includes(apodo))){
     setErr('reg-apodo','err-apodo',true,'Ese apodo ya está registrado. Elige otro.');
     ok=false;
   }
@@ -991,7 +992,9 @@ function collectPredictions(){
     const h=document.getElementById('rh-'+m.id)?.value;
     const a=document.getElementById('ra-'+m.id)?.value;
     if(h!==''&&h!==undefined&&a!==''&&a!==undefined){
-      preds[m.id]={h:parseInt(h),a:parseInt(a)};
+      const hv=Math.max(0,Math.min(20,parseInt(h)||0));
+      const av=Math.max(0,Math.min(20,parseInt(a)||0));
+      preds[m.id]={h:hv,a:av};
     }
   });
   return preds;
@@ -1376,6 +1379,16 @@ function fallbackMailto(nombre,apodo,email,preds){
   try{window.open(mailtoUrl,'_blank');}catch(e){}
 }
 
+
+// ═══════════════════════════════════════════════════════════
+//  PARTICIPANTES DESDE FIREBASE (para chequeo de duplicados)
+// ═══════════════════════════════════════════════════════════
+let _fbParticipants=new Set();
+_db.ref('q26_participants').once('value').then(snap=>{
+  const v=snap.val();
+  if(Array.isArray(v)) _fbParticipants=new Set(v);
+  else if(v&&typeof v==='object') _fbParticipants=new Set(Object.values(v).flat());
+}).catch(()=>{});
 
 // ═══════════════════════════════════════════════════════════
 //  TOAST
