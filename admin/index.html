@@ -642,7 +642,6 @@
       <button class="nav-btn" onclick="showView('predicciones')">✏️ Predicciones</button>
       <button class="nav-btn" onclick="showView('ranking')">🏅 Ranking</button>
       <button class="nav-btn" onclick="showView('config')">⚙️ Admin<span id="nav-pending-badge" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
-      <button class="nav-btn" onclick="doLogout()" title="Cerrar sesión" style="opacity:.7;margin-left:4px">🚪</button>
     </nav>
   </div>
 </header>
@@ -803,6 +802,19 @@
   </div>
 
 </main>
+
+<button onclick="doLogout()" style="
+  position:fixed;bottom:28px;right:28px;z-index:500;
+  display:flex;align-items:center;gap:8px;
+  padding:11px 20px;border:none;border-radius:12px;cursor:pointer;
+  background:rgba(30,51,88,.92);color:rgba(255,255,255,.7);
+  font-size:.82rem;font-weight:600;font-family:inherit;
+  box-shadow:0 4px 18px rgba(0,0,0,.25);
+  backdrop-filter:blur(8px);
+  transition:background .18s,color .18s;
+" onmouseover="this.style.background='#ef4444';this.style.color='#fff'" onmouseout="this.style.background='rgba(30,51,88,.92)';this.style.color='rgba(255,255,255,.7)'">
+  🚪 Cerrar Sesión
+</button>
 
 <!-- KO Result editor popup -->
 <div id="ko-result-editor">
