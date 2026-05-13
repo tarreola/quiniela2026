@@ -1320,16 +1320,24 @@ function submitQuiniela(){
     console.log(`[Email] total_filled=${filledCount}, pago_label="${pagoLabel}", body chars: ${body.length}`);
 
     const titulo = `Quiniela Entre Amigos Mundial 2026 | Confirmacion de Registro | ${nombre} (${apodo})`;
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      from_name: nombre, apodo, reply_to: email, to_email: email,
+    const emailPayload = {
+      from_name: nombre, apodo, reply_to: email,
       predictions: body, titulo,
       total_filled: String(filledCount),
       pago_label: selectedPago==='mp' ? 'MercadoPago' : 'Efectivo'
+    };
+    // Enviar al participante
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      ...emailPayload, to_email: email
     }).then(() => showStep(8), (err) => {
-      console.warn('EmailJS error:', err);
+      console.warn('EmailJS participant error:', err);
       showToast('⚠️ Correo no enviado: ' + (err?.text || err?.message || JSON.stringify(err)));
       showStep(8);
     });
+    // Enviar copia de notificación al admin (independiente del resultado anterior)
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      ...emailPayload, to_email: 'admin@tarreola.com'
+    }).catch(err => console.warn('EmailJS admin notify error:', err));
   };
 
   _db.ref('q26_pending/'+apodo).set(pendingData)

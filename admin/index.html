@@ -646,7 +646,7 @@
       <button class="nav-btn active" onclick="showView('tablero')">📊 Tablero</button>
       <button class="nav-btn" onclick="showView('predicciones')">✏️ Predicciones</button>
       <button class="nav-btn" onclick="showView('ranking')">🏅 Ranking</button>
-      <button class="nav-btn" onclick="showView('config')">⚙️ Admin</button>
+      <button class="nav-btn" onclick="showView('config')">⚙️ Admin<span id="nav-pending-badge" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
     </nav>
   </div>
 </header>
@@ -1045,9 +1045,21 @@ function doLogin(){
   }
 }
 
+function _updatePendingBadge(){
+  const count=Object.keys(_cache.q26_pending||{}).length;
+  const badge=document.getElementById('nav-pending-badge');
+  if(badge){badge.textContent=count;badge.style.display=count?'':'none';}
+}
+
 async function startApp(){
   await initData();
   renderTablero();
+  // Real-time listener: detecta nuevos registros aunque el admin ya esté en la página
+  _db.ref('q26_pending').on('value',snap=>{
+    _cache.q26_pending=snap.val()||{};
+    _updatePendingBadge();
+    if(activeView==='config')renderPending();
+  });
 }
 
 function getTeams(){return load('q26_teams',DEFAULT_TEAMS)}
