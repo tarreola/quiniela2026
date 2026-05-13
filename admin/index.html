@@ -44,9 +44,7 @@
     .hdr{max-width:1500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:64px}
     .logo{display:flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:900;color:#fff;letter-spacing:-.3px}
     .logo .logo-ball{
-      width:36px;height:36px;background:var(--green);border-radius:50%;
-      display:flex;align-items:center;justify-content:center;font-size:1.2rem;
-      box-shadow:0 0 0 3px rgba(0,197,96,.3);
+      height:44px;width:auto;border-radius:6px;display:block;
     }
     .logo-sub{font-size:.7rem;font-weight:500;color:rgba(255,255,255,.5);display:block;letter-spacing:.5px;text-transform:uppercase}
     nav{display:flex;gap:4px}
@@ -545,7 +543,7 @@
     #login-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0d1f3c,#1a3358);display:flex;align-items:center;justify-content:center;padding:20px}
     .login-box{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
     .login-logo{text-align:center;margin-bottom:24px}
-    .login-logo .ball{width:64px;height:64px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 12px;box-shadow:0 0 0 6px rgba(0,165,80,.2)}
+    .login-logo .ball{height:90px;width:auto;margin:0 auto 16px;display:block;border-radius:8px;}
     .login-logo h2{font-size:1.2rem;font-weight:900;color:var(--navy);margin-bottom:4px}
     .login-logo p{font-size:.82rem;color:var(--muted)}
     .login-field{margin-bottom:16px}
@@ -617,7 +615,7 @@
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">
-      <div class="ball">⚽</div>
+      <img src="../logo-wc26.png" alt="FIFA WC26" class="ball">
       <h2>Panel de Administración</h2>
       <p>Quiniela Entre Amigos Mundial 2026</p>
     </div>
@@ -637,7 +635,7 @@
 <header>
   <div class="hdr">
     <div class="logo">
-      <span>⚽</span> Quiniela Entre Amigos Mundial 2026
+      <img src="../logo-wc26.png" alt="FIFA WC26" class="logo-ball"> Quiniela Entre Amigos Mundial 2026
     </div>
     <nav>
       <button class="nav-btn active" onclick="showView('tablero')">📊 Tablero</button>
