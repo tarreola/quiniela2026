@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -600,11 +601,7 @@
 <div id="auth-modal">
   <div class="auth-box">
     <h3 id="auth-modal-title">🔐 Confirmar acción</h3>
-    <p id="auth-modal-desc">Esta acción es irreversible. Ingresa las credenciales de administrador para continuar.</p>
-    <div class="login-field">
-      <label>Correo</label>
-      <input type="email" id="auth-email" placeholder="admin@tarreola.com" onkeydown="if(event.key==='Enter')document.getElementById('auth-pass').focus()">
-    </div>
+    <p id="auth-modal-desc">Esta acción es irreversible. Ingresa tu contraseña para continuar.</p>
     <div class="login-field">
       <label>Contraseña</label>
       <input type="password" id="auth-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')_authSubmit()">
@@ -647,6 +644,7 @@
       <button class="nav-btn" onclick="showView('predicciones')">✏️ Predicciones</button>
       <button class="nav-btn" onclick="showView('ranking')">🏅 Ranking</button>
       <button class="nav-btn" onclick="showView('config')">⚙️ Admin<span id="nav-pending-badge" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
+      <button class="nav-btn" onclick="doLogout()" title="Cerrar sesión" style="opacity:.7;margin-left:4px">🚪</button>
     </nav>
   </div>
 </header>
@@ -996,7 +994,6 @@ function flag(name){const c=TEAM_CODES[name];return c?`<span class="fi fi-${c}">
 //  FIREBASE + STORAGE
 // ═══════════════════════════════════════════════════════════
 const ADMIN_EMAIL='admin@tarreola.com';
-const ADMIN_PASS='matute';
 const EMAILJS_PUBLIC_KEY='jhPh1tHrhtaraxn-x';
 const EMAILJS_SERVICE_ID='service_7lkek3e';
 const EMAILJS_TEMPLATE_ID='template_0iad1md';
@@ -1044,14 +1041,30 @@ async function initData(){
 function doLogin(){
   const e=document.getElementById('login-email').value.trim();
   const p=document.getElementById('login-pass').value;
-  if(e===ADMIN_EMAIL&&p===ADMIN_PASS){
-    sessionStorage.setItem('q26_admin','1');
-    document.getElementById('login-screen').style.display='none';
+  const btn=document.querySelector('.login-btn');
+  const errEl=document.getElementById('login-error');
+  if(!e||!p){errEl.textContent='Ingresa correo y contraseña.';errEl.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Entrando…';
+  errEl.style.display='none';
+  firebase.auth().signInWithEmailAndPassword(e,p)
+    .then(()=>{/* onAuthStateChanged lo maneja */})
+    .catch(err=>{
+      btn.disabled=false;btn.textContent='Entrar';
+      const msg=(err.code==='auth/wrong-password'||err.code==='auth/user-not-found'||err.code==='auth/invalid-credential')
+        ?'Correo o contraseña incorrectos':err.message;
+      errEl.textContent=msg;
+      errEl.style.display='block';
+    });
+}
+
+function doLogout(){
+  firebase.auth().signOut().then(()=>{
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('login-email').value='';
+    document.getElementById('login-pass').value='';
     document.getElementById('login-error').style.display='none';
-    startApp();
-  }else{
-    document.getElementById('login-error').style.display='block';
-  }
+    _cache={};
+  });
 }
 
 function _updatePendingBadge(){
@@ -2160,22 +2173,32 @@ function requireAdminAuth(title,desc,callback){
   document.getElementById('auth-pass').value='';
   document.getElementById('auth-error').style.display='none';
   document.getElementById('auth-modal').classList.add('show');
-  setTimeout(()=>document.getElementById('auth-email').focus(),100);
+  setTimeout(()=>document.getElementById('auth-pass').focus(),100);
 }
 function _authClose(){
   document.getElementById('auth-modal').classList.remove('show');
   _authCallback=null;
 }
-function _authSubmit(){
-  const e=document.getElementById('auth-email').value.trim();
+async function _authSubmit(){
   const p=document.getElementById('auth-pass').value;
-  if(e===ADMIN_EMAIL&&p===ADMIN_PASS){
+  const btn=document.getElementById('auth-confirm-btn');
+  const errEl=document.getElementById('auth-error');
+  const user=firebase.auth().currentUser;
+  if(!user){_authClose();showToast('⚠️ Sesión expirada. Recarga la página.');return;}
+  btn.disabled=true;btn.textContent='Verificando…';
+  errEl.style.display='none';
+  const cred=firebase.auth.EmailAuthProvider.credential(user.email,p);
+  try{
+    await user.reauthenticateWithCredential(cred);
     _authClose();
     if(_authCallback)_authCallback();
-  } else {
-    document.getElementById('auth-error').style.display='block';
+  }catch(err){
+    errEl.textContent='Contraseña incorrecta';
+    errEl.style.display='block';
     document.getElementById('auth-pass').value='';
     document.getElementById('auth-pass').focus();
+  }finally{
+    btn.disabled=false;btn.textContent='Confirmar';
   }
 }
 
@@ -2511,10 +2534,13 @@ function showToast(msg){
 // ═══════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════
-if(sessionStorage.getItem('q26_admin')==='1'){
-  document.getElementById('login-screen').style.display='none';
-  startApp();
-}
+firebase.auth().onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById('login-screen').style.display='none';
+    startApp();
+  }
+  // Si no hay sesión, la pantalla de login permanece visible
+});
 </script>
 </body>
 </html>
