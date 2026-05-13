@@ -1247,6 +1247,11 @@ function submitQuiniela(){
   const email=document.getElementById('reg-email').value.trim();
   const preds=collectPredictions();
 
+  // Firebase no permite estos caracteres en paths
+  if(/[.#$[\]/]/.test(apodo)){
+    showToast('⚠️ El apodo no puede contener . # $ [ ] ni /');return;
+  }
+
   // Disable button
   const btn=document.getElementById('btn-next');
   btn.disabled=true;btn.textContent='Enviando…';
@@ -1329,30 +1334,45 @@ function submitQuiniela(){
     // Enviar al participante
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       ...emailPayload, to_email: email
-    }).then(() => showStep(8), (err) => {
+    }).then(()=>showStep(8),(err)=>{
       console.warn('EmailJS participant error:', err);
-      showToast('⚠️ Correo no enviado: ' + (err?.text || err?.message || JSON.stringify(err)));
+      // Fallback real: abrir app de correo con las predicciones
+      showToast('⚠️ Correo automático falló — abriendo tu app de correo como respaldo');
+      fallbackMailto(nombre, apodo, email, preds);
       showStep(8);
     });
-    // Enviar copia de notificación al admin (independiente del resultado anterior)
+    // Notificación al admin (independiente)
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       ...emailPayload, to_email: 'admin@tarreola.com'
-    }).catch(err => console.warn('EmailJS admin notify error:', err));
+    }).catch(err=>console.warn('EmailJS admin notify error:', err));
   };
 
   _db.ref('q26_pending/'+apodo).set(pendingData)
     .then(doSend)
-    .catch(e=>{console.warn('Firebase pending error:',e);doSend();});
+    .catch(e=>{
+      console.error('Firebase write error:', e);
+      // Mostrar error real — NO avanzar como si todo hubiera salido bien
+      const msg=e?.code==='PERMISSION_DENIED'
+        ?'⚠️ Error de permisos al guardar. Contacta al organizador: admin@tarreola.com'
+        :'⚠️ Error al guardar tu registro: '+(e?.message||JSON.stringify(e))+'. Toma una captura de pantalla y contacta al organizador.';
+      showToast(msg);
+      btn.disabled=false;
+      btn.textContent='Reintentar';
+      // Intentar email de todas formas para que el participante tenga un registro
+      doSend();
+    });
 }
 
 function fallbackMailto(nombre,apodo,email,preds){
   const subject=`Quiniela Mundial 2026 — ${apodo}`;
   const matches=generateMatches();
-  let txt=`Quiniela de ${apodo}\n\nFase de Grupos:\n`;
+  let txt=`Quiniela de ${nombre} (${apodo})\nCorreo: ${email}\n\nFase de Grupos:\n`;
   matches.forEach(m=>{const p=preds[m.id];txt+=`${m.home} ${p?p.h:'?'} - ${p?p.a:'?'} ${m.away}\n`;});
   const kp=koPicks||{};
   KNOCKOUT_ROUNDS.forEach(r=>{const t=kp[r.id]||[];if(t.length)txt+=`\n${r.label}: ${t.join(', ')}`;});
-  const mailtoUrl=`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(txt.substring(0,1800))}`;
+  const body=txt.substring(0,1800);
+  // Enviar al participante Y al admin como CC
+  const mailtoUrl=`mailto:${email}?cc=admin@tarreola.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   try{window.open(mailtoUrl,'_blank');}catch(e){}
 }
 
