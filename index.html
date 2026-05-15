@@ -430,6 +430,7 @@
     <nav>
       <button class="nav-btn active" onclick="showView('tablero')">📊 Tablero</button>
       <button class="nav-btn" onclick="showView('ranking')">🏅 Ranking</button>
+      <a href="/reglas" class="nav-btn" style="text-decoration:none">📋 Reglas</a>
     </nav>
   </div>
 </header>
@@ -446,7 +447,6 @@
       </div>
       <div class="tablero-controls">
         <button class="btn-premios" onclick="openPremiosModal()">🏆 Ver Premios</button>
-        <a href="/reglas" class="btn-reglas">📋 Ver Reglas</a>
         <div class="search-box" style="margin-bottom:0;min-width:200px">
           <span style="color:var(--muted)">🔍</span>
           <input type="text" id="tablero-search" placeholder="Buscar participante…" oninput="renderTablero();renderTableroMobile()">
