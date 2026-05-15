@@ -554,6 +554,14 @@
     .login-btn{width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:800;cursor:pointer;transition:background .2s;margin-top:6px}
     .login-btn:hover{background:var(--green2)}
     #login-error{color:var(--red);font-size:.82rem;text-align:center;margin-top:10px;display:none;font-weight:600}
+    /* ── RESTABLECER MODAL ── */
+    #restablecer-modal{display:none;position:fixed;inset:0;z-index:9500;background:rgba(13,31,60,.7);align-items:center;justify-content:center;padding:20px}
+    #restablecer-modal.show{display:flex}
+    .restabl-box{background:#fff;border-radius:18px;padding:28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+    .restabl-opt{border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .15s,background .15s;margin-bottom:10px}
+    .restabl-opt:hover{border-color:var(--red);background:#fff5f5}
+    .restabl-opt h4{font-size:.9rem;font-weight:800;color:var(--navy);margin-bottom:4px}
+    .restabl-opt p{font-size:.78rem;color:var(--muted);line-height:1.4}
     /* ── PARTICIPANT INFO MODAL ── */
     #pinfo-modal{display:none;position:fixed;inset:0;z-index:9500;background:rgba(13,31,60,.7);align-items:center;justify-content:center;padding:20px}
     #pinfo-modal.show{display:flex}
@@ -617,6 +625,24 @@
     <div class="auth-actions">
       <button class="auth-cancel" onclick="_authClose()">Cancelar</button>
       <button class="auth-confirm" onclick="_authSubmit()" id="auth-confirm-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="restablecer-modal">
+  <div class="restabl-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h3 style="font-size:1rem;font-weight:800;color:var(--navy)">⚙️ Restablecer</h3>
+      <button onclick="document.getElementById('restablecer-modal').classList.remove('show')"
+        style="background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--text);font-size:1rem;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    <div class="restabl-opt" onclick="document.getElementById('restablecer-modal').classList.remove('show');requireAdminAuth('Borrar predicciones','Se borraran las predicciones de todos los participantes. Los participantes y pagos se conservan.',()=>clearAllPredictions())">
+      <h4>🗑 Borrar predicciones</h4>
+      <p>Elimina todas las predicciones. Los participantes y pagos se conservan.</p>
+    </div>
+    <div class="restabl-opt" onclick="document.getElementById('restablecer-modal').classList.remove('show');requireAdminAuth('Restablecer quiniela','Se eliminaran TODOS los participantes, predicciones, pagos y resultados. Esta accion NO se puede deshacer.',()=>resetParaLanzamiento())">
+      <h4>🚀 Restablecer quiniela completa</h4>
+      <p>Borra todo — participantes, predicciones, pagos y resultados. Para nuevo lanzamiento.</p>
     </div>
   </div>
 </div>
@@ -816,17 +842,9 @@
       </div>
     </div>
 
-    <div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--border)">
-      <div style="margin-bottom:12px">
-        <p style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">⚠️ Zona peligrosa</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-danger btn-sm" onclick="requireAdminAuth('🗑 Restablecer predicciones','Esto borrará TODAS las predicciones de todos los participantes. Esta acción no se puede deshacer.',()=>clearAllPredictions())">🗑 Borrar predicciones</button>
-          <button class="btn btn-danger btn-sm" style="background:#7f1d1d;font-weight:800" onclick="requireAdminAuth('🚀 Restablecer quiniela','Esto borrará TODOS los participantes, predicciones, pagos y resultados. Esta acción NO se puede deshacer.',()=>resetParaLanzamiento())">🚀 Restablecer</button>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border)">
-        <button onclick="doLogout()" class="btn btn-danger" style="gap:8px;display:flex;align-items:center;">🚪 Cerrar Sesión</button>
-      </div>
+    <div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px">
+      <button onclick="document.getElementById('restablecer-modal').classList.add('show')" class="btn btn-ghost btn-sm" style="color:var(--muted)">⚙️ Restablecer</button>
+      <button onclick="doLogout()" class="btn btn-danger" style="gap:8px;display:flex;align-items:center;">🚪 Cerrar Sesión</button>
     </div>
 
   </div>
@@ -2112,24 +2130,24 @@ function renderParticipants(){
     const unlockBtn=isLocked?`<button class="btn btn-ghost btn-sm" title="Desbloquear" onclick="unlockParticipant('${p.replace(/'/g,"\\'")}')">🔓</button>`:'';
     const pSafe=p.replace(/'/g,"\\'");
     const selectOpts=PAGO_OPTS.map(o=>`<option value="${o.val}" ${o.val===pagoVal?'selected':''}>${o.icon} ${o.label}</option>`).join('');
-    return `<div class="participant-item" style="flex-wrap:wrap;gap:8px;align-items:center">
-      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
+    return `<div class="participant-item" style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap">
+      <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:0">
         ${lockBadge}
-        <button class="btn btn-ghost btn-sm" title="Ver datos" style="padding:3px 7px;font-size:.78rem;flex-shrink:0" onclick="showParticipantInfo('${pSafe}')">👤</button>
-        <div style="min-width:0;overflow:hidden">
-          <span style="font-weight:700;font-size:.9rem;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${displayName}</span>
-          ${profile.nombre?`<span style="font-size:.7rem;color:var(--muted);font-style:italic">@${p}</span>`:''}
+        <button class="btn btn-ghost btn-sm" title="Ver datos" style="padding:3px 8px;flex-shrink:0" onclick="showParticipantInfo('${pSafe}')">👤</button>
+        <div style="min-width:0">
+          <span style="font-weight:700;font-size:.88rem;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${displayName}</span>
+          ${profile.nombre?`<span style="font-size:.68rem;color:var(--muted);font-style:italic">@${p}</span>`:''}
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
         <select onchange="savePayment('${pSafe}',this.value)"
           style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;
-                 color:${pagoOpt.color};padding:5px 8px;font-size:.78rem;font-weight:600;outline:none;cursor:pointer">
+                 color:${pagoOpt.color};padding:4px 7px;font-size:.75rem;font-weight:600;outline:none;cursor:pointer;max-width:160px">
           ${selectOpts}
         </select>
         ${unlockBtn}
-        <button class="btn btn-danger btn-sm" style="font-size:.7rem;padding:4px 8px;flex:none;margin-left:8px"
-          onclick="requireAdminAuth('🗑 Eliminar participante','Esto eliminará a "${pSafe}" y todas sus predicciones. No se puede deshacer.',()=>removeParticipant('${pSafe}'))">🗑 Eliminar</button>
+        <button class="btn btn-danger btn-sm" style="font-size:.7rem;padding:4px 8px;flex-shrink:0"
+          onclick="requireAdminAuth('Eliminar participante','Se eliminara al participante y todas sus predicciones. Esta accion no se puede deshacer.',()=>removeParticipant('${pSafe}'))">🗑</button>
       </div>
     </div>`;
   }).join('');
