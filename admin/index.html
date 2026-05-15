@@ -1725,10 +1725,22 @@ function removeKoPick(participant,roundId,team){
 // ═══════════════════════════════════════════════════════════
 function renderPredPage(){
   const participants=getParticipants();
+  const profiles=load('q26_profiles',{});
   const sel=document.getElementById('pred-participant');
   const cur=sel.value;
-  sel.innerHTML='<option value="">— Selecciona —</option>'
-    +participants.map(p=>`<option value="${p}" ${p===cur?'selected':''}>${p}</option>`).join('');
+  sel.innerHTML='<option value="">— Selecciona participante —</option>'
+    +participants
+      .slice()
+      .sort((a,b)=>{
+        const na=(profiles[a]?.nombre||a).toLowerCase();
+        const nb=(profiles[b]?.nombre||b).toLowerCase();
+        return na.localeCompare(nb);
+      })
+      .map(p=>{
+        const nombre=profiles[p]?.nombre;
+        const label=nombre?`${nombre} (${p})`:p;
+        return `<option value="${p}" ${p===cur?'selected':''}>${label}</option>`;
+      }).join('');
   renderPredForm();
   renderMissingTable();
 }
