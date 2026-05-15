@@ -286,6 +286,50 @@
     .mob-topbar-btn:hover{background:#6d28d9}
     .mob-topbar-btn small{font-size:.68rem;font-weight:400;opacity:.8}
     #desk-mob-toggle{display:none}
+    /* ══ PARTIDOS DE HOY ══ */
+    .hoy-card{background:var(--surface);border:1.5px solid #059669;border-radius:14px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+    .hoy-title{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;font-size:.88rem;font-weight:800;padding:10px 16px;letter-spacing:.01em;display:flex;align-items:center;gap:7px}
+    .hoy-identity{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);background:var(--surface2)}
+    .hoy-identity-label{font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap}
+    .hoy-select{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:5px 8px;font-size:.78rem;font-weight:600;background:var(--bg);color:var(--text);outline:none;cursor:pointer;font-family:inherit;min-width:0}
+    .hoy-total-badge{flex-shrink:0;background:var(--navy);color:#fff;font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:20px;white-space:nowrap}
+    .hoy-stats{display:flex;gap:14px;padding:8px 16px;background:#f0fdf4;border-bottom:1px solid #bbf7d0;align-items:center;justify-content:center}
+    .hoy-stat-pts{font-size:.82rem;font-weight:800;color:#065f46}
+    .hoy-stat-exact{font-size:.82rem;font-weight:700;color:#0369a1}
+    /* match card */
+    .hoy-match{padding:14px 14px 0;border-bottom:1px solid var(--border)}
+    .hoy-match:last-child{border-bottom:none}
+    .hoy-match.hoy-exact{background:linear-gradient(180deg,#f0fdf4 0%,#fff 100%)}
+    .hoy-match.hoy-correct{background:linear-gradient(180deg,#eff6ff 0%,#fff 100%)}
+    .hoy-match.hoy-wrong{background:linear-gradient(180deg,#fef2f2 0%,#fff 100%)}
+    /* meta: time + venue */
+    .hoy-match-meta{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+    .hoy-time{font-size:.7rem;font-weight:700;color:#fff;background:#1a3a5c;border-radius:5px;padding:2px 8px;white-space:nowrap}
+    .hoy-venue{font-size:.7rem;color:var(--muted);font-weight:500}
+    /* central face-off */
+    .hoy-faceoff{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:12px}
+    .hoy-team{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+    .hoy-team-flag{font-size:1.6rem;line-height:1}
+    .hoy-team-flag .fi{width:28px;height:20px;border-radius:3px;display:inline-block!important}
+    .hoy-team-name{font-size:.72rem;font-weight:800;color:var(--navy);line-height:1.2;max-width:80px}
+    .hoy-scorebox{display:flex;align-items:center;gap:4px}
+    .hoy-score-num{font-size:1.7rem;font-weight:900;color:var(--navy);line-height:1;min-width:22px;text-align:center}
+    .hoy-score-sep{font-size:1.1rem;font-weight:300;color:var(--muted)}
+    .hoy-vs-badge{font-size:.7rem;font-weight:800;color:var(--muted);letter-spacing:.05em;background:var(--surface2);border-radius:6px;padding:4px 8px}
+    /* prediction strip */
+    .hoy-pred-strip{border-top:1px solid var(--border);margin:0 -14px;padding:10px 14px;display:flex;align-items:stretch;gap:8px;background:rgba(0,0,0,.02)}
+    .hoy-pred-box{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+    .hoy-pred-box-label{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+    .hoy-pred-box-score{font-size:1.05rem;font-weight:900;color:var(--navy);line-height:1}
+    .hoy-pred-box-score.pending{font-size:.8rem;color:var(--muted);font-weight:500;font-style:italic}
+    .hoy-pred-divider{width:1px;background:var(--border);align-self:stretch;flex-shrink:0}
+    .hoy-pts-box{display:flex;align-items:center;justify-content:center;min-width:48px;border-radius:10px;font-size:.82rem;font-weight:800;padding:4px 8px;flex-shrink:0}
+    .hoy-pts-3{background:#bbf7d0;color:#065f46}
+    .hoy-pts-1{background:#dbeafe;color:#1d4ed8}
+    .hoy-pts-0{background:#fee2e2;color:#b91c1c}
+    .hoy-pts-wait{background:var(--surface2);color:var(--muted);font-size:.7rem;font-weight:600}
+    .hoy-no-pred{font-size:.7rem;color:var(--muted);font-style:italic}
+    .hoy-empty{font-size:.82rem;color:var(--muted);padding:18px 14px;text-align:center;margin:0}
     .mob-cards-list{padding-bottom:24px}
     .mob-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden;transition:border-color .2s}
     .mob-card.expanded{border-color:var(--green)}
@@ -309,21 +353,26 @@
     .mob-goles-tag{display:inline-block;font-size:.68rem;color:#0369a1;font-weight:700;margin-top:5px;white-space:nowrap}
     .mob-col-header{display:flex;align-items:center;gap:5px;padding:2px 6px 2px;font-size:.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
     .mob-col-header .mob-teams{color:transparent}
-    .mob-lastmatch-header{display:flex;align-items:center;gap:5px;padding:3px 14px 0;font-size:.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;border-top:1px solid var(--border)}
-    .mob-lastmatch-header span{white-space:nowrap;flex-shrink:0}
-    .mob-lastmatch{display:flex;align-items:center;gap:5px;padding:4px 14px 6px;font-size:.72rem}
-    .mob-lastmatch.exact{background:var(--green-light)}
-    .mob-lastmatch.correct{background:var(--gold-light)}
-    .mob-lastmatch.wrong{background:#f8fafc}
-    .mob-lm-label{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;white-space:nowrap}
-    .mob-lm-teams{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;min-width:0;font-size:.7rem}
-    .mob-lm-pred{font-weight:700;min-width:26px;text-align:center;flex-shrink:0}
-    .mob-lm-arrow{color:var(--muted);font-size:.6rem;flex-shrink:0}
-    .mob-lm-res{font-weight:700;color:var(--green);min-width:26px;text-align:center;flex-shrink:0}
-    .mob-lm-pts{font-weight:800;min-width:22px;text-align:right;flex-shrink:0}
-    .mob-lastmatch.exact .mob-lm-pts{color:var(--green)}
-    .mob-lastmatch.correct .mob-lm-pts{color:var(--gold)}
-    .mob-lastmatch.wrong .mob-lm-pts,.mob-lastmatch .mob-lm-pts{color:var(--muted)}
+    /* ══ ÚLTIMO PARTIDO BANNER ══ */
+    .mob-lastmatch-wrap{border-top:1px solid var(--border);padding:6px 14px;display:flex;align-items:center;gap:8px}
+    .mob-lastmatch-wrap.exact{background:var(--green-light)}
+    .mob-lastmatch-wrap.correct{background:var(--gold-light)}
+    .mob-lastmatch-wrap.wrong{background:#f8fafc}
+    .mob-lm-title{font-size:.55rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0}
+    .mob-lm-faceoff{display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow:hidden}
+    .mob-lm-team{display:flex;align-items:center;gap:3px;min-width:0}
+    .mob-lm-team .fi{width:16px;height:11px;border-radius:2px;display:inline-block!important;flex-shrink:0}
+    .mob-lm-team-name{font-size:.68rem;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mob-lm-score{font-size:.82rem;font-weight:900;color:var(--navy);flex-shrink:0;padding:0 3px}
+    .mob-lm-right{display:flex;align-items:center;gap:5px;flex-shrink:0;border-left:1px solid var(--border);padding-left:8px}
+    .mob-lm-pred-label{font-size:.52rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+    .mob-lm-pred-val{font-size:.75rem;font-weight:800;color:var(--navy)}
+    .mob-lm-sep{font-size:.6rem;color:var(--border)}
+    .mob-lm-pts-label{font-size:.52rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+    .mob-lm-pts-val{font-size:.75rem;font-weight:900}
+    .mob-lastmatch-wrap.exact .mob-lm-pts-val{color:var(--green)}
+    .mob-lastmatch-wrap.correct .mob-lm-pts-val{color:var(--gold)}
+    .mob-lastmatch-wrap.wrong .mob-lm-pts-val{color:var(--muted)}
     .mob-ko-inline{display:flex;flex-wrap:wrap;gap:4px;padding:4px 14px 8px;border-top:1px solid var(--border)}
     .mob-ko-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:.69rem;font-weight:700;background:var(--gold-light);color:#92400e;border:1px solid var(--gold2)}
     .mob-card-body{max-height:0;overflow:hidden;transition:max-height .32s ease;border-top:0 solid var(--border)}
@@ -471,6 +520,7 @@
       <div class="mob-topbar">
         <button class="mob-topbar-btn" onclick="setMobViewMode('table')">📊 Tablero de Resultados<small>recomendado para pantallas grandes</small></button>
       </div>
+      <div id="hoy-wrap"></div>
       <div class="mob-cards-list" id="mob-cards-list"></div>
       <div class="mob-empty-cards" id="mob-empty-cards" style="display:none">
         <span style="font-size:2.5rem">👥</span>
@@ -575,7 +625,7 @@ const DEFAULT_TEAMS={A:['México','Corea del Sur','Sudáfrica','Rep. Checa'],B:[
 const GROUP_LETTERS=Object.keys(DEFAULT_TEAMS);
 const KNOCKOUT_ROUNDS=[{id:'r16',label:'16vos de Final',short:'R16',count:32,pts:1},{id:'r8',label:'Octavos de Final',short:'Octavos',count:16,pts:1},{id:'r4',label:'Cuartos de Final',short:'Cuartos',count:8,pts:1},{id:'r2',label:'Semifinal',short:'Semi',count:4,pts:2},{id:'rf',label:'Final',short:'Final',count:2,pts:3},{id:'rc',label:'Campeón',short:'Campeón',count:1,pts:5}];
 const KO_PREVIEW_ROUNDS=new Set(['r16','r8','r4']);
-const DEFAULT_MATCHES=[{id:'A1',group:'A',matchday:1,date:'11 Jun',hi:0,ai:2},{id:'A2',group:'A',matchday:1,date:'11 Jun',hi:1,ai:3},{id:'B1',group:'B',matchday:1,date:'12 Jun',hi:0,ai:1},{id:'D1',group:'D',matchday:1,date:'12 Jun',hi:0,ai:1},{id:'B2',group:'B',matchday:1,date:'13 Jun',hi:2,ai:3},{id:'C1',group:'C',matchday:1,date:'13 Jun',hi:0,ai:1},{id:'C2',group:'C',matchday:1,date:'13 Jun',hi:2,ai:3},{id:'D2',group:'D',matchday:1,date:'13 Jun',hi:2,ai:3},{id:'E1',group:'E',matchday:1,date:'14 Jun',hi:0,ai:1},{id:'F1',group:'F',matchday:1,date:'14 Jun',hi:0,ai:1},{id:'E2',group:'E',matchday:1,date:'14 Jun',hi:2,ai:3},{id:'F2',group:'F',matchday:1,date:'14 Jun',hi:2,ai:3},{id:'H1',group:'H',matchday:1,date:'15 Jun',hi:0,ai:1},{id:'G1',group:'G',matchday:1,date:'15 Jun',hi:0,ai:1},{id:'H2',group:'H',matchday:1,date:'15 Jun',hi:2,ai:3},{id:'G2',group:'G',matchday:1,date:'15 Jun',hi:2,ai:3},{id:'I1',group:'I',matchday:1,date:'16 Jun',hi:0,ai:1},{id:'I2',group:'I',matchday:1,date:'16 Jun',hi:2,ai:3},{id:'J1',group:'J',matchday:1,date:'16 Jun',hi:0,ai:2},{id:'J2',group:'J',matchday:1,date:'16 Jun',hi:1,ai:3},{id:'K1',group:'K',matchday:1,date:'17 Jun',hi:0,ai:2},{id:'L1',group:'L',matchday:1,date:'17 Jun',hi:0,ai:1},{id:'L2',group:'L',matchday:1,date:'17 Jun',hi:2,ai:3},{id:'K2',group:'K',matchday:1,date:'17 Jun',hi:3,ai:1},{id:'A3',group:'A',matchday:2,date:'18 Jun',hi:3,ai:2},{id:'B3',group:'B',matchday:2,date:'18 Jun',hi:3,ai:1},{id:'B4',group:'B',matchday:2,date:'18 Jun',hi:0,ai:2},{id:'A4',group:'A',matchday:2,date:'18 Jun',hi:0,ai:1},{id:'D3',group:'D',matchday:2,date:'19 Jun',hi:0,ai:2},{id:'C3',group:'C',matchday:2,date:'19 Jun',hi:3,ai:1},{id:'C4',group:'C',matchday:2,date:'19 Jun',hi:0,ai:2},{id:'D4',group:'D',matchday:2,date:'19 Jun',hi:3,ai:1},{id:'F3',group:'F',matchday:2,date:'20 Jun',hi:0,ai:2},{id:'E3',group:'E',matchday:2,date:'20 Jun',hi:0,ai:2},{id:'E4',group:'E',matchday:2,date:'20 Jun',hi:3,ai:1},{id:'F4',group:'F',matchday:2,date:'20 Jun',hi:3,ai:1},{id:'H3',group:'H',matchday:2,date:'21 Jun',hi:0,ai:2},{id:'G3',group:'G',matchday:2,date:'21 Jun',hi:0,ai:2},{id:'H4',group:'H',matchday:2,date:'21 Jun',hi:3,ai:1},{id:'G4',group:'G',matchday:2,date:'21 Jun',hi:3,ai:1},{id:'J3',group:'J',matchday:2,date:'22 Jun',hi:0,ai:1},{id:'I3',group:'I',matchday:2,date:'22 Jun',hi:0,ai:2},{id:'I4',group:'I',matchday:2,date:'22 Jun',hi:3,ai:1},{id:'J4',group:'J',matchday:2,date:'22 Jun',hi:3,ai:2},{id:'K3',group:'K',matchday:2,date:'23 Jun',hi:0,ai:3},{id:'L3',group:'L',matchday:2,date:'23 Jun',hi:0,ai:2},{id:'L4',group:'L',matchday:2,date:'23 Jun',hi:3,ai:1},{id:'K4',group:'K',matchday:2,date:'23 Jun',hi:1,ai:2},{id:'B5',group:'B',matchday:3,date:'24 Jun',hi:3,ai:0},{id:'B6',group:'B',matchday:3,date:'24 Jun',hi:1,ai:2},{id:'C5',group:'C',matchday:3,date:'24 Jun',hi:3,ai:0},{id:'C6',group:'C',matchday:3,date:'24 Jun',hi:1,ai:2},{id:'A5',group:'A',matchday:3,date:'24 Jun',hi:3,ai:0},{id:'A6',group:'A',matchday:3,date:'24 Jun',hi:2,ai:1},{id:'E5',group:'E',matchday:3,date:'25 Jun',hi:1,ai:2},{id:'E6',group:'E',matchday:3,date:'25 Jun',hi:3,ai:0},{id:'F5',group:'F',matchday:3,date:'25 Jun',hi:1,ai:2},{id:'F6',group:'F',matchday:3,date:'25 Jun',hi:3,ai:0},{id:'D5',group:'D',matchday:3,date:'25 Jun',hi:3,ai:0},{id:'D6',group:'D',matchday:3,date:'25 Jun',hi:1,ai:2},{id:'I5',group:'I',matchday:3,date:'26 Jun',hi:3,ai:0},{id:'I6',group:'I',matchday:3,date:'26 Jun',hi:1,ai:2},{id:'H5',group:'H',matchday:3,date:'26 Jun',hi:1,ai:2},{id:'H6',group:'H',matchday:3,date:'26 Jun',hi:3,ai:0},{id:'G5',group:'G',matchday:3,date:'26 Jun',hi:1,ai:2},{id:'G6',group:'G',matchday:3,date:'26 Jun',hi:3,ai:0},{id:'L5',group:'L',matchday:3,date:'27 Jun',hi:3,ai:0},{id:'L6',group:'L',matchday:3,date:'27 Jun',hi:1,ai:2},{id:'K5',group:'K',matchday:3,date:'27 Jun',hi:1,ai:0},{id:'K6',group:'K',matchday:3,date:'27 Jun',hi:2,ai:3},{id:'J5',group:'J',matchday:3,date:'27 Jun',hi:2,ai:1},{id:'J6',group:'J',matchday:3,date:'27 Jun',hi:3,ai:0}];
+const DEFAULT_MATCHES=[{id:'A1',group:'A',matchday:1,date:'11 Jun',time:'13:00',venue:'Ciudad de México',hi:0,ai:2},{id:'A2',group:'A',matchday:1,date:'11 Jun',time:'20:00',venue:'Guadalajara',hi:1,ai:3},{id:'B1',group:'B',matchday:1,date:'12 Jun',time:'13:00',venue:'Toronto',hi:0,ai:1},{id:'D1',group:'D',matchday:1,date:'12 Jun',time:'19:00',venue:'Los Ángeles',hi:0,ai:1},{id:'B2',group:'B',matchday:1,date:'13 Jun',time:'13:00',venue:'San Francisco',hi:2,ai:3},{id:'C1',group:'C',matchday:1,date:'13 Jun',time:'16:00',venue:'Nueva York / NJ',hi:0,ai:1},{id:'C2',group:'C',matchday:1,date:'13 Jun',time:'19:00',venue:'Boston',hi:2,ai:3},{id:'D2',group:'D',matchday:1,date:'13 Jun',time:'22:00',venue:'Vancouver',hi:2,ai:3},{id:'E1',group:'E',matchday:1,date:'14 Jun',time:'11:00',venue:'Houston',hi:0,ai:1},{id:'F1',group:'F',matchday:1,date:'14 Jun',time:'14:00',venue:'Dallas',hi:0,ai:1},{id:'E2',group:'E',matchday:1,date:'14 Jun',time:'17:00',venue:'Filadelfia',hi:2,ai:3},{id:'F2',group:'F',matchday:1,date:'14 Jun',time:'20:00',venue:'Monterrey',hi:2,ai:3},{id:'H1',group:'H',matchday:1,date:'15 Jun',time:'10:00',venue:'Atlanta',hi:0,ai:1},{id:'G1',group:'G',matchday:1,date:'15 Jun',time:'13:00',venue:'Seattle',hi:0,ai:1},{id:'H2',group:'H',matchday:1,date:'15 Jun',time:'16:00',venue:'Miami',hi:2,ai:3},{id:'G2',group:'G',matchday:1,date:'15 Jun',time:'19:00',venue:'Los Ángeles',hi:2,ai:3},{id:'I1',group:'I',matchday:1,date:'16 Jun',time:'13:00',venue:'Nueva York / NJ',hi:0,ai:1},{id:'I2',group:'I',matchday:1,date:'16 Jun',time:'16:00',venue:'Boston',hi:2,ai:3},{id:'J1',group:'J',matchday:1,date:'16 Jun',time:'19:00',venue:'Kansas City',hi:0,ai:2},{id:'J2',group:'J',matchday:1,date:'16 Jun',time:'22:00',venue:'San Francisco',hi:1,ai:3},{id:'K1',group:'K',matchday:1,date:'17 Jun',time:'11:00',venue:'Houston',hi:0,ai:2},{id:'L1',group:'L',matchday:1,date:'17 Jun',time:'14:00',venue:'Dallas',hi:0,ai:1},{id:'L2',group:'L',matchday:1,date:'17 Jun',time:'17:00',venue:'Toronto',hi:2,ai:3},{id:'K2',group:'K',matchday:1,date:'17 Jun',time:'20:00',venue:'Ciudad de México',hi:3,ai:1},{id:'A3',group:'A',matchday:2,date:'18 Jun',time:'10:00',venue:'Atlanta',hi:3,ai:2},{id:'B3',group:'B',matchday:2,date:'18 Jun',time:'13:00',venue:'Los Ángeles',hi:3,ai:1},{id:'B4',group:'B',matchday:2,date:'18 Jun',time:'16:00',venue:'Vancouver',hi:0,ai:2},{id:'A4',group:'A',matchday:2,date:'18 Jun',time:'19:00',venue:'Guadalajara',hi:0,ai:1},{id:'D3',group:'D',matchday:2,date:'19 Jun',time:'13:00',venue:'Seattle',hi:0,ai:2},{id:'C3',group:'C',matchday:2,date:'19 Jun',time:'16:00',venue:'Boston',hi:3,ai:1},{id:'C4',group:'C',matchday:2,date:'19 Jun',time:'19:00',venue:'Filadelfia',hi:0,ai:2},{id:'D4',group:'D',matchday:2,date:'19 Jun',time:'22:00',venue:'San Francisco',hi:3,ai:1},{id:'F3',group:'F',matchday:2,date:'20 Jun',time:'11:00',venue:'Houston',hi:0,ai:2},{id:'E3',group:'E',matchday:2,date:'20 Jun',time:'14:00',venue:'Toronto',hi:0,ai:2},{id:'E4',group:'E',matchday:2,date:'20 Jun',time:'18:00',venue:'Kansas City',hi:3,ai:1},{id:'F4',group:'F',matchday:2,date:'20 Jun',time:'22:00',venue:'Guadalajara',hi:3,ai:1},{id:'H3',group:'H',matchday:2,date:'21 Jun',time:'10:00',venue:'Atlanta',hi:0,ai:2},{id:'G3',group:'G',matchday:2,date:'21 Jun',time:'13:00',venue:'Los Ángeles',hi:0,ai:2},{id:'H4',group:'H',matchday:2,date:'21 Jun',time:'16:00',venue:'Miami',hi:3,ai:1},{id:'G4',group:'G',matchday:2,date:'21 Jun',time:'19:00',venue:'Vancouver',hi:3,ai:1},{id:'J3',group:'J',matchday:2,date:'22 Jun',time:'11:00',venue:'Dallas',hi:0,ai:1},{id:'I3',group:'I',matchday:2,date:'22 Jun',time:'15:00',venue:'Filadelfia',hi:0,ai:2},{id:'I4',group:'I',matchday:2,date:'22 Jun',time:'18:00',venue:'Nueva York / NJ',hi:3,ai:1},{id:'J4',group:'J',matchday:2,date:'22 Jun',time:'21:00',venue:'San Francisco',hi:3,ai:2},{id:'K3',group:'K',matchday:2,date:'23 Jun',time:'11:00',venue:'Houston',hi:0,ai:3},{id:'L3',group:'L',matchday:2,date:'23 Jun',time:'14:00',venue:'Boston',hi:0,ai:2},{id:'L4',group:'L',matchday:2,date:'23 Jun',time:'17:00',venue:'Toronto',hi:3,ai:1},{id:'K4',group:'K',matchday:2,date:'23 Jun',time:'20:00',venue:'Guadalajara',hi:1,ai:2},{id:'B5',group:'B',matchday:3,date:'24 Jun',time:'13:00',venue:'Vancouver',hi:3,ai:0},{id:'B6',group:'B',matchday:3,date:'24 Jun',time:'13:00',venue:'Seattle',hi:1,ai:2},{id:'C5',group:'C',matchday:3,date:'24 Jun',time:'16:00',venue:'Miami',hi:3,ai:0},{id:'C6',group:'C',matchday:3,date:'24 Jun',time:'16:00',venue:'Atlanta',hi:1,ai:2},{id:'A5',group:'A',matchday:3,date:'24 Jun',time:'19:00',venue:'Ciudad de México',hi:3,ai:0},{id:'A6',group:'A',matchday:3,date:'24 Jun',time:'19:00',venue:'Monterrey',hi:2,ai:1},{id:'E5',group:'E',matchday:3,date:'25 Jun',time:'14:00',venue:'Filadelfia',hi:1,ai:2},{id:'E6',group:'E',matchday:3,date:'25 Jun',time:'14:00',venue:'Nueva York / NJ',hi:3,ai:0},{id:'F5',group:'F',matchday:3,date:'25 Jun',time:'17:00',venue:'Dallas',hi:1,ai:2},{id:'F6',group:'F',matchday:3,date:'25 Jun',time:'17:00',venue:'Kansas City',hi:3,ai:0},{id:'D5',group:'D',matchday:3,date:'25 Jun',time:'20:00',venue:'Los Ángeles',hi:3,ai:0},{id:'D6',group:'D',matchday:3,date:'25 Jun',time:'20:00',venue:'San Francisco',hi:1,ai:2},{id:'I5',group:'I',matchday:3,date:'26 Jun',time:'13:00',venue:'Boston',hi:3,ai:0},{id:'I6',group:'I',matchday:3,date:'26 Jun',time:'13:00',venue:'Toronto',hi:1,ai:2},{id:'H5',group:'H',matchday:3,date:'26 Jun',time:'18:00',venue:'Houston',hi:1,ai:2},{id:'H6',group:'H',matchday:3,date:'26 Jun',time:'18:00',venue:'Guadalajara',hi:3,ai:0},{id:'G5',group:'G',matchday:3,date:'26 Jun',time:'21:00',venue:'Seattle',hi:1,ai:2},{id:'G6',group:'G',matchday:3,date:'26 Jun',time:'21:00',venue:'Vancouver',hi:3,ai:0},{id:'L5',group:'L',matchday:3,date:'27 Jun',time:'15:00',venue:'Nueva York / NJ',hi:3,ai:0},{id:'L6',group:'L',matchday:3,date:'27 Jun',time:'15:00',venue:'Filadelfia',hi:1,ai:2},{id:'K5',group:'K',matchday:3,date:'27 Jun',time:'17:30',venue:'Miami',hi:1,ai:0},{id:'K6',group:'K',matchday:3,date:'27 Jun',time:'17:30',venue:'Atlanta',hi:2,ai:3},{id:'J5',group:'J',matchday:3,date:'27 Jun',time:'20:00',venue:'Kansas City',hi:2,ai:1},{id:'J6',group:'J',matchday:3,date:'27 Jun',time:'20:00',venue:'Dallas',hi:3,ai:0}];
 const TEAM_CODES={'México':'mx','Corea del Sur':'kr','Sudáfrica':'za','Rep. Checa':'cz','Canadá':'ca','Bosnia-Herzegovina':'ba','Catar':'qa','Suiza':'ch','Brasil':'br','Marruecos':'ma','Haití':'ht','Escocia':'gb-sct','Estados Unidos':'us','Paraguay':'py','Australia':'au','Turquía':'tr','Alemania':'de','Curazao':'cw','Costa de Marfil':'ci','Ecuador':'ec','Países Bajos':'nl','Japón':'jp','Suecia':'se','Túnez':'tn','Bélgica':'be','Egipto':'eg','Irán':'ir','Nueva Zelanda':'nz','España':'es','Cabo Verde':'cv','Arabia Saudita':'sa','Uruguay':'uy','Francia':'fr','Senegal':'sn','Irak':'iq','Noruega':'no','Argentina':'ar','Austria':'at','Argelia':'dz','Jordania':'jo','Portugal':'pt','Colombia':'co','Rep. Dem. Congo':'cd','Uzbekistán':'uz','Inglaterra':'gb-eng','Croacia':'hr','Ghana':'gh','Panamá':'pa'};
 function flag(name){const c=TEAM_CODES[name];return c?`<span class="fi fi-${c}"></span>`:''}
 function generateMatches(teams){return DEFAULT_MATCHES.map(m=>{const ts=teams[m.group]||['','','',''];return {...m,home:ts[m.hi]||`Equipo ${m.hi+1}`,away:ts[m.ai]||`Equipo ${m.ai+1}`};})}
@@ -598,7 +648,7 @@ function showView(v){
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.querySelectorAll('.nav-btn')[['tablero','ranking'].indexOf(v)].classList.add('active');
-  if(v==='tablero'){renderTablero();if(document.body.getAttribute('data-mob-view')!=='table'&&window.innerWidth<=768)renderTableroMobile();}
+  if(v==='tablero'){renderTablero();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();}}
   if(v==='ranking')renderRanking();
 }
 
@@ -782,8 +832,134 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePicksViewer();
 function setMobViewMode(mode){
   document.body.setAttribute('data-mob-view',mode);
   localStorage.setItem('q26_mob_view_pref',mode);
-  if(mode==='cards'&&activeView==='tablero')renderTableroMobile();
+  if(mode==='cards'&&activeView==='tablero'){renderTableroMobile();renderPartidosHoy();}
 }
+/* ══ PARTIDOS DE HOY ══ */
+function getTodayMatchDate(){
+  const months=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const d=new Date();
+  return d.getDate()+' '+months[d.getMonth()];
+}
+function setHoyApodo(val){
+  if(val)localStorage.setItem('q26_my_apodo',val);
+  else localStorage.removeItem('q26_my_apodo');
+  renderPartidosHoy();
+}
+function renderPartidosHoy(){
+  const wrap=document.getElementById('hoy-wrap');
+  if(!wrap)return;
+  const teams=getTeams();
+  const matches=generateMatches(teams);
+  const results=getResults();
+  const payments=load('q26_payments',{});
+  const predictions=getPredictions();
+  const profiles=load('q26_profiles',{});
+  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
+  const participants=getParticipants().filter(p=>PAID.has(payments[p]||''));
+
+  const today=getTodayMatchDate();
+  const todayMatches=matches.filter(m=>m.date===today).sort((a,b)=>{
+    const t=x=>parseInt((x.time||'00:00').replace(':',''));
+    return t(a)-t(b);
+  });
+
+  let myApodo=localStorage.getItem('q26_my_apodo')||'';
+  if(myApodo&&!participants.includes(myApodo))myApodo='';
+
+  // Pts totales de la quiniela completa (para badge junto al selector)
+  let totalPtsQuiniela=0;
+  if(myApodo){
+    const pp=predictions[myApodo]||{};
+    matches.forEach(m=>{const pts=calcPoints(pp[m.id],results[m.id]);if(pts!==null)totalPtsQuiniela+=pts;});
+    const koPreds=getKoPreds();const koResults=getKoResults();
+    KNOCKOUT_ROUNDS.forEach(r=>{const pts=calcKoRoundPts((koPreds[myApodo]||{})[r.id]||[],koResults[r.id]||[],r.pts);if(pts!==null)totalPtsQuiniela+=pts;});
+  }
+
+  const selectorHtml=`<div class="hoy-identity">
+    <span class="hoy-identity-label">👤 Quiniela:</span>
+    <select id="hoy-apodo-select" onchange="setHoyApodo(this.value)" class="hoy-select">
+      <option value="">— Elige tu nombre —</option>
+      ${participants.map(p=>`<option value="${p}"${p===myApodo?' selected':''}>${(profiles[p]||{}).nombre||p}</option>`).join('')}
+    </select>
+    ${myApodo?`<span class="hoy-total-badge">${totalPtsQuiniela} pts</span>`:''}
+  </div>`;
+
+  if(!todayMatches.length){
+    wrap.innerHTML=`<div class="hoy-card"><div class="hoy-title">⚽ Partidos de hoy — ${today}</div>${selectorHtml}<p class="hoy-empty">No hay partidos programados para hoy 🛋️</p></div>`;
+    return;
+  }
+
+  // Stats de HOY únicamente
+  let statsHtml='';
+  if(myApodo){
+    const pp=predictions[myApodo]||{};
+    let dayPts=0,dayExact=0;
+    todayMatches.forEach(m=>{
+      const pts=calcPoints(pp[m.id],results[m.id]);
+      if(pts!==null){dayPts+=pts;if(pts===3)dayExact++;}
+    });
+    statsHtml=`<div class="hoy-stats"><span class="hoy-stat-pts">⚽ ${dayPts} pts hoy</span>${dayExact>0?`<span class="hoy-stat-exact">🎯 ${dayExact} exactos</span>`:''}</div>`;
+  }
+
+  // Filas de partidos
+  const pp=myApodo?(predictions[myApodo]||{}):{};
+  const matchesHtml=todayMatches.map(m=>{
+    const res=results[m.id];
+    const pred=pp[m.id]||null;
+    const pts=(myApodo&&pred&&res)?calcPoints(pred,res):null;
+    let ptsCls='',ptsTag='';
+    if(pts===3){ptsCls='hoy-exact';ptsTag='<span class="hoy-pts hoy-pts-3">+3 ✓</span>';}
+    else if(pts===1){ptsCls='hoy-correct';ptsTag='<span class="hoy-pts hoy-pts-1">+1 pts</span>';}
+    else if(pts===0){ptsCls='hoy-wrong';ptsTag='<span class="hoy-pts hoy-pts-0">0 pts</span>';}
+    // Scorebox: resultado si existe, VS si no
+    const scoreboxHtml=res
+      ?`<div class="hoy-scorebox"><span class="hoy-score-num">${res.h}</span><span class="hoy-score-sep">-</span><span class="hoy-score-num">${res.a}</span></div>`
+      :`<div class="hoy-vs-badge">VS</div>`;
+    // Strip de predicción
+    let predStripHtml='';
+    if(myApodo){
+      const predScore=pred?`${pred.h} - ${pred.a}`:'—';
+      const predScoreCls=pred?'':'pending';
+      const resScore=res?`${res.h} - ${res.a}`:'';
+      const resScoreCls=res?'':'pending';
+      const resTxt=res?resScore:'pendiente';
+      let ptsBoxHtml='';
+      if(pts===3)ptsBoxHtml='<div class="hoy-pts-box hoy-pts-3">+3 ✓</div>';
+      else if(pts===1)ptsBoxHtml='<div class="hoy-pts-box hoy-pts-1">+1 pt</div>';
+      else if(pts===0)ptsBoxHtml='<div class="hoy-pts-box hoy-pts-0">0 pts</div>';
+      else ptsBoxHtml='<div class="hoy-pts-box hoy-pts-wait">⏳</div>';
+      predStripHtml=`<div class="hoy-pred-strip">
+        <div class="hoy-pred-box">
+          <span class="hoy-pred-box-label">Predicción</span>
+          <span class="hoy-pred-box-score ${predScoreCls}">${predScore}</span>
+        </div>
+        <div class="hoy-pred-divider"></div>
+        ${ptsBoxHtml}
+      </div>`;
+    }
+    return `<div class="hoy-match ${ptsCls}">
+      <div class="hoy-match-meta">
+        <span class="hoy-time">🕐 ${m.time} CDMX</span>
+        <span class="hoy-venue">📍 ${m.venue}</span>
+      </div>
+      <div class="hoy-faceoff">
+        <div class="hoy-team">
+          <div class="hoy-team-flag">${flag(m.home)}</div>
+          <div class="hoy-team-name">${m.home}</div>
+        </div>
+        ${scoreboxHtml}
+        <div class="hoy-team">
+          <div class="hoy-team-flag">${flag(m.away)}</div>
+          <div class="hoy-team-name">${m.away}</div>
+        </div>
+      </div>
+      ${predStripHtml}
+    </div>`;
+  }).join('');
+
+  wrap.innerHTML=`<div class="hoy-card"><div class="hoy-title">⚽ Partidos de hoy — ${today}</div>${selectorHtml}${statsHtml}${matchesHtml}</div>`;
+}
+
 function toggleMobCard(apodo){
   if(mobExpanded.has(apodo))mobExpanded.delete(apodo);else mobExpanded.add(apodo);
   renderTableroMobile();
@@ -897,20 +1073,20 @@ function buildMobCard(d,hasResults,hasKoResults){
     const res=`${lm.res.h}-${lm.res.a}`;
     const ptsCls=lm.pts===3?'exact':lm.pts===1?'correct':'wrong';
     const ptsStr=lm.pts===3?'+3p':lm.pts===1?'+1p':'0p';
-    lastMatchHtml=`<div class="mob-lastmatch-header">
-      <span style="flex:1">Último partido</span>
-      <span style="min-width:26px;text-align:center">Result</span>
-      <span style="font-size:.5rem">→</span>
-      <span style="min-width:26px;text-align:center">Pred</span>
-      <span style="color:var(--muted);font-size:.55rem;flex-shrink:0">|</span>
-      <span style="min-width:22px;text-align:right">Pts</span>
-    </div>
-    <div class="mob-lastmatch ${ptsCls}">
-      <span class="mob-lm-teams">${flag(lm.home)} ${lm.home} vs ${flag(lm.away)} ${lm.away}</span>
-      <span class="mob-lm-res">${res}</span>
-      <span class="mob-lm-arrow">→</span>
-      <span class="mob-lm-pred">${pred}</span>
-      <span class="mob-lm-pts">${ptsStr}</span>
+    lastMatchHtml=`<div class="mob-lastmatch-wrap ${ptsCls}">
+      <span class="mob-lm-title">Último</span>
+      <div class="mob-lm-faceoff">
+        <div class="mob-lm-team">${flag(lm.home)}<span class="mob-lm-team-name">${lm.home}</span></div>
+        <span class="mob-lm-score">${lm.res.h}-${lm.res.a}</span>
+        <div class="mob-lm-team">${flag(lm.away)}<span class="mob-lm-team-name">${lm.away}</span></div>
+      </div>
+      <div class="mob-lm-right">
+        <span class="mob-lm-pred-label">Pred</span>
+        <span class="mob-lm-pred-val">${pred}</span>
+        <span class="mob-lm-sep">|</span>
+        <span class="mob-lm-pts-label">Pts</span>
+        <span class="mob-lm-pts-val">${ptsStr}</span>
+      </div>
     </div>`;
   }
 
@@ -1101,7 +1277,7 @@ firebase.database().ref('/').on('value',snap=>{
   _cache=snap.val()||{};
   const lb=document.getElementById('loading-bar');
   if(lb){lb.style.width='100%';setTimeout(()=>lb.classList.add('done'),400);}
-  if(activeView==='tablero'){renderTablero();if(document.body.getAttribute('data-mob-view')!=='table'&&window.innerWidth<=768)renderTableroMobile();}
+  if(activeView==='tablero'){renderTablero();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();}}
   else if(activeView==='ranking')renderRanking();
 },err=>{
   clearTimeout(_connTimeout);
