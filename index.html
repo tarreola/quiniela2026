@@ -58,8 +58,7 @@
     thead th.col-participant:hover{background:#1a3f70}
     thead th.col-total{background:#0c2244;text-align:center;color:var(--gold);cursor:pointer}
     thead th.col-total:hover{background:#143060}
-    thead th.col-exact{background:#0c2244;text-align:center;color:var(--gold2);cursor:pointer}
-    thead th.col-exact:hover{background:#143060}
+    thead th.col-exact{background:#0c2244;text-align:center;color:var(--gold2);cursor:default}
     thead th.col-goals{background:#0c2244;text-align:center;color:#7dd3fc}
     .sort-arrow{font-size:.65rem;opacity:.7;margin-left:2px}
     thead th.col-spacer{background:#091830;border:none}
@@ -666,7 +665,7 @@ function renderTablero(){
   row1+=`<th class="col-participant" style="text-align:left;padding-left:12px;font-size:.8rem;vertical-align:middle">👤 Participante</th>`;
   row1+=`<th class="col-spacer"></th><th class="col-total" onclick="setTableroSort('total')" style="font-size:.68rem;line-height:1.5;vertical-align:middle">Total<br>Pts<span class="sort-arrow">${tableroSort.by==='total'?sortDir:'⇅'}</span></th>`;
   row1+=`<th class="col-goals" style="font-size:.63rem;line-height:1.5;vertical-align:middle">⚽ Goles<br>Totales</th>`;
-  row1+=`<th class="col-exact" onclick="setTableroSort('exact')" style="font-size:.63rem;line-height:1.5;vertical-align:middle">Marc.<br>Exactos<span class="sort-arrow">${tableroSort.by==='exact'?sortDir:'⇅'}</span></th>`;
+  row1+=`<th class="col-exact" style="font-size:.63rem;line-height:1.5;vertical-align:middle">Marc.<br>Exactos</th>`;
   dateOrder.forEach(d=>{dateMatchMap[d].forEach(m=>{row1+=`<th class="match-col"><div class="match-header-info"><span class="match-date-label">${m.date}</span><span class="match-group-badge">Grupo ${m.group}</span><span class="match-teams">${flag(m.home)} ${m.home}</span><span class="vs-text" style="color:rgba(255,255,255,.38);font-size:.63rem">vs</span><span class="match-teams">${flag(m.away)} ${m.away}</span></div></th>`;});row1+=`<th class="col-spacer"></th>`;});
   KNOCKOUT_ROUNDS.forEach((r,i)=>{const isModal=KO_PREVIEW_ROUNDS.has(r.id);if(i>0)row1+=`<th class="col-spacer"></th>`;if(isModal){row1+=`<th class="ko-col-col" style="background:#0e2245"><div class="match-header-info" style="gap:4px"><span style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45)">🏆 Fase KO</span><span style="font-size:.72rem;font-weight:800;color:var(--gold)">${r.short}</span><span style="font-size:.57rem;color:rgba(255,255,255,.35)">${r.count} eq · ${r.pts}pt c/u</span></div></th>`;}else{row1+=`<th class="ko-col-exp" style="background:#0e2245"><div class="match-header-info" style="gap:4px"><span style="font-size:.62rem;font-weight:700;color:rgba(255,255,255,.45)">🏆 Fase KO</span><span style="font-size:.72rem;font-weight:800;color:var(--gold)">${r.label}</span><span style="font-size:.59rem;opacity:.5">${r.count} eq · ${r.pts}pt c/u</span></div></th>`;}});
   row1+=`</tr>`;
@@ -798,10 +797,10 @@ function toggleMobKoRound(key){
   renderTableroMobile();
 }
 function toggleMobSort(){
-  const states=[{by:'total',dir:'desc'},{by:'total',dir:'asc'},{by:'exact',dir:'desc'},{by:'exact',dir:'asc'}];
+  const states=[{by:'total',dir:'desc'},{by:'total',dir:'asc'}];
   const idx=states.findIndex(s=>s.by===mobSort.by&&s.dir===mobSort.dir);
   mobSort=states[(idx+1)%states.length];
-  const labels={total:{desc:'↓ Pts',asc:'↑ Pts'},exact:{desc:'↓ Exactos',asc:'↑ Exactos'}};
+  const labels={total:{desc:'↓ Pts',asc:'↑ Pts'}};
   const btn=document.getElementById('mob-sort-btn');
   if(btn)btn.textContent=labels[mobSort.by][mobSort.dir];
   renderTableroMobile();
