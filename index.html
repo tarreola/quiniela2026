@@ -483,9 +483,8 @@
   <div id="view-ranking" class="view">
     <div class="page-title"><span>🏅</span> Ranking</div>
     <div class="ranking-grid">
-      <div class="ranking-card" id="ranking-pts-card"><h3>🥇 Top 5 — Mayor Puntaje</h3><div id="ranking-pts-body"></div></div>
-      <div class="ranking-card" id="ranking-exact-card"><h3>🎯 Top 5 — Marcadores Exactos</h3><div id="ranking-exact-body"></div></div>
       <div class="ranking-card" style="grid-column:1/-1" id="ranking-goals-card"><h3>⚽ Goles Anotados en el Mundial</h3><div id="ranking-goals-body"></div></div>
+      <div class="ranking-card" style="grid-column:1/-1" id="ranking-pts-card"><h3>🥇 Top 5 — Mayor Puntaje</h3><div id="ranking-pts-body"></div></div>
     </div>
   </div>
 
@@ -1034,7 +1033,6 @@ function renderRanking(){
   function medalLabel(i){return i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;}
   function buildRankTable(sorted,key,unit,colorClass){if(!sorted.length)return '<p style="color:var(--muted);font-size:.85rem;padding:12px 0">Sin datos aún.</p>';const top=sorted.slice(0,5);const rows=top.map((r,i)=>`<tr><td><span class="rank-medal ${medalClass(i)}">${medalLabel(i)}</span></td><td><div class="rank-apodo">${r.p}</div>${r.nombre?`<div class="rank-name">${r.nombre}</div>`:''}</td><td class="rank-pts ${colorClass}">${r[key]} <span style="font-size:.7rem;font-weight:500">${unit}</span></td></tr>`).join('');return `<table class="ranking-table"><thead><tr><th>#</th><th>Participante</th><th style="text-align:right">${unit}</th></tr></thead><tbody>${rows}</tbody></table>`;}
   document.getElementById('ranking-pts-body').innerHTML=buildRankTable(rankRows(rows,'totalPts'),'totalPts','pts','');
-  document.getElementById('ranking-exact-body').innerHTML=buildRankTable(rankRows(rows,'exactCount'),'exactCount','exactos','rank-pts-gold');
   const goalsEl=document.getElementById('ranking-goals-body');const totalGoalsScored=Object.values(results).reduce((sum,r)=>sum+(r.h||0)+(r.a||0),0);const matchesWithResults=Object.keys(results).length;
   goalsEl.innerHTML=`<div style="display:flex;justify-content:center;align-items:center;padding:24px 20px;background:linear-gradient(90deg,#0c2244,#1e3860);border-radius:12px"><div style="text-align:center"><div style="font-size:4rem;font-weight:900;color:var(--green2);line-height:1">${totalGoalsScored||'—'}</div><div style="font-size:.78rem;color:rgba(255,255,255,.55);margin-top:6px;text-transform:uppercase;letter-spacing:.5px">Goles anotados en el Mundial</div></div></div>`;
 }
