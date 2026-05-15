@@ -736,7 +736,7 @@ function renderTablero(){
   tbody.innerHTML=rows.map(({p,totalPts,groupPts,koPts,exactCount,dateCells,koCells,nombre})=>{
     const rank=rankMap[p]||0;
     const showMedal=(hasResults||hasKoResults)&&rank>=1&&rank<=3;
-    const rankLabel=showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):`${rank}`;
+    const rankLabel=!(hasResults||hasKoResults)?'—':showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):`${rank}`;
     const rankCls=showMedal?(rank===1?'rank-num-1':rank===2?'rank-num-2':'rank-num-3'):'';
     return `<tr>
       <td class="col-rank"><span class="${rankCls}">${rankLabel}</span></td>
@@ -877,7 +877,7 @@ function buildMobCard(d,hasResults,hasKoResults){
   const{p,nombre,totalPts,exactCount,goalsVal,matchList,koDetail,rank}=d;
   const isExpanded=mobExpanded.has(p);
   const showMedal=(hasResults||hasKoResults)&&rank>=1&&rank<=3;
-  const rankLabel=showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):rank;
+  const rankLabel=!(hasResults||hasKoResults)?'—':showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):rank;
   const rankCls=showMedal?`mob-rank-top mob-rank-${rank}`:'mob-rank-num';
   const ptsDisplay=(hasResults||hasKoResults)?totalPts+' pts':'—';
   const exactDisplay=(hasResults||hasKoResults)?exactCount:'—';
