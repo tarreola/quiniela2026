@@ -509,6 +509,7 @@
     .pago-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:.72rem;font-weight:700}
     .pago-sin{background:#fee2e2;color:#b91c1c}
     .pago-efectivo-p{background:#fef3c7;color:#92400e}
+    .pago-pub-p{background:#ede9fe;color:#7c3aed}
 
     /* ── PREDICCIONES extras ─────────────────────────────── */
     .missing-section{margin-top:28px}
@@ -2447,7 +2448,7 @@ function renderNoPago(){
   const payments=getPayments();
   const profiles=load('q26_profiles',{});
 
-  const UNPAID=new Set(['efectivo_pendiente','sin_pago','mp_pendiente']);
+  const UNPAID=new Set(['efectivo_pendiente','sin_pago','mp_pendiente','publicado_pendiente']);
   const unpaid=participants
     .filter(p=>UNPAID.has(payments[p]||'sin_pago'))
     .map(p=>({p, status:payments[p]||'sin_pago', nombre:(profiles[p]||{}).nombre||''}));
@@ -2456,8 +2457,8 @@ function renderNoPago(){
     el.innerHTML='<p style="color:var(--green);font-size:.88rem;font-weight:700;padding:8px 0">✅ Todos han pagado.</p>';
   } else {
     const rows=unpaid.map(r=>{
-      const cls=r.status==='sin_pago'?'pago-sin':'pago-efectivo-p';
-      const lbl=r.status==='sin_pago'?'⚪ Sin pago':'🟡 Efectivo pendiente';
+      const cls=r.status==='sin_pago'?'pago-sin':r.status==='publicado_pendiente'?'pago-pub-p':'pago-efectivo-p';
+      const lbl=r.status==='sin_pago'?'⚪ Sin pago':r.status==='publicado_pendiente'?'📋 Publicado - Pago pendiente':'🟡 Efectivo pendiente';
       return `<tr>
         <td><strong>${r.p}</strong>${r.nombre?`<br><span style="font-size:.7rem;color:var(--muted);font-style:italic">${r.nombre}</span>`:''}</td>
         <td><span class="pago-badge ${cls}">${lbl}</span></td>
