@@ -1381,7 +1381,7 @@ function renderResGrupos(){
         </div>
         <div class="res-actions">
           <button class="res-save-btn" onclick="saveResultInline('${m.id}')">💾</button>
-          ${hasResult?`<button class="res-clear-btn" onclick="clearResultInline('${m.id}')" title="Borrar resultado">✕</button>`:''}
+          ${hasResult?`<button class="res-clear-btn" onclick="requireAdminAuth('Borrar resultado','Se eliminará el marcador de este partido. Esta acción no se puede deshacer.',()=>clearResultInline('${m.id}'))" title="Borrar resultado">✕</button>`:''}
         </div>
       </div>`;
     }).join('');
