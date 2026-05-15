@@ -376,6 +376,21 @@
     }
     #toast.show{transform:translateY(0);opacity:1}
 
+    /* ── PENDING CARDS ──────────────────────────────────── */
+    .pend-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .pend-info{flex:1;min-width:180px}
+    .pend-apodo{font-size:.95rem;font-weight:800;color:var(--navy)}
+    .pend-nombre{font-size:.8rem;color:var(--muted);margin-top:2px}
+    .pend-details{font-size:.78rem;color:var(--muted);margin-top:2px}
+    .pend-ts{font-size:.72rem;color:var(--muted);margin-top:3px}
+    .pend-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .pend-pago-badge{font-size:.75rem;font-weight:700;border-radius:20px;padding:3px 10px;border:1px solid}
+    @media(max-width:700px){
+      .pend-card{flex-direction:column;align-items:stretch;gap:10px;padding:12px 14px}
+      .pend-info{min-width:0}
+      .pend-actions{justify-content:flex-end}
+      .pend-actions .btn{flex:1;text-align:center}
+    }
     /* ── HAMBURGER MENU ─────────────────────────────────── */
     .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;cursor:pointer;padding:6px;flex-shrink:0}
     .hamburger span{display:block;height:2px;background:#fff;border-radius:2px;transition:all .22s}
@@ -2066,15 +2081,15 @@ function renderPending(){
     const ts=d.timestamp?new Date(d.timestamp).toLocaleDateString('es-MX',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
     const matchCount=Object.keys(d.predictions||{}).length;
     const koRounds=Object.keys(d.ko_preds||{}).length;
-    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:.95rem;font-weight:800;color:var(--navy)">${apodo}</div>
-        <div style="font-size:.8rem;color:var(--muted);margin-top:2px">${d.nombre||''} · ${d.email||''}</div>
-        <div style="font-size:.78rem;color:var(--muted);margin-top:2px">📱 ${d.whatsapp||'—'} · ⚽ ${d.goles??'—'} goles predichos · ${matchCount}/72 partidos · ${koRounds} rondas Elim.</div>
-        ${ts?`<div style="font-size:.72rem;color:var(--muted);margin-top:3px">Enviado: ${ts}</div>`:''}
+    return `<div class="pend-card">
+      <div class="pend-info">
+        <div class="pend-apodo">${apodo}</div>
+        ${d.nombre||d.email?`<div class="pend-nombre">${[d.nombre,d.email].filter(Boolean).join(' · ')}</div>`:''}
+        <div class="pend-details">📱 ${d.whatsapp||'—'} · ⚽ ${d.goles??'—'} goles · ${matchCount}/72 partidos · ${koRounds} rondas KO</div>
+        ${ts?`<div class="pend-ts">Enviado: ${ts}</div>`:''}
       </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span style="font-size:.75rem;font-weight:700;color:${pagoColor};border:1px solid ${pagoColor};padding:3px 10px;border-radius:20px">${pagoLabel}</span>
+      <div class="pend-actions">
+        <span class="pend-pago-badge" style="color:${pagoColor};border-color:${pagoColor}">${pagoLabel}</span>
         <button class="btn btn-primary btn-sm" onclick="approvePending('${apodo.replace(/'/g,"\\'")}')">✅ Aprobar</button>
         <button class="btn btn-danger btn-sm" onclick="rejectPending('${apodo.replace(/'/g,"\\'")}')">❌ Rechazar</button>
       </div>
