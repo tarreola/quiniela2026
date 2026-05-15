@@ -1457,7 +1457,7 @@ function renderTablero(){
   tbody.innerHTML=rows.map(({p,totalPts,groupPts,koPts,exactCount,dateCells,koCells,nombre})=>{
     const rank=rankMap[p]||0;
     const showMedal=(hasResults||hasKoResults)&&rank>=1&&rank<=3;
-    const rankLabel=showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):`${rank}`;
+    const rankLabel=!(hasResults||hasKoResults)?'—':showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):`${rank}`;
     const rankCls=showMedal?(rank===1?'rank-num-1':rank===2?'rank-num-2':'rank-num-3'):'';
     return `<tr>
       <td class="col-rank"><span class="${rankCls}">${rankLabel}</span></td>
