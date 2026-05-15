@@ -376,17 +376,22 @@
     }
     #toast.show{transform:translateY(0);opacity:1}
 
+    /* ── HAMBURGER MENU ─────────────────────────────────── */
+    .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;cursor:pointer;padding:6px;flex-shrink:0}
+    .hamburger span{display:block;height:2px;background:#fff;border-radius:2px;transition:all .22s}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .mob-menu{display:none;flex-direction:column;background:var(--navy2);border-top:1px solid rgba(255,255,255,.1);padding:8px 14px 12px}
+    .mob-menu.open{display:flex}
+    .mob-menu .nav-btn{width:100%;text-align:left;padding:10px 14px;font-size:.88rem;border-radius:8px;margin-bottom:4px}
     /* ── RESPONSIVE ──────────────────────────────────────── */
-    @media(max-width:600px){
-      .logo{font-size:1rem}
-      .nav-btn{padding:6px 10px;font-size:.76rem}
-    }
     @media(max-width:700px){
-      .hdr{flex-direction:column;height:auto;padding:8px 14px 6px;gap:4px;align-items:stretch}
-      .logo{font-size:.88rem;gap:7px}
-      .logo .logo-ball{height:32px}
-      nav{width:100%;justify-content:center;gap:3px}
-      .nav-btn{padding:5px 9px;font-size:.73rem;flex:1;text-align:center;white-space:nowrap}
+      nav{display:none}
+      .hamburger{display:flex}
+      .hdr{padding:0 16px;height:56px}
+      .logo{font-size:.92rem;gap:8px}
+      .logo .logo-ball{height:36px}
       main{padding:16px 12px}
     }
 
@@ -711,6 +716,16 @@
       <a href="/registro" class="nav-btn" style="text-decoration:none">📝 Registro</a>
       <button class="nav-btn" onclick="showView('config')">⚙️ Admin<span id="nav-pending-badge" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
     </nav>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleMobMenu()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mob-menu" id="mob-menu">
+    <button class="nav-btn active" onclick="showView('tablero');closeMobMenu()">📊 Tablero</button>
+    <button class="nav-btn" onclick="showView('predicciones');closeMobMenu()">✏️ Predicciones</button>
+    <button class="nav-btn" onclick="showView('ranking');closeMobMenu()">🏅 Ranking</button>
+    <a href="/registro" class="nav-btn" style="text-decoration:none">📝 Registro</a>
+    <button class="nav-btn" onclick="showView('config');closeMobMenu()">⚙️ Admin<span id="nav-pending-badge-mob" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
   </div>
 </header>
 
@@ -1193,12 +1208,31 @@ let activeView='tablero';
 let activeTableroGroup='all';
 let activePredGroup='all';
 
+function toggleMobMenu(){
+  const btn=document.getElementById('hamburger-btn');
+  const menu=document.getElementById('mob-menu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+function closeMobMenu(){
+  document.getElementById('hamburger-btn').classList.remove('open');
+  document.getElementById('mob-menu').classList.remove('open');
+}
 function showView(v){
   activeView=v;
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
-  document.querySelectorAll('.nav-btn')[['tablero','predicciones','ranking','registro','config'].indexOf(v)].classList.add('active');
+  const idx=['tablero','predicciones','ranking','registro','config'].indexOf(v);
+  // desktop nav + mob-menu share the same class, activate both at right index
+  const allBtns=document.querySelectorAll('.nav-btn');
+  // desktop nav has 5 btns (indices 0-4), mob-menu has 5 more (indices 5-9)
+  if(allBtns[idx])allBtns[idx].classList.add('active');
+  if(allBtns[idx+5])allBtns[idx+5].classList.add('active');
+  // sync pending badge in mob menu
+  const badge=document.getElementById('nav-pending-badge');
+  const badgeMob=document.getElementById('nav-pending-badge-mob');
+  if(badge&&badgeMob){badgeMob.style.display=badge.style.display;badgeMob.textContent=badge.textContent;}
   if(v==='tablero')renderTablero();
   if(v==='predicciones')renderPredPage();
   if(v==='ranking')renderRanking();
