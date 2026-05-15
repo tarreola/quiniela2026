@@ -961,7 +961,7 @@ function buildMobGroupDetail(d,hasResults){
   });
 
   let html='<div class="mob-group-phase">';
-  html+=`<div class="mob-section-title"><span>Fase de Grupos</span>${futureCount>0?`<button onclick="event.stopPropagation();toggleMobFuture(this.closest('[data-apodo]').dataset.apodo)">${showFuture?'Ocultar futuros':'+ Ver futuros ('+futureCount+')'}</button>`:''}</div>`;
+  html+=`<div class="mob-section-title"><span>Fase de Grupos</span>${futureCount>0?`<button onclick="event.stopPropagation();toggleMobFuture(this.closest('[data-apodo]').dataset.apodo)">${showFuture?'Ocultar predicciones':'+ Ver todas las predicciones ('+futureCount+')'}</button>`:''}</div>`;
 
   if(!done.length&&!showFuture){
     html+='<p style="font-size:.78rem;color:var(--muted);padding:8px 0">Sin resultados aún.</p>';
