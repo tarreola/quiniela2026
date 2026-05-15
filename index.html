@@ -692,7 +692,11 @@ function renderTablero(){
   });
   globalScores.sort((a,b)=>{const dir=tableroSort.dir==='desc'?-1:1;return tableroSort.by==='exact'?dir*(a.exactCount-b.exactCount):dir*(a.totalPts-b.totalPts);});
   const rankMap={};
-  globalScores.forEach(({p},i)=>{rankMap[p]=i+1;});
+  globalScores.forEach(({p,totalPts},i)=>{
+    if(i===0)rankMap[p]=1;
+    else if(totalPts===globalScores[i-1].totalPts)rankMap[p]=rankMap[globalScores[i-1].p];
+    else rankMap[p]=i+1;
+  });
 
   const rows=visibleParticipants.map(p=>{
     const pp=predictions[p]||{};
@@ -731,8 +735,9 @@ function renderTablero(){
 
   tbody.innerHTML=rows.map(({p,totalPts,groupPts,koPts,exactCount,dateCells,koCells,nombre})=>{
     const rank=rankMap[p]||0;
-    const rankLabel=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':`${rank}`;
-    const rankCls=rank===1?'rank-num-1':rank===2?'rank-num-2':rank===3?'rank-num-3':'';
+    const showMedal=(hasResults||hasKoResults)&&rank>=1&&rank<=3;
+    const rankLabel=showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):`${rank}`;
+    const rankCls=showMedal?(rank===1?'rank-num-1':rank===2?'rank-num-2':'rank-num-3'):'';
     return `<tr>
       <td class="col-rank"><span class="${rankCls}">${rankLabel}</span></td>
       <td class="col-participant" onclick="window.open('/quiniela?p='+encodeURIComponent('${p.replace(/'/g,"\\'")}'),'_blank')"><span class="p-apodo">${p}</span>${nombre?`<span class="p-name">${nombre}</span>`:''}<span class="p-pts" title="Grupos: ${groupPts}pts + KO: ${koPts}pts">${(hasResults||hasKoResults)?totalPts+'pts':'—'}</span><span class="p-ver">👁 ver quiniela</span></td>
@@ -830,7 +835,7 @@ function renderTableroMobile(){
     return{p,totalPts:gPts+kPts,exactCount};
   });
   allScores.sort((a,b)=>mobSort.dir==='desc'?(mobSort.by==='exact'?b.exactCount-a.exactCount:b.totalPts-a.totalPts):(mobSort.by==='exact'?a.exactCount-b.exactCount:a.totalPts-b.totalPts));
-  const rankMap={};allScores.forEach(({p},i)=>{rankMap[p]=i+1;});
+  const rankMap={};allScores.forEach(({p,totalPts},i)=>{if(i===0)rankMap[p]=1;else if(totalPts===allScores[i-1].totalPts)rankMap[p]=rankMap[allScores[i-1].p];else rankMap[p]=i+1;});
 
   // Build card data
   const cardData=visible.map(p=>{
@@ -871,8 +876,9 @@ function renderTableroMobile(){
 function buildMobCard(d,hasResults,hasKoResults){
   const{p,nombre,totalPts,exactCount,goalsVal,matchList,koDetail,rank}=d;
   const isExpanded=mobExpanded.has(p);
-  const rankLabel=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
-  const rankCls=rank<=3?`mob-rank-top mob-rank-${rank}`:'mob-rank-num';
+  const showMedal=(hasResults||hasKoResults)&&rank>=1&&rank<=3;
+  const rankLabel=showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):rank;
+  const rankCls=showMedal?`mob-rank-top mob-rank-${rank}`:'mob-rank-num';
   const ptsDisplay=(hasResults||hasKoResults)?totalPts+' pts':'—';
   const exactDisplay=(hasResults||hasKoResults)?exactCount:'—';
 
@@ -1052,9 +1058,26 @@ function renderRanking(){
   const participants=getParticipants().filter(p=>PAID.has(payments[p]||''));const predictions=getPredictions();const results=getResults();const teams=getTeams();const matches=generateMatches(teams);const koPreds=getKoPreds();const koResults=getKoResults();const profiles=load('q26_profiles',{});
   const rows=participants.map(p=>{const pp=predictions[p]||{};let groupPts=0,exactCount=0;matches.forEach(m=>{const pts=calcPoints(pp[m.id],results[m.id]);if(pts===null)return;groupPts+=pts;if(pts===3)exactCount++;});let koPts=0;KNOCKOUT_ROUNDS.forEach(r=>{const picks=(koPreds[p]||{})[r.id]||[];const actual=koResults[r.id]||[];const pts=calcKoRoundPts(picks,actual,r.pts);if(pts!==null)koPts+=pts;});return {p,totalPts:groupPts+koPts,exactCount,nombre:(profiles[p]||{}).nombre||''};});
   function rankRows(arr,key){return [...arr].sort((a,b)=>b[key]-a[key]);}
-  function medalClass(i){return i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n';}
-  function medalLabel(i){return i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;}
-  function buildRankTable(sorted,key,unit,colorClass){if(!sorted.length)return '<p style="color:var(--muted);font-size:.85rem;padding:12px 0">Sin datos aún.</p>';const top=sorted.slice(0,5);const rows=top.map((r,i)=>`<tr><td><span class="rank-medal ${medalClass(i)}">${medalLabel(i)}</span></td><td><div class="rank-apodo">${r.p}</div>${r.nombre?`<div class="rank-name">${r.nombre}</div>`:''}</td><td class="rank-pts ${colorClass}">${r[key]} <span style="font-size:.7rem;font-weight:500">${unit}</span></td></tr>`).join('');return `<table class="ranking-table"><thead><tr><th>#</th><th>Participante</th><th style="text-align:right">${unit}</th></tr></thead><tbody>${rows}</tbody></table>`;}
+  function buildRankTable(sorted,key,unit,colorClass){
+    if(!sorted.length)return '<p style="color:var(--muted);font-size:.85rem;padding:12px 0">Sin datos aún.</p>';
+    const top=sorted.slice(0,5);
+    const hasScores=top.some(r=>r[key]>0);
+    // Compute tied ranks
+    const tiedRank=[];
+    top.forEach((r,i)=>{
+      if(i===0)tiedRank.push(1);
+      else if(r[key]===top[i-1][key])tiedRank.push(tiedRank[i-1]);
+      else tiedRank.push(i+1);
+    });
+    const rows=top.map((r,i)=>{
+      const rank=tiedRank[i];
+      const showMedal=hasScores&&rank<=3;
+      const lbl=showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):rank;
+      const cls=showMedal?`rank-${rank}`:'rank-n';
+      return `<tr><td><span class="rank-medal ${cls}">${lbl}</span></td><td><div class="rank-apodo">${r.p}</div>${r.nombre?`<div class="rank-name">${r.nombre}</div>`:''}</td><td class="rank-pts ${colorClass}">${r[key]} <span style="font-size:.7rem;font-weight:500">${unit}</span></td></tr>`;
+    }).join('');
+    return `<table class="ranking-table"><thead><tr><th>#</th><th>Participante</th><th style="text-align:right">${unit}</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
   document.getElementById('ranking-pts-body').innerHTML=buildRankTable(rankRows(rows,'totalPts'),'totalPts','pts','');
   const goalsEl=document.getElementById('ranking-goals-body');const totalGoalsScored=Object.values(results).reduce((sum,r)=>sum+(r.h||0)+(r.a||0),0);const matchesWithResults=Object.keys(results).length;
   goalsEl.innerHTML=`<div style="display:flex;justify-content:center;align-items:center;padding:24px 20px;background:linear-gradient(90deg,#0c2244,#1e3860);border-radius:12px"><div style="text-align:center"><div style="font-size:4rem;font-weight:900;color:var(--green2);line-height:1">${totalGoalsScored||'—'}</div><div style="font-size:.78rem;color:rgba(255,255,255,.55);margin-top:6px;text-transform:uppercase;letter-spacing:.5px">Goles anotados en el Mundial</div></div></div>`;
