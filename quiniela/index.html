@@ -208,13 +208,17 @@ function render(data){
 
   // Stats
   if(hasResults||hasKoResults){
-    const golesVal=goalsMap[apodo]!==undefined?`<div class="stat-item"><span class="stat-val stat-blue">${goalsMap[apodo]}</span><span class="stat-label">goles pron.</span></div>`:'';
-    html+=`<div class="stats-row" style="margin-bottom:20px">
+    html+=`<div class="stats-row" style="margin-bottom:12px">
       <div class="stat-item"><span class="stat-val stat-green">${totalPts}</span><span class="stat-label">pts total</span></div>
       <div class="stat-item"><span class="stat-val" style="color:var(--navy)">${groupPts}</span><span class="stat-label">grupos</span></div>
       <div class="stat-item"><span class="stat-val stat-gold">${koPts}</span><span class="stat-label">fase KO</span></div>
       <div class="stat-item"><span class="stat-val" style="color:var(--navy)">${exactCount}</span><span class="stat-label">exactos</span></div>
-      ${golesVal}
+    </div>`;
+  }
+  // Predicción de goles — siempre visible
+  if(goalsMap[apodo]!==undefined){
+    html+=`<div class="stats-row" style="margin-bottom:20px;justify-content:flex-start">
+      <div class="stat-item"><span class="stat-val stat-blue">${goalsMap[apodo]}</span><span class="stat-label">⚽ goles totales pronosticados</span></div>
     </div>`;
   }
 
