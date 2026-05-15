@@ -1838,11 +1838,12 @@ function renderPredForm(){
     const golesValL=golesMapL[p];
     const golesBarL=golesValL!==undefined
       ?`<div class="goals-info-bar"><span class="g-val">${golesValL}</span><p>⚽ Predicción de <strong>Goles Totales del Mundial</strong> de <strong>${p}</strong></p></div>`:'';
-    content.innerHTML=golesBarL+`
+    content.innerHTML=`
       <div class="lock-banner">
         <span>🔒</span>
         <p>Las predicciones de <strong>${p}</strong> están <strong>bloqueadas</strong>. Ya no se pueden modificar.</p>
       </div>`
+      + golesBarL
       + renderPredGroups(p,matches,teams,pp,true)
       + renderKoPredSection(p,true);
     return;
