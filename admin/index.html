@@ -376,6 +376,53 @@
     }
     #toast.show{transform:translateY(0);opacity:1}
 
+    /* ── RESULTADOS TAB ─────────────────────────────────── */
+    .res-subtabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0}
+    .res-subtab{padding:8px 18px;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:.82rem;font-weight:600;background:transparent;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s}
+    .res-subtab.active{color:var(--navy);border-bottom-color:var(--green);font-weight:800}
+    .res-subtab:hover{background:var(--surface2)}
+    .res-date-group{margin-bottom:20px}
+    .res-date-hdr{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:4px 0 8px;border-bottom:1px solid var(--border);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .res-date-hdr span{background:var(--navy);color:#fff;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px}
+    .res-match-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:border-color .15s}
+    .res-match-card.has-result{border-left:4px solid var(--green)}
+    .res-match-card.no-result{border-left:4px solid var(--border)}
+    .res-teams{flex:1;min-width:0}
+    .res-teams-row{display:flex;align-items:center;gap:6px;font-size:.88rem;font-weight:700;color:var(--navy)}
+    .res-vs{font-size:.72rem;font-weight:500;color:var(--muted);flex-shrink:0}
+    .res-team-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+    .res-meta{font-size:.68rem;color:var(--muted);margin-top:3px}
+    .res-score-row{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .res-score-inp{width:42px;height:36px;text-align:center;font-size:1rem;font-weight:800;border:1.5px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--navy);outline:none;-moz-appearance:textfield}
+    .res-score-inp::-webkit-inner-spin-button,.res-score-inp::-webkit-outer-spin-button{-webkit-appearance:none}
+    .res-score-inp:focus{border-color:var(--green)}
+    .res-dash{font-size:1rem;font-weight:800;color:var(--muted)}
+    .res-actions{display:flex;gap:6px;flex-shrink:0}
+    .res-save-btn{padding:6px 12px;font-size:.75rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;background:var(--green);color:#fff;transition:background .15s;white-space:nowrap}
+    .res-save-btn:hover{background:var(--green2)}
+    .res-clear-btn{padding:6px 9px;font-size:.75rem;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:var(--surface2);color:var(--muted);transition:all .15s}
+    .res-clear-btn:hover{background:#fee2e2;color:#b91c1c;border-color:#fca5a5}
+    .res-ko-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+    .res-ko-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .res-ko-title{font-size:.95rem;font-weight:800;color:var(--navy)}
+    .res-ko-meta{font-size:.72rem;color:var(--muted)}
+    .res-ko-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:28px}
+    .res-ko-select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;background:var(--surface2);color:var(--navy);outline:none;cursor:pointer}
+    .res-ko-select:focus{border-color:var(--green)}
+    .res-ko-done{font-size:.82rem;color:var(--green);font-weight:700}
+    .res-progress{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border-radius:10px;margin-bottom:20px;font-size:.82rem;flex-wrap:wrap}
+    .res-prog-item{display:flex;align-items:center;gap:4px;color:var(--muted)}
+    .res-prog-item strong{color:var(--navy)}
+    @media(max-width:700px){
+      .res-match-card{flex-wrap:wrap;gap:8px;padding:10px 12px}
+      .res-teams{width:100%}
+      .res-team-name{max-width:none}
+      .res-score-row{flex:1}
+      .res-score-inp{width:44px;height:38px;font-size:1.05rem}
+      .res-actions{flex:none}
+      .res-subtab{padding:7px 12px;font-size:.78rem}
+      .res-ko-card{padding:12px 14px}
+    }
     /* ── PENDING CARDS ──────────────────────────────────── */
     .pend-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
     .pend-info{flex:1;min-width:180px}
@@ -728,6 +775,7 @@
       <button class="nav-btn active" onclick="showView('tablero')">📊 Tablero</button>
       <button class="nav-btn" onclick="showView('predicciones')">✏️ Predicciones</button>
       <button class="nav-btn" onclick="showView('ranking')">🏅 Ranking</button>
+      <button class="nav-btn" onclick="showView('resultados')">⚽ Resultados</button>
       <a href="/registro" class="nav-btn" style="text-decoration:none">📝 Registro</a>
       <button class="nav-btn" onclick="showView('config')">⚙️ Admin<span id="nav-pending-badge" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
     </nav>
@@ -739,6 +787,7 @@
     <button class="nav-btn active" onclick="showView('tablero');closeMobMenu()">📊 Tablero</button>
     <button class="nav-btn" onclick="showView('predicciones');closeMobMenu()">✏️ Predicciones</button>
     <button class="nav-btn" onclick="showView('ranking');closeMobMenu()">🏅 Ranking</button>
+    <button class="nav-btn" onclick="showView('resultados');closeMobMenu()">⚽ Resultados</button>
     <a href="/registro" class="nav-btn" style="text-decoration:none">📝 Registro</a>
     <button class="nav-btn" onclick="showView('config');closeMobMenu()">⚙️ Admin<span id="nav-pending-badge-mob" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
   </div>
@@ -819,6 +868,18 @@
         <div id="ranking-pts-body"></div>
       </div>
     </div>
+  </div>
+
+  <!-- ══════════ RESULTADOS ══════════ -->
+  <div id="view-resultados" class="view">
+    <div class="page-title"><span>⚽</span> Resultados</div>
+    <div class="res-subtabs">
+      <button class="res-subtab active" id="res-tab-grupos" onclick="switchResTab('grupos')">📋 Fase de Grupos</button>
+      <button class="res-subtab" id="res-tab-ko" onclick="switchResTab('ko')">🏆 Fase Eliminatoria</button>
+    </div>
+    <div id="res-progress-bar"></div>
+    <div id="res-grupos-wrap"></div>
+    <div id="res-ko-wrap" style="display:none"></div>
   </div>
 
   <!-- ══════════ ADMIN ══════════ -->
@@ -1238,12 +1299,11 @@ function showView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
-  const idx=['tablero','predicciones','ranking','registro','config'].indexOf(v);
-  // desktop nav + mob-menu share the same class, activate both at right index
+  const idx=['tablero','predicciones','ranking','resultados','registro','config'].indexOf(v);
+  // desktop nav has 6 btns (0-5), mob-menu has 6 more (6-11); Registro is an <a> so counted
   const allBtns=document.querySelectorAll('.nav-btn');
-  // desktop nav has 5 btns (indices 0-4), mob-menu has 5 more (indices 5-9)
   if(allBtns[idx])allBtns[idx].classList.add('active');
-  if(allBtns[idx+5])allBtns[idx+5].classList.add('active');
+  if(allBtns[idx+6])allBtns[idx+6].classList.add('active');
   // sync pending badge in mob menu
   const badge=document.getElementById('nav-pending-badge');
   const badgeMob=document.getElementById('nav-pending-badge-mob');
@@ -1251,7 +1311,156 @@ function showView(v){
   if(v==='tablero')renderTablero();
   if(v==='predicciones')renderPredPage();
   if(v==='ranking')renderRanking();
+  if(v==='resultados')renderResultados();
   if(v==='config')renderConfig();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RESULTADOS
+// ═══════════════════════════════════════════════════════════
+let _resTab='grupos';
+function switchResTab(tab){
+  _resTab=tab;
+  document.getElementById('res-tab-grupos').classList.toggle('active',tab==='grupos');
+  document.getElementById('res-tab-ko').classList.toggle('active',tab==='ko');
+  document.getElementById('res-grupos-wrap').style.display=tab==='grupos'?'':'none';
+  document.getElementById('res-ko-wrap').style.display=tab==='ko'?'':'none';
+}
+function renderResultados(){
+  renderResGrupos();
+  renderResKo();
+  renderResProgress();
+}
+function renderResProgress(){
+  const results=getResults();
+  const teams=getTeams();
+  const matches=generateMatches(teams);
+  const done=matches.filter(m=>results[m.id]!==undefined).length;
+  const koResults=getKoResults();
+  const koDone=KNOCKOUT_ROUNDS.filter(r=>(koResults[r.id]||[]).length>0).length;
+  document.getElementById('res-progress-bar').innerHTML=`
+    <div class="res-progress">
+      <div class="res-prog-item">📋 Fase de Grupos: <strong>${done}/${matches.length}</strong> resultados capturados</div>
+      <div class="res-prog-item">🏆 Fase Eliminatoria: <strong>${koDone}/${KNOCKOUT_ROUNDS.length}</strong> rondas con datos</div>
+    </div>`;
+}
+function renderResGrupos(){
+  const wrap=document.getElementById('res-grupos-wrap');
+  if(!wrap)return;
+  const teams=getTeams();
+  const matches=generateMatches(teams);
+  const results=getResults();
+  // Group by date
+  const byDate={};
+  matches.forEach(m=>{
+    if(!byDate[m.date])byDate[m.date]=[];
+    byDate[m.date].push(m);
+  });
+  // Sort dates chronologically using matchday + first match id order
+  const dateOrder=[];
+  matches.forEach(m=>{if(!dateOrder.includes(m.date))dateOrder.push(m.date);});
+  wrap.innerHTML=dateOrder.map(date=>{
+    const dayMatches=byDate[date];
+    const doneCount=dayMatches.filter(m=>results[m.id]!==undefined).length;
+    const cards=dayMatches.map(m=>{
+      const r=results[m.id];
+      const hasResult=r!==undefined;
+      return `<div class="res-match-card ${hasResult?'has-result':'no-result'}" id="rmc-${m.id}">
+        <div class="res-teams">
+          <div class="res-teams-row">
+            ${flag(m.home)}<span class="res-team-name">${m.home}</span>
+            <span class="res-vs">vs</span>
+            <span class="res-team-name">${m.away}</span>${flag(m.away)}
+          </div>
+          <div class="res-meta">Grupo ${m.group} · Jornada ${m.matchday}${m.time?' · '+m.time+' CDMX':''}</div>
+        </div>
+        <div class="res-score-row">
+          <input class="res-score-inp" type="number" min="0" max="99" id="rh-${m.id}" value="${hasResult?r.h:''}" placeholder="–">
+          <span class="res-dash">-</span>
+          <input class="res-score-inp" type="number" min="0" max="99" id="ra-${m.id}" value="${hasResult?r.a:''}" placeholder="–">
+        </div>
+        <div class="res-actions">
+          <button class="res-save-btn" onclick="saveResultInline('${m.id}')">💾</button>
+          ${hasResult?`<button class="res-clear-btn" onclick="clearResultInline('${m.id}')" title="Borrar resultado">✕</button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="res-date-group">
+      <div class="res-date-hdr">${date} <span>${doneCount}/${dayMatches.length}</span></div>
+      ${cards}
+    </div>`;
+  }).join('');
+}
+function renderResKo(){
+  const wrap=document.getElementById('res-ko-wrap');
+  if(!wrap)return;
+  const koResults=getKoResults();
+  const teams=getTeams();
+  wrap.innerHTML=KNOCKOUT_ROUNDS.map(r=>{
+    const current=koResults[r.id]||[];
+    const isFull=current.length>=r.count;
+    const pills=current.map(t=>`<span class="pick-pill" style="font-size:.75rem">${flag(t)} ${t}<span class="pick-pill-remove" onclick="removeKoResultInline('${r.id}','${t.replace(/'/g,"\\'")}')">✕</span></span>`).join('');
+    return `<div class="res-ko-card">
+      <div class="res-ko-hdr">
+        <span class="res-ko-title">🏆 ${r.label}</span>
+        <span class="res-ko-meta">${current.length}/${r.count} equipos · ${r.pts}pt c/u</span>
+      </div>
+      <div class="res-ko-pills" id="ko-pills-${r.id}">
+        ${pills||'<span style="font-size:.78rem;color:var(--muted)">Sin equipos ingresados aún</span>'}
+      </div>
+      ${isFull
+        ?`<div class="res-ko-done">✅ Todos los equipos ingresados</div>`
+        :`<select class="res-ko-select" onchange="addKoResultInline('${r.id}',this)">
+            <option value="">+ Agregar equipo (${r.count-current.length} restantes)…</option>
+            ${buildPickerOptions(current)}
+          </select>`
+      }
+    </div>`;
+  }).join('');
+}
+function saveResultInline(matchId){
+  const h=document.getElementById('rh-'+matchId)?.value;
+  const a=document.getElementById('ra-'+matchId)?.value;
+  if(h===''||a===''||h===undefined||a===undefined){showToast('⚠️ Ingresa ambos marcadores');return;}
+  const results=getResults();
+  results[matchId]={h:parseInt(h),a:parseInt(a)};
+  save('q26_results',results);
+  renderResGrupos();
+  renderResProgress();
+  renderTablero();
+  showToast('✅ Resultado guardado');
+}
+function clearResultInline(matchId){
+  const results=getResults();
+  delete results[matchId];
+  save('q26_results',results);
+  renderResGrupos();
+  renderResProgress();
+  renderTablero();
+  showToast('🗑 Resultado borrado');
+}
+function addKoResultInline(roundId,selectEl){
+  const team=selectEl.value;
+  if(!team)return;
+  const koResults=getKoResults();
+  if(!koResults[roundId])koResults[roundId]=[];
+  const r=KNOCKOUT_ROUNDS.find(x=>x.id===roundId);
+  if(koResults[roundId].length>=r.count){showToast(`⚠️ Límite: ${r.count} equipos`);selectEl.value='';return;}
+  if(!koResults[roundId].includes(team))koResults[roundId].push(team);
+  save('q26_ko_results',koResults);
+  renderResKo();
+  renderResProgress();
+  renderTablero();
+  showToast(`✅ ${team} → ${r.label}`);
+}
+function removeKoResultInline(roundId,team){
+  const koResults=getKoResults();
+  if(koResults[roundId])koResults[roundId]=koResults[roundId].filter(t=>t!==team);
+  save('q26_ko_results',koResults);
+  renderResKo();
+  renderResProgress();
+  renderTablero();
+  showToast(`🗑 ${team} eliminado de ${roundId}`);
 }
 
 // ═══════════════════════════════════════════════════════════
