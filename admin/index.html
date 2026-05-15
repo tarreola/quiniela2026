@@ -1360,7 +1360,11 @@ function renderTablero(){
     return tableroSort.by==='exact'?dir*(a.exactCount-b.exactCount):dir*(a.totalPts-b.totalPts);
   });
   const rankMap={};
-  globalScores.forEach(({p},i)=>{rankMap[p]=i+1;});
+  globalScores.forEach(({p,totalPts},i)=>{
+    if(i===0)rankMap[p]=1;
+    else if(totalPts===globalScores[i-1].totalPts)rankMap[p]=rankMap[globalScores[i-1].p];
+    else rankMap[p]=i+1;
+  });
 
   const rows=visibleParticipants.map(p=>{
     const pp=predictions[p]||{};
@@ -1452,8 +1456,9 @@ function renderTablero(){
 
   tbody.innerHTML=rows.map(({p,totalPts,groupPts,koPts,exactCount,dateCells,koCells,nombre})=>{
     const rank=rankMap[p]||0;
-    const rankLabel=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':`${rank}`;
-    const rankCls=rank===1?'rank-num-1':rank===2?'rank-num-2':rank===3?'rank-num-3':'';
+    const showMedal=(hasResults||hasKoResults)&&rank>=1&&rank<=3;
+    const rankLabel=showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):`${rank}`;
+    const rankCls=showMedal?(rank===1?'rank-num-1':rank===2?'rank-num-2':'rank-num-3'):'';
     return `<tr>
       <td class="col-rank"><span class="${rankCls}">${rankLabel}</span></td>
       <td class="col-participant">
@@ -2376,17 +2381,19 @@ function renderRanking(){
     return [...arr].sort((a,b)=>b[key]-a[key]);
   }
 
-  function medalClass(i){return i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n';}
-  function medalLabel(i){return i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;}
-
   function buildRankTable(sorted,key,unit,colorClass){
     if(!sorted.length)return '<p style="color:var(--muted);font-size:.85rem;padding:12px 0">Sin datos aún.</p>';
     const top=sorted.slice(0,5);
-    const rows=top.map((r,i)=>`<tr>
-      <td><span class="rank-medal ${medalClass(i)}">${medalLabel(i)}</span></td>
-      <td><div class="rank-apodo">${r.p}</div>${r.nombre?`<div class="rank-name">${r.nombre}</div>`:''}</td>
-      <td class="rank-pts ${colorClass}">${r[key]} <span style="font-size:.7rem;font-weight:500">${unit}</span></td>
-    </tr>`).join('');
+    const hasScores=top.some(r=>r[key]>0);
+    const tiedRank=[];
+    top.forEach((r,i)=>{if(i===0)tiedRank.push(1);else if(r[key]===top[i-1][key])tiedRank.push(tiedRank[i-1]);else tiedRank.push(i+1);});
+    const rows=top.map((r,i)=>{
+      const rank=tiedRank[i];
+      const showMedal=hasScores&&rank<=3;
+      const lbl=showMedal?(rank===1?'🥇':rank===2?'🥈':'🥉'):rank;
+      const cls=showMedal?`rank-${rank}`:'rank-n';
+      return `<tr><td><span class="rank-medal ${cls}">${lbl}</span></td><td><div class="rank-apodo">${r.p}</div>${r.nombre?`<div class="rank-name">${r.nombre}</div>`:''}</td><td class="rank-pts ${colorClass}">${r[key]} <span style="font-size:.7rem;font-weight:500">${unit}</span></td></tr>`;
+    }).join('');
     return `<table class="ranking-table">
       <thead><tr><th>#</th><th>Participante</th><th style="text-align:right">${unit}</th></tr></thead>
       <tbody>${rows}</tbody>
