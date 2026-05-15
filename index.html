@@ -498,13 +498,36 @@
     <button class="pmx-close" onclick="closePremiosModal()">✕</button>
   </div>
   <div class="pmx-body">
-    <p class="pmx-intro">El <strong>98% de la bolsa acumulada</strong> se repartirá entre los ganadores al finalizar el Mundial. El 2% restante cubre gastos administrativos.</p>
-    <div class="pmx-row"><span class="pmx-label">🥇 1er lugar</span><span class="pmx-pct">60%</span></div>
-    <div class="pmx-row"><span class="pmx-label">🥈 2do lugar</span><span class="pmx-pct">15%</span></div>
-    <div class="pmx-row"><span class="pmx-label">⚽ Líder al cierre de fase de grupos</span><span class="pmx-pct">15%</span></div>
-    <div class="pmx-row"><span class="pmx-label">🎯 Pronóstico de goles del mundial</span><span class="pmx-pct">5%</span></div>
-    <div class="pmx-row"><span class="pmx-label">🪦 Premio al "más saldo" (menos puntos)</span><span class="pmx-pct">3%</span></div>
-    <div class="pmx-note"><strong>NOTA:</strong> La bolsa acumulada a repartir se anunciará antes del partido inaugural. Los premios se otorgarán hasta que haya finalizado el mundial. La comisión generada por Mercado Pago no es parte de la bolsa.</div>
+    <div class="pmx-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;justify-content:space-between;width:100%">
+        <span class="pmx-label">🥇 1er lugar</span><span class="pmx-pct">60%</span>
+      </div>
+      <div id="pmx-ganador-1" style="font-size:.8rem;color:var(--muted);font-style:italic;min-height:1.2em">— Por definir —</div>
+    </div>
+    <div class="pmx-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;justify-content:space-between;width:100%">
+        <span class="pmx-label">🥈 2do lugar</span><span class="pmx-pct">15%</span>
+      </div>
+      <div id="pmx-ganador-2" style="font-size:.8rem;color:var(--muted);font-style:italic;min-height:1.2em">— Por definir —</div>
+    </div>
+    <div class="pmx-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;justify-content:space-between;width:100%">
+        <span class="pmx-label">⚽ Líder al cierre de fase de grupos</span><span class="pmx-pct">15%</span>
+      </div>
+      <div id="pmx-ganador-grupos" style="font-size:.8rem;color:var(--muted);font-style:italic;min-height:1.2em">— Por definir —</div>
+    </div>
+    <div class="pmx-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;justify-content:space-between;width:100%">
+        <span class="pmx-label">🎯 Pronóstico de goles del mundial</span><span class="pmx-pct">5%</span>
+      </div>
+      <div id="pmx-ganador-goles" style="font-size:.8rem;color:var(--muted);font-style:italic;min-height:1.2em">— Por definir —</div>
+    </div>
+    <div class="pmx-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;justify-content:space-between;width:100%">
+        <span class="pmx-label">🪦 Premio al "más saldo" (menos puntos)</span><span class="pmx-pct">3%</span>
+      </div>
+      <div id="pmx-ganador-saldo" style="font-size:.8rem;color:var(--muted);font-style:italic;min-height:1.2em">— Por definir —</div>
+    </div>
   </div>
 </div>
 
