@@ -765,17 +765,13 @@
   <div id="view-ranking" class="view">
     <div class="page-title"><span>🏅</span> Ranking</div>
     <div class="ranking-grid">
-      <div class="ranking-card" id="ranking-pts-card">
-        <h3>🥇 Top 5 — Mayor Puntaje</h3>
-        <div id="ranking-pts-body"></div>
-      </div>
-      <div class="ranking-card" id="ranking-exact-card">
-        <h3>🎯 Top 5 — Marcadores Exactos</h3>
-        <div id="ranking-exact-body"></div>
-      </div>
       <div class="ranking-card" style="grid-column:1/-1" id="ranking-goals-card">
         <h3>⚽ Goles Anotados en el Mundial</h3>
         <div id="ranking-goals-body"></div>
+      </div>
+      <div class="ranking-card" style="grid-column:1/-1" id="ranking-pts-card">
+        <h3>🥇 Top 5 — Mayor Puntaje</h3>
+        <div id="ranking-pts-body"></div>
       </div>
     </div>
   </div>
@@ -2398,8 +2394,6 @@ function renderRanking(){
 
   document.getElementById('ranking-pts-body').innerHTML=
     buildRankTable(rankRows(rows,'totalPts'),'totalPts','pts','');
-  document.getElementById('ranking-exact-body').innerHTML=
-    buildRankTable(rankRows(rows,'exactCount'),'exactCount','exactos','rank-pts-gold');
 
   // Goals section — only actual tournament goals scored
   const goalsEl=document.getElementById('ranking-goals-body');
