@@ -698,17 +698,13 @@
   <div id="view-tablero" class="view active">
     <div class="page-title"><span>📊</span> Tablero Principal — Fase de Grupos</div>
 
-    <div class="tablero-infobar">
-      <div class="info-card info-card-bolsa">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+      <div class="info-card info-card-bolsa" style="margin:0;flex-shrink:0">
         <div class="info-card-label">💰 Bolsa Acumulada</div>
         <div class="info-card-value" id="info-bolsa-tablero">—</div>
       </div>
-      <div class="tablero-controls"></div>
-    </div>
-
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
-      <div id="tablero-stats" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-      <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+      <div id="tablero-stats" style="display:flex;gap:10px;flex-wrap:wrap;flex:1"></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
         <div class="search-box" style="margin-bottom:0;min-width:200px">
           <span style="color:var(--muted)">🔍</span>
           <input type="text" id="tablero-search" placeholder="Buscar participante…" oninput="renderTablero()" style="width:100%">
