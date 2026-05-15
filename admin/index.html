@@ -1199,6 +1199,13 @@ function renderTablero(){
   const profiles=load('q26_profiles',{});
   const goalsMap=load('q26_goals',{});
 
+  // Bolsa acumulada
+  const PAID_SET=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente','pagado_sin_publicar']);
+  const payments=getPayments();
+  const paidCount=participants.filter(p=>PAID_SET.has(payments[p]||'')).length;
+  const bolsaEl=document.getElementById('info-bolsa-tablero');
+  if(bolsaEl)bolsaEl.textContent='$'+(paidCount*3000).toLocaleString('es-MX')+' MXN';
+
   // Stats bar
   const statsEl=document.getElementById('tablero-stats');
   if(statsEl)statsEl.innerHTML='';
