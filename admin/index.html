@@ -1056,6 +1056,15 @@ const firebaseConfig={
 firebase.initializeApp(firebaseConfig);
 const _db=firebase.database();
 let _cache={};
+const PAGO_OPTS=[
+  {val:'sin_pago',           label:'Sin pago',                      color:'#b91c1c', icon:'⚪'},
+  {val:'efectivo_pendiente', label:'Efectivo Pendiente',             color:'#92400e', icon:'🟡'},
+  {val:'pagado_sin_publicar',label:'Pagado - Pendiente de Publicar', color:'#b45309', icon:'🔒'},
+  {val:'mp',                 label:'Mercado Pago',                   color:'#009ee3', icon:'💳'},
+  {val:'efectivo_jr',        label:'Efectivo Pagado TA JR',          color:'#0e7c2f', icon:'💵'},
+  {val:'efectivo_paps',      label:'Efectivo Pagado TA PAPS',        color:'#15803d', icon:'💵'},
+  {val:'publicado_pendiente',label:'Publicado - Pago Pendiente',     color:'#7c3aed', icon:'📋'},
+];
 
 function _toArr(v){if(Array.isArray(v))return v;if(v&&typeof v==='object')return Object.values(v);return [];}
 function load(key,def){
@@ -2100,14 +2109,6 @@ function renderParticipants(){
   const matches=generateMatches(teams);
   const locked=getLocked();
   const payments=getPayments();
-  const PAGO_OPTS=[
-    {val:'efectivo_pendiente',  label:'Efectivo Pendiente',           color:'#92400e', icon:'🟡'},
-    {val:'pagado_sin_publicar', label:'Pagado - Pendiente de Publicar',color:'#b45309', icon:'🔒'},
-    {val:'mp',                  label:'Mercado Pago',                  color:'#009ee3', icon:'💳'},
-    {val:'efectivo_jr',         label:'Efectivo Pagado TA JR',         color:'#0e7c2f', icon:'💵'},
-    {val:'efectivo_paps',       label:'Efectivo Pagado TA PAPS',       color:'#15803d', icon:'💵'},
-    {val:'publicado_pendiente', label:'Publicado - Pago Pendiente',    color:'#7c3aed', icon:'📋'},
-  ];
   const profiles=load('q26_profiles',{});
   const searchQ=(document.getElementById('participant-search')?.value||'').toLowerCase();
   const filtered=searchQ?participants.filter(p=>{
@@ -2146,7 +2147,7 @@ function renderParticipants(){
           ${selectOpts}
         </select>
         ${unlockBtn}
-        <button class="btn btn-danger btn-sm" style="font-size:.7rem;padding:4px 8px;flex-shrink:0"
+        <button class="btn btn-sm" style="font-size:.75rem;padding:4px 9px;flex-shrink:0;background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5"
           onclick="requireAdminAuth('Eliminar participante','Se eliminara al participante y todas sus predicciones. Esta accion no se puede deshacer.',()=>removeParticipant('${pSafe}'))">🗑</button>
       </div>
     </div>`;
