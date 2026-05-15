@@ -265,7 +265,8 @@
       body:not([data-mob-view="table"]) .table-view-container{display:none}
       body:not([data-mob-view="table"]) #mob-tablero-wrap{display:block}
       body[data-mob-view="table"] #mob-tablero-wrap{display:none}
-      #desk-mob-toggle{display:inline-flex!important}
+      body[data-mob-view="table"] #desk-mob-toggle{display:inline-flex!important}
+      body:not([data-mob-view="table"]) #desk-mob-toggle{display:none!important}
       /* infobar en columna para toda la franja mobile (601–768px incluido) */
       .tablero-infobar{flex-direction:column;gap:8px}
       .tablero-controls{flex-direction:column;margin-left:0;width:100%}
