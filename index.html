@@ -298,7 +298,20 @@
     .hoy-title{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;font-size:.88rem;font-weight:800;padding:10px 16px;letter-spacing:.01em;display:flex;align-items:center;gap:7px}
     .hoy-identity{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);background:var(--surface2)}
     .hoy-identity-label{font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap}
-    .hoy-select{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:5px 8px;font-size:.78rem;font-weight:600;background:var(--bg);color:var(--text);outline:none;cursor:pointer;font-family:inherit;min-width:0}
+    .hoy-custom-dd{position:relative;flex:1;min-width:0}
+    .hoy-dd-trigger{display:flex;align-items:center;gap:6px;padding:5px 9px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;background:var(--bg);min-width:0;transition:border-color .15s;user-select:none}
+    .hoy-custom-dd.open .hoy-dd-trigger{border-color:var(--green)}
+    .hoy-dd-arrow{margin-left:auto;font-size:.65rem;color:var(--muted);flex-shrink:0;transition:transform .15s}
+    .hoy-custom-dd.open .hoy-dd-arrow{transform:rotate(180deg)}
+    .hoy-dd-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:100;max-height:220px;overflow-y:auto}
+    .hoy-custom-dd.open .hoy-dd-list{display:block}
+    .hoy-dd-item{display:flex;align-items:baseline;gap:7px;padding:7px 11px;cursor:pointer;border-bottom:1px solid var(--border)}
+    .hoy-dd-item:last-child{border-bottom:none}
+    .hoy-dd-item:hover{background:var(--surface2)}
+    .hoy-dd-item.sel{background:var(--green-light)}
+    .hoy-dd-apodo{font-size:.82rem;font-weight:700;color:var(--navy);white-space:nowrap}
+    .hoy-dd-nombre{font-size:.74rem;font-weight:400;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .hoy-dd-placeholder{font-size:.8rem;color:var(--muted);font-style:italic}
     .hoy-total-badge{flex-shrink:0;background:var(--navy);color:#fff;font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:20px;white-space:nowrap}
     .hoy-stats{display:flex;gap:14px;padding:8px 16px;background:#f0fdf4;border-bottom:1px solid #bbf7d0;align-items:center;justify-content:center}
     .hoy-stat-pts{font-size:.82rem;font-weight:800;color:#065f46}
@@ -872,6 +885,14 @@ function getTodayMatchDate(){
   const d=new Date();
   return d.getDate()+' '+months[d.getMonth()];
 }
+function toggleHoyDd(id,e){
+  e.stopPropagation();
+  const dd=document.getElementById(id);
+  const wasOpen=dd.classList.contains('open');
+  document.querySelectorAll('.hoy-custom-dd.open').forEach(el=>el.classList.remove('open'));
+  if(!wasOpen)dd.classList.add('open');
+}
+document.addEventListener('click',()=>document.querySelectorAll('.hoy-custom-dd.open').forEach(el=>el.classList.remove('open')));
 function setHoyApodo(val){
   if(val)localStorage.setItem('q26_my_apodo',val);
   else localStorage.removeItem('q26_my_apodo');
@@ -917,12 +938,22 @@ function renderPartidosHoyImpl(targetId){
     KNOCKOUT_ROUNDS.forEach(r=>{const pts=calcKoRoundPts((koPreds[myApodo]||{})[r.id]||[],koResults[r.id]||[],r.pts);if(pts!==null)totalPtsQuiniela+=pts;});
   }
 
+  const ddId='hoy-dd-'+targetId;
+  const selDisplay=myApodo
+    ?`<span class="hoy-dd-apodo">${myApodo}</span>${(profiles[myApodo]||{}).nombre?`<span class="hoy-dd-nombre">${(profiles[myApodo]||{}).nombre}</span>`:''}`
+    :`<span class="hoy-dd-placeholder">— Elige tu nombre —</span>`;
+  const ddItems=participants.map(p=>{
+    const nombre=(profiles[p]||{}).nombre||'';
+    return `<div class="hoy-dd-item${p===myApodo?' sel':''}" onclick="setHoyApodo('${p.replace(/'/g,"\\'")}')">
+      <span class="hoy-dd-apodo">${p}</span>${nombre?`<span class="hoy-dd-nombre">${nombre}</span>`:''}
+    </div>`;
+  }).join('')+(myApodo?`<div class="hoy-dd-item" onclick="setHoyApodo('')"><span class="hoy-dd-placeholder">— Sin selección —</span></div>`:'');
   const selectorHtml=`<div class="hoy-identity">
     <span class="hoy-identity-label">👤 Quiniela:</span>
-    <select id="hoy-apodo-select" onchange="setHoyApodo(this.value)" class="hoy-select">
-      <option value="">— Elige tu nombre —</option>
-      ${participants.map(p=>`<option value="${p}"${p===myApodo?' selected':''}>${(profiles[p]||{}).nombre||p}</option>`).join('')}
-    </select>
+    <div class="hoy-custom-dd" id="${ddId}" onclick="toggleHoyDd('${ddId}',event)">
+      <div class="hoy-dd-trigger">${selDisplay}<span class="hoy-dd-arrow">▾</span></div>
+      <div class="hoy-dd-list">${ddItems}</div>
+    </div>
     ${myApodo?`<span class="hoy-total-badge">${totalPtsQuiniela} pts</span>`:''}
   </div>`;
 
