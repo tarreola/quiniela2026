@@ -303,7 +303,7 @@
     .hoy-custom-dd.open .hoy-dd-trigger{border-color:var(--green)}
     .hoy-dd-arrow{margin-left:auto;font-size:.65rem;color:var(--muted);flex-shrink:0;transition:transform .15s}
     .hoy-custom-dd.open .hoy-dd-arrow{transform:rotate(180deg)}
-    .hoy-dd-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:100;max-height:220px;overflow-y:auto}
+    .hoy-dd-list{display:none;position:fixed;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:9999;max-height:240px;overflow-y:auto}
     .hoy-custom-dd.open .hoy-dd-list{display:block}
     .hoy-dd-item{display:flex;align-items:baseline;gap:7px;padding:7px 11px;cursor:pointer;border-bottom:1px solid var(--border)}
     .hoy-dd-item:last-child{border-bottom:none}
@@ -889,10 +889,24 @@ function toggleHoyDd(id,e){
   e.stopPropagation();
   const dd=document.getElementById(id);
   const wasOpen=dd.classList.contains('open');
-  document.querySelectorAll('.hoy-custom-dd.open').forEach(el=>el.classList.remove('open'));
-  if(!wasOpen)dd.classList.add('open');
+  closeAllHoyDd();
+  if(!wasOpen){
+    dd.classList.add('open');
+    const trigger=dd.querySelector('.hoy-dd-trigger');
+    const list=dd.querySelector('.hoy-dd-list');
+    const r=trigger.getBoundingClientRect();
+    const spaceBelow=window.innerHeight-r.bottom-8;
+    const listH=Math.min(240,spaceBelow>120?spaceBelow:200);
+    list.style.left=r.left+'px';
+    list.style.width=r.width+'px';
+    list.style.maxHeight=listH+'px';
+    // open below or above depending on space
+    if(spaceBelow>=120){list.style.top=(r.bottom+4)+'px';list.style.bottom='';}
+    else{list.style.bottom=(window.innerHeight-r.top+4)+'px';list.style.top='';}
+  }
 }
-document.addEventListener('click',()=>document.querySelectorAll('.hoy-custom-dd.open').forEach(el=>el.classList.remove('open')));
+function closeAllHoyDd(){document.querySelectorAll('.hoy-custom-dd.open').forEach(el=>el.classList.remove('open'));}
+document.addEventListener('click',closeAllHoyDd);
 function setHoyApodo(val){
   if(val)localStorage.setItem('q26_my_apodo',val);
   else localStorage.removeItem('q26_my_apodo');
