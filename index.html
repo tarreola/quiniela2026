@@ -303,8 +303,7 @@
     .hoy-custom-dd.open .hoy-dd-trigger{border-color:var(--green)}
     .hoy-dd-arrow{margin-left:auto;font-size:.65rem;color:var(--muted);flex-shrink:0;transition:transform .15s}
     .hoy-custom-dd.open .hoy-dd-arrow{transform:rotate(180deg)}
-    .hoy-dd-list{display:none;position:fixed;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:9999;max-height:240px;overflow-y:auto}
-    .hoy-custom-dd.open .hoy-dd-list{display:block}
+    .hoy-dd-list{display:none;position:fixed;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:9999;overflow-y:auto}
     .hoy-dd-item{display:flex;align-items:baseline;gap:7px;padding:7px 11px;cursor:pointer;border-bottom:1px solid var(--border)}
     .hoy-dd-item:last-child{border-bottom:none}
     .hoy-dd-item:hover{background:var(--surface2)}
@@ -893,19 +892,29 @@ function toggleHoyDd(id,e){
   if(!wasOpen){
     dd.classList.add('open');
     const trigger=dd.querySelector('.hoy-dd-trigger');
-    const list=dd.querySelector('.hoy-dd-list');
+    const list=dd.querySelector('.hoy-dd-list')||dd._floatList;
     const r=trigger.getBoundingClientRect();
     const spaceBelow=window.innerHeight-r.bottom-8;
-    const listH=Math.min(240,spaceBelow>120?spaceBelow:200);
+    // teleport list to <body> to escape transform/overflow ancestors
+    list._ddOwner=dd;
+    document.body.appendChild(list);
+    dd._floatList=list;
+    list.style.position='fixed';
     list.style.left=r.left+'px';
     list.style.width=r.width+'px';
-    list.style.maxHeight=listH+'px';
-    // open below or above depending on space
-    if(spaceBelow>=120){list.style.top=(r.bottom+4)+'px';list.style.bottom='';}
+    list.style.maxHeight=Math.min(240,Math.max(spaceBelow,100))+'px';
+    if(spaceBelow>=100){list.style.top=(r.bottom+4)+'px';list.style.bottom='';}
     else{list.style.bottom=(window.innerHeight-r.top+4)+'px';list.style.top='';}
+    list.style.display='block';
   }
 }
-function closeAllHoyDd(){document.querySelectorAll('.hoy-custom-dd.open').forEach(el=>el.classList.remove('open'));}
+function closeAllHoyDd(){
+  document.querySelectorAll('.hoy-custom-dd.open').forEach(dd=>{
+    dd.classList.remove('open');
+    const list=dd._floatList;
+    if(list){list.style.display='none';dd.appendChild(list);dd._floatList=null;}
+  });
+}
 document.addEventListener('click',closeAllHoyDd);
 function setHoyApodo(val){
   if(val)localStorage.setItem('q26_my_apodo',val);
