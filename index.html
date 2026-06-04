@@ -967,10 +967,10 @@ function renderPartidosHoyImpl(targetId){
     :`<span class="hoy-dd-placeholder">— Elige tu nombre —</span>`;
   const ddItems=participants.map(p=>{
     const nombre=(profiles[p]||{}).nombre||'';
-    return `<div class="hoy-dd-item${p===myApodo?' sel':''}" onclick="event.stopPropagation();setHoyApodo('${p.replace(/'/g,"\\'")}')">
+    return `<div class="hoy-dd-item${p===myApodo?' sel':''}" onclick="event.stopPropagation();closeAllHoyDd();setHoyApodo('${p.replace(/'/g,"\\'")}')">
       <span class="hoy-dd-apodo">${p}</span>${nombre?`<span class="hoy-dd-nombre">${nombre}</span>`:''}
     </div>`;
-  }).join('')+(myApodo?`<div class="hoy-dd-item" onclick="event.stopPropagation();setHoyApodo('')"><span class="hoy-dd-placeholder">— Sin selección —</span></div>`:'');
+  }).join('')+(myApodo?`<div class="hoy-dd-item" onclick="event.stopPropagation();closeAllHoyDd();setHoyApodo('')"><span class="hoy-dd-placeholder">— Sin selección —</span></div>`:'');
   const selectorHtml=`<div class="hoy-identity">
     <span class="hoy-identity-label">👤 Quiniela:</span>
     <div class="hoy-custom-dd" id="${ddId}" onclick="toggleHoyDd('${ddId}',event)">
