@@ -811,15 +811,19 @@ const koPicks={};  // { r16: ['Team1',...], r8: [...], ... }
 const DRAFT_KEY='q26_reg_draft';
 function saveDraft(){
   try{
-    const preds=collectPredictions();
+    const existing=loadDraft()||{};
+    // Solo actualizar predicciones si estamos en el paso donde existen los inputs (≥4)
+    // Esto evita sobreescribir predicciones guardadas con {} cuando el usuario está en pasos 1-3
+    const preds=currentStep>=4?collectPredictions():existing.predictions||{};
     const draft={
-      nombre:document.getElementById('reg-nombre')?.value||'',
-      apodo:document.getElementById('reg-apodo')?.value||'',
-      email:document.getElementById('reg-email')?.value||'',
-      whatsapp:document.getElementById('reg-whatsapp')?.value||'',
-      goles:document.getElementById('reg-goles')?.value||'',
+      nombre:document.getElementById('reg-nombre')?.value||existing.nombre||'',
+      apodo:document.getElementById('reg-apodo')?.value||existing.apodo||'',
+      email:document.getElementById('reg-email')?.value||existing.email||'',
+      whatsapp:document.getElementById('reg-whatsapp')?.value||existing.whatsapp||'',
+      goles:document.getElementById('reg-goles')?.value||existing.goles||'',
       predictions:preds,
-      ko_preds:JSON.parse(JSON.stringify(koPicks)),
+      ko_preds:Object.keys(koPicks).length?JSON.parse(JSON.stringify(koPicks)):existing.ko_preds||{},
+      mpClicked:mpClicked||existing.mpClicked||false,
       step:currentStep,
       ts:Date.now()
     };
@@ -1267,6 +1271,7 @@ function selectPago(type){
 
 function markMpClicked(){
   mpClicked=true;
+  saveDraft(); // persiste mpClicked=true en localStorage
   setTimeout(()=>document.getElementById('mp-confirm-box').classList.remove('hidden'), 1500);
   // ── Pre-guardar en Firebase antes de salir a MP ──────────
   _presaveQuiniela();
@@ -1336,8 +1341,8 @@ function submitQuiniela(){
   };
 
   const doSend=()=>{
-    // 2. Limpiar borrador — quiniela enviada exitosamente
-    clearDraft();
+    // 2. Limpiar borrador — quiniela enviada y guardada en Firebase exitosamente
+    clearDraft();  // solo se llega aquí desde el .then() de Firebase write
 
     // 3. Success message
     const pagoMsg=selectedPago==='mp'
@@ -1415,9 +1420,12 @@ function submitQuiniela(){
     }).catch(err=>console.warn('EmailJS admin notify error:', err));
   };
 
-  _db.ref('q26_pending/'+apodo).set(pendingData)
-    .then(doSend)
-    .catch(e=>{
+  // Verificar que no haya ya una quiniela enviada con este apodo (pendiente o aprobada)
+  // Nota: el propio participante puede re-enviar (presaved:true → false está permitido)
+  const _doWrite=()=>{
+    _db.ref('q26_pending/'+apodo).set(pendingData)
+      .then(doSend)
+      .catch(e=>{
       console.error('Firebase write error:', e);
       // Mostrar error real — NO avanzar como si todo hubiera salido bien
       const msg=e?.code==='PERMISSION_DENIED'
@@ -1426,19 +1434,34 @@ function submitQuiniela(){
       showToast(msg);
       btn.disabled=false;
       btn.textContent='Reintentar';
-      // Intentar email de todas formas para que el participante tenga un registro
+      // Intentar email de todas formas (sin limpiar el draft — Firebase falló)
+      // Llamamos doSend pero sin limpiar draft para que el participante pueda reintentar
+      const _origClear=clearDraft;
+      // Parchamos temporalmente clearDraft para que no borre en este path de error
+      clearDraft=()=>{};
       doSend();
-    });
+      clearDraft=_origClear;
+      });
+  };
+  // Comprobar si ya hay una entrada final (presaved:false) en q26_pending para este apodo
+  _db.ref('q26_pending/'+apodo).once('value').then(snap=>{
+    const existing=snap.val();
+    if(existing&&existing.presaved===false){
+      // Ya existe una quiniela completa — no sobreescribir sin confirmación
+      if(!confirm(`Ya existe una quiniela enviada para "${apodo}". ¿Quieres reemplazarla con esta nueva versión?`)){
+        btn.disabled=false;btn.textContent='Confirmar y Enviar';return;
+      }
+    }
+    _doWrite();
+  }).catch(()=>_doWrite()); // si no se puede leer, intentar escribir de todas formas
 }
 
 function fallbackMailto(nombre,apodo,email,preds){
   const subject=`Quiniela Mundial 2026 — ${apodo}`;
-  const matches=generateMatches();
-  let txt=`Quiniela de ${nombre} (${apodo})\nCorreo: ${email}\n\nFase de Grupos:\n`;
-  matches.forEach(m=>{const p=preds[m.id];txt+=`${m.home} ${p?p.h:'?'} - ${p?p.a:'?'} ${m.away}\n`;});
-  const kp=koPicks||{};
-  KNOCKOUT_ROUNDS.forEach(r=>{const t=kp[r.id]||[];if(t.length)txt+=`\n${r.label}: ${t.join(', ')}`;});
-  const body=txt.substring(0,1800);
+  // Cuerpo corto (no predicciones — mailto no soporta textos largos)
+  // Las predicciones están en Firebase (q26_pending) gracias al presave
+  const filled=Object.keys(preds||{}).length;
+  const body=`Hola,\n\nTe confirmo mi registro en la Quiniela Entre Amigos Mundial 2026.\n\nParticipante: ${nombre}\nApodo: ${apodo}\nCorreo: ${email}\nPredicciones llenadas: ${filled}/72\n\nMis predicciones están guardadas en el sistema. Por favor confirma mi registro.\n\nSaludos`;
   // Enviar al participante Y al admin como CC
   const mailtoUrl=`mailto:${email}?cc=admin@tarreola.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   try{window.open(mailtoUrl,'_blank');}catch(e){}
@@ -1496,28 +1519,49 @@ function restoreDraft(){
   const d=loadDraft();
   if(!d)return;
   document.getElementById('draft-banner')?.remove();
-  // Rellenar campos de texto
+
+  // 1. Rellenar campos de texto
   ['nombre','apodo','email','whatsapp','goles'].forEach(f=>{
     const el=document.getElementById('reg-'+f);
     if(el&&d[f]!==undefined)el.value=d[f];
   });
-  // Restaurar predicciones de grupos
-  if(d.predictions){
-    Object.entries(d.predictions).forEach(([id,val])=>{
-      const hEl=document.getElementById('h-'+id);
-      const aEl=document.getElementById('a-'+id);
-      if(hEl&&val.h!==undefined)hEl.value=val.h;
-      if(aEl&&val.a!==undefined)aEl.value=val.a;
-    });
-  }
-  // Restaurar KO picks
+
+  // 2. Restaurar KO picks en memoria
   if(d.ko_preds){
     Object.entries(d.ko_preds).forEach(([rid,teams])=>{koPicks[rid]=teams;});
-    // Re-render KO UI si está disponible
-    if(typeof renderKoStep==='function')renderKoStep();
   }
-  // Ir al paso donde se quedó (máx paso 6 para no saltar al pago)
-  showStep(Math.min(d.step||1,6));
+
+  // 3. Restaurar mpClicked
+  if(d.mpClicked)mpClicked=true;
+
+  // 4. Navegar al paso guardado (máx 6 para no saltar al pago)
+  const targetStep=Math.min(d.step||1,6);
+  showStep(targetStep);
+
+  // 5. Restaurar predicciones de partidos — los inputs solo existen en paso 4+
+  //    Forzar render de match cards si es necesario
+  if(d.predictions&&Object.keys(d.predictions).length){
+    const mc=document.getElementById('matches-container');
+    if(mc&&!mc.hasChildNodes())renderMatchCards();
+    // Esperar un tick para que el DOM esté listo
+    setTimeout(()=>{
+      Object.entries(d.predictions).forEach(([id,val])=>{
+        const hEl=document.getElementById('rh-'+id);
+        const aEl=document.getElementById('ra-'+id);
+        if(hEl&&val.h!==undefined)hEl.value=val.h;
+        if(aEl&&val.a!==undefined)aEl.value=val.a;
+      });
+      updateProgress();
+    },50);
+  }
+
+  // 6. Re-render KO cards si hay picks
+  if(d.ko_preds&&Object.keys(d.ko_preds).length){
+    const kc=document.getElementById('ko-container');
+    if(kc&&!kc.hasChildNodes())renderKoCards();
+    else if(typeof renderKoCards==='function')renderKoCards();
+  }
+
   showToast('✅ Quiniela restaurada — continúa desde donde la dejaste');
 }
 
