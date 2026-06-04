@@ -806,6 +806,42 @@ const KNOCKOUT_ROUNDS=[
 const koPicks={};  // { r16: ['Team1',...], r8: [...], ... }
 
 // ═══════════════════════════════════════════════════════════
+//  AUTO-SAVE / RESTORE (localStorage draft)
+// ═══════════════════════════════════════════════════════════
+const DRAFT_KEY='q26_reg_draft';
+function saveDraft(){
+  try{
+    const preds=collectPredictions();
+    const draft={
+      nombre:document.getElementById('reg-nombre')?.value||'',
+      apodo:document.getElementById('reg-apodo')?.value||'',
+      email:document.getElementById('reg-email')?.value||'',
+      whatsapp:document.getElementById('reg-whatsapp')?.value||'',
+      goles:document.getElementById('reg-goles')?.value||'',
+      predictions:preds,
+      ko_preds:JSON.parse(JSON.stringify(koPicks)),
+      step:currentStep,
+      ts:Date.now()
+    };
+    localStorage.setItem(DRAFT_KEY,JSON.stringify(draft));
+  }catch(e){}
+}
+function clearDraft(){localStorage.removeItem(DRAFT_KEY);}
+function loadDraft(){
+  try{
+    const raw=localStorage.getItem(DRAFT_KEY);
+    if(!raw)return null;
+    const d=JSON.parse(raw);
+    // Ignorar borradores de más de 10 días
+    if(Date.now()-d.ts>10*24*3600*1000){clearDraft();return null;}
+    return d;
+  }catch(e){return null;}
+}
+// Guardar draft automáticamente cada vez que cambia cualquier input
+document.addEventListener('input',saveDraft);
+document.addEventListener('change',saveDraft);
+
+// ═══════════════════════════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════════════════════════
 function showStep(n){
@@ -1232,6 +1268,31 @@ function selectPago(type){
 function markMpClicked(){
   mpClicked=true;
   setTimeout(()=>document.getElementById('mp-confirm-box').classList.remove('hidden'), 1500);
+  // ── Pre-guardar en Firebase antes de salir a MP ──────────
+  _presaveQuiniela();
+}
+
+function _presaveQuiniela(){
+  const nombre=document.getElementById('reg-nombre').value.trim();
+  const apodo=document.getElementById('reg-apodo').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  if(!apodo||/[.#$[\]/]/.test(apodo))return; // sin apodo válido no guardamos
+  const whatsapp=document.getElementById('reg-whatsapp').value.trim();
+  const goles=parseInt(document.getElementById('reg-goles').value)||0;
+  const preds=collectPredictions();
+  const koPredsSaved={};
+  KNOCKOUT_ROUNDS.forEach(r=>{if((koPicks[r.id]||[]).length)koPredsSaved[r.id]=koPicks[r.id];});
+  const data={
+    nombre, email, whatsapp, goles,
+    pago:'mp_pendiente',
+    presaved:true,        // flag para distinguirlo de un envío completo
+    timestamp:Date.now(),
+    predictions:preds,
+    ko_preds:koPredsSaved
+  };
+  _db.ref('q26_pending/'+apodo).set(data)
+    .then(()=>console.log('[Presave] quiniela guardada para',apodo))
+    .catch(e=>console.warn('[Presave] error:',e));
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1270,11 +1331,15 @@ function submitQuiniela(){
     pago: selectedPago==='mp'?'mp_pendiente':'efectivo_pendiente',
     timestamp: Date.now(),
     predictions: preds,
-    ko_preds: koPredsSaved
+    ko_preds: koPredsSaved,
+    presaved: false   // envío completo — sobreescribe cualquier presave anterior
   };
 
   const doSend=()=>{
-    // 2. Success message
+    // 2. Limpiar borrador — quiniela enviada exitosamente
+    clearDraft();
+
+    // 3. Success message
     const pagoMsg=selectedPago==='mp'
       ?'💳 Pago con MercadoPago registrado. El organizador lo confirmará.'
       :'💵 Pago en efectivo pendiente. Entrégalo al organizador.';
@@ -1401,10 +1466,66 @@ function showToast(msg){
 }
 
 // ═══════════════════════════════════════════════════════════
-//  INIT
+//  INIT — restaurar borrador si existe
 // ═══════════════════════════════════════════════════════════
 emailjs.init(EMAILJS_PUBLIC_KEY);
-showStep(1);
+(function initDraft(){
+  const d=loadDraft();
+  if(!d)return showStep(1);
+  // Hay borrador — mostrar banner de recuperación
+  const banner=document.createElement('div');
+  banner.id='draft-banner';
+  banner.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:999;background:#0d1f3c;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,.3)';
+  banner.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.2rem">💾</span>
+      <div>
+        <div style="font-weight:800;font-size:.9rem">Tienes una quiniela guardada${d.apodo?' de <strong>'+d.apodo+'</strong>':''}</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.6)">Guardada hace ${Math.round((Date.now()-d.ts)/60000)} min — ¿quieres continuar donde la dejaste?</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-shrink:0">
+      <button onclick="restoreDraft()" style="background:#00a550;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer;font-size:.85rem">✅ Continuar</button>
+      <button onclick="discardDraft()" style="background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:.82rem;cursor:pointer">Descartar</button>
+    </div>`;
+  document.body.appendChild(banner);
+  showStep(1);
+})();
+
+function restoreDraft(){
+  const d=loadDraft();
+  if(!d)return;
+  document.getElementById('draft-banner')?.remove();
+  // Rellenar campos de texto
+  ['nombre','apodo','email','whatsapp','goles'].forEach(f=>{
+    const el=document.getElementById('reg-'+f);
+    if(el&&d[f]!==undefined)el.value=d[f];
+  });
+  // Restaurar predicciones de grupos
+  if(d.predictions){
+    Object.entries(d.predictions).forEach(([id,val])=>{
+      const hEl=document.getElementById('h-'+id);
+      const aEl=document.getElementById('a-'+id);
+      if(hEl&&val.h!==undefined)hEl.value=val.h;
+      if(aEl&&val.a!==undefined)aEl.value=val.a;
+    });
+  }
+  // Restaurar KO picks
+  if(d.ko_preds){
+    Object.entries(d.ko_preds).forEach(([rid,teams])=>{koPicks[rid]=teams;});
+    // Re-render KO UI si está disponible
+    if(typeof renderKoStep==='function')renderKoStep();
+  }
+  // Ir al paso donde se quedó (máx paso 6 para no saltar al pago)
+  showStep(Math.min(d.step||1,6));
+  showToast('✅ Quiniela restaurada — continúa desde donde la dejaste');
+}
+
+function discardDraft(){
+  clearDraft();
+  document.getElementById('draft-banner')?.remove();
+  showToast('Borrador descartado');
+}
 </script>
 </body>
 </html>
