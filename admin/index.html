@@ -968,7 +968,7 @@
   </div>
   <div style="display:flex;gap:6px">
     <button class="btn btn-primary btn-sm" onclick="saveResult()">✅ Guardar</button>
-    <button class="btn btn-danger btn-sm" onclick="clearResult()">🗑 Borrar</button>
+    <button class="btn btn-danger btn-sm" onclick="confirmClearResultEditor()">🗑 Borrar</button>
     <button class="btn btn-ghost btn-sm" onclick="closeResultEditor()">✕</button>
   </div>
   <input type="hidden" id="re-match-id">
@@ -1961,6 +1961,12 @@ function saveResult(){
   closeResultEditor();
   renderTablero();
   showToast('✅ Resultado guardado');
+}
+function confirmClearResultEditor(){
+  const title=document.getElementById('re-title').textContent;
+  if(confirm(`¿Borrar el resultado de:\n\n${title}\n\nEsta acción no se puede deshacer.`)){
+    clearResult();
+  }
 }
 function clearResult(){
   const matchId=document.getElementById('re-match-id').value;
