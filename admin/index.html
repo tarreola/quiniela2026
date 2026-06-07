@@ -376,6 +376,16 @@
     }
     #toast.show{transform:translateY(0);opacity:1}
 
+    /* ── CONFIRM MODAL ──────────────────────────────────── */
+    #confirm-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(10,24,48,.6);backdrop-filter:blur(2px)}
+    #confirm-overlay.open{display:flex;align-items:center;justify-content:center}
+    #confirm-box{background:#fff;border-radius:16px;padding:24px 28px;width:min(360px,90vw);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    #confirm-box h3{font-size:.95rem;font-weight:800;color:var(--navy);margin-bottom:6px}
+    #confirm-box p{font-size:.85rem;color:var(--muted);margin-bottom:20px;line-height:1.5}
+    .confirm-btns{display:flex;gap:10px;justify-content:flex-end}
+    .confirm-btns button{padding:9px 20px;border:none;border-radius:9px;font-size:.85rem;font-weight:700;cursor:pointer}
+    .confirm-cancel{background:var(--surface2);color:var(--muted)}
+    .confirm-ok{background:#dc2626;color:#fff}
     /* ── RESULTADOS TAB ─────────────────────────────────── */
     .res-subtabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0}
     .res-subtab{padding:8px 18px;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:.82rem;font-weight:600;background:transparent;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s}
@@ -949,6 +959,18 @@
 
 </main>
 
+<!-- Confirm modal (reusable) -->
+<div id="confirm-overlay">
+  <div id="confirm-box">
+    <h3 id="confirm-title">¿Confirmar acción?</h3>
+    <p id="confirm-msg"></p>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="closeConfirm()">Cancelar</button>
+      <button class="confirm-ok" id="confirm-ok-btn">Borrar</button>
+    </div>
+  </div>
+</div>
+
 <!-- KO Result editor popup -->
 <div id="ko-result-editor">
   <h4 id="kore-title">Resultados KO</h4>
@@ -1430,10 +1452,18 @@ function saveResultInline(matchId){
   renderTablero();
   showToast('✅ Resultado guardado');
 }
+function showConfirm(title,msg,onOk){
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-msg').textContent=msg;
+  const btn=document.getElementById('confirm-ok-btn');
+  btn.onclick=()=>{closeConfirm();onOk();};
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+function closeConfirm(){
+  document.getElementById('confirm-overlay').classList.remove('open');
+}
 function confirmClearResult(matchId,matchLabel){
-  if(confirm(`¿Borrar el resultado de:\n\n${matchLabel}\n\nEsta acción no se puede deshacer.`)){
-    clearResultInline(matchId);
-  }
+  showConfirm('¿Borrar resultado?',`Se eliminará el marcador de: ${matchLabel}`,()=>clearResultInline(matchId));
 }
 function clearResultInline(matchId){
   const results=getResults();
@@ -1964,9 +1994,7 @@ function saveResult(){
 }
 function confirmClearResultEditor(){
   const title=document.getElementById('re-title').textContent;
-  if(confirm(`¿Borrar el resultado de:\n\n${title}\n\nEsta acción no se puede deshacer.`)){
-    clearResult();
-  }
+  showConfirm('¿Borrar resultado?',`Se eliminará el marcador de: ${title}`,clearResult);
 }
 function clearResult(){
   const matchId=document.getElementById('re-match-id').value;
