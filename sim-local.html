@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎮 Simulación Local — Quiniela 2026</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:#0d1f3c;color:#e2e8f0;min-height:100vh;padding:24px}
+h1{color:#00a550;font-size:1.4rem;margin-bottom:4px}
+.sub{color:#64748b;font-size:.82rem;margin-bottom:28px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.card{background:#162033;border:1px solid #1e3a5f;border-radius:14px;padding:20px}
+.card h2{font-size:.95rem;font-weight:800;color:#60a5fa;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+label{display:block;font-size:.78rem;color:#94a3b8;margin-bottom:5px;font-weight:600}
+select,input{width:100%;padding:8px 10px;border-radius:8px;border:1px solid #1e3a5f;background:#0d1f3c;color:#e2e8f0;font-size:.85rem;outline:none;margin-bottom:10px}
+.btn{width:100%;padding:10px;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;margin-bottom:8px;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-green{background:#00a550;color:#fff}
+.btn-blue{background:#2563eb;color:#fff}
+.btn-red{background:#dc2626;color:#fff}
+.btn-gold{background:#f59e0b;color:#0d1f3c}
+.btn-gray{background:#1e3a5f;color:#94a3b8}
+.log{background:#091830;border:1px solid #1e3a5f;border-radius:8px;padding:12px;font-size:.75rem;font-family:monospace;max-height:160px;overflow-y:auto;margin-top:8px;line-height:1.7}
+.ok{color:#22c55e}.err{color:#f87171}.info{color:#60a5fa}.warn{color:#fbbf24}
+.date-active{background:#064e3b;border:1px solid #059669;border-radius:8px;padding:8px 12px;font-size:.88rem;font-weight:700;color:#6ee7b7;margin-bottom:12px;text-align:center}
+.links{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.link-btn{display:block;text-align:center;padding:10px;border-radius:8px;font-size:.85rem;font-weight:700;text-decoration:none;transition:opacity .15s}
+.link-btn:hover{opacity:.85}
+.sep{border:none;border-top:1px solid #1e3a5f;margin:12px 0}
+#sim-date-label{font-size:.95rem;color:#fbbf24;font-weight:800}
+.score-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.score-row span{flex:1;font-size:.78rem;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.score-inp{width:44px!important;text-align:center;padding:6px 4px!important;font-weight:800}
+.score-vs{flex-shrink:0;color:#475569;font-size:.75rem}
+.match-group-hdr{font-size:.68rem;font-weight:800;color:#60a5fa;text-transform:uppercase;letter-spacing:.06em;margin:10px 0 6px;padding-bottom:4px;border-bottom:1px solid #1e3a5f}
+</style>
+</head>
+<body>
+
+<h1>🎮 Panel de Simulación Local — Quiniela 2026</h1>
+<p class="sub">Solo afecta resultados (q26_results / q26_ko_results). Los datos de participantes no se tocan.</p>
+
+<div class="grid">
+
+  <!-- CONTROL DE FECHA -->
+  <div class="card">
+    <h2>📅 Fecha simulada</h2>
+    <div class="date-active" id="date-display">Fecha real de hoy</div>
+    <label>Simular día de partido</label>
+    <select id="date-select">
+      <option value="">— Fecha real (hoy) —</option>
+    </select>
+    <button class="btn btn-gold" onclick="setSimDate()">📅 Aplicar fecha</button>
+    <button class="btn btn-gray" onclick="clearSimDate()">✕ Volver a fecha real</button>
+    <hr class="sep">
+    <label>Links rápidos (con fecha simulada)</label>
+    <div class="links" id="quick-links">
+      <a class="link-btn" style="background:#00a550;color:#fff" href="/" target="_blank" id="link-tablero">📊 Tablero público</a>
+      <a class="link-btn" style="background:#1e3a5f;color:#fff" href="/admin" target="_blank">⚙️ Admin</a>
+    </div>
+  </div>
+
+  <!-- RESULTADOS RÁPIDOS -->
+  <div class="card">
+    <h2>⚽ Cargar resultados de prueba</h2>
+    <label>Fecha de los partidos a cargar</label>
+    <select id="result-date-select">
+      <option value="">— Selecciona fecha —</option>
+    </select>
+    <div id="match-inputs"></div>
+    <button class="btn btn-green" onclick="saveResults()">💾 Guardar resultados</button>
+    <button class="btn btn-red" onclick="clearResults()">🗑 Borrar TODOS los resultados</button>
+    <div class="log" id="result-log">Selecciona una fecha para ver los partidos...</div>
+  </div>
+
+  <!-- ESTADO ACTUAL -->
+  <div class="card">
+    <h2>📊 Estado en Firebase</h2>
+    <button class="btn btn-blue" onclick="refreshStatus()">🔄 Actualizar estado</button>
+    <div class="log" id="status-log">Haz clic en Actualizar estado...</div>
+  </div>
+
+  <!-- KO RESULTS -->
+  <div class="card">
+    <h2>🏆 Fase Eliminatoria (prueba)</h2>
+    <label>Cargar equipos de prueba en 16vos</label>
+    <button class="btn btn-green" onclick="loadR16Sample()">⚡ Cargar 32 equipos en R16</button>
+    <button class="btn btn-red" onclick="clearKoResults()">🗑 Borrar resultados KO</button>
+    <div class="log" id="ko-log">—</div>
+  </div>
+
+</div>
+
+<script>
+const _fc={apiKey:'AIzaSyBbaCAODAbhgjSEUaA8Hzf31vf8K6ek1zU',authDomain:'quiniela2026-9784f.firebaseapp.com',databaseURL:'https://quiniela2026-9784f-default-rtdb.firebaseio.com',projectId:'quiniela2026-9784f'};
+firebase.initializeApp(_fc);
+const db=firebase.database();
+
+// ── Partidos ──────────────────────────────────────────────
+const DEFAULT_TEAMS={A:['México','Corea del Sur','Sudáfrica','Rep. Checa'],B:['Canadá','Bosnia-Herzegovina','Catar','Suiza'],C:['Brasil','Marruecos','Haití','Escocia'],D:['Estados Unidos','Paraguay','Australia','Turquía'],E:['Alemania','Curazao','Costa de Marfil','Ecuador'],F:['Países Bajos','Japón','Suecia','Túnez'],G:['Bélgica','Egipto','Irán','Nueva Zelanda'],H:['España','Cabo Verde','Arabia Saudita','Uruguay'],I:['Francia','Senegal','Irak','Noruega'],J:['Argentina','Austria','Argelia','Jordania'],K:['Portugal','Colombia','Rep. Dem. Congo','Uzbekistán'],L:['Inglaterra','Croacia','Ghana','Panamá']};
+const DEFAULT_MATCHES=[
+  {id:'A1',group:'A',matchday:1,date:'11 Jun',time:'13:00',hi:0,ai:2},
+  {id:'A2',group:'A',matchday:1,date:'11 Jun',time:'20:00',hi:1,ai:3},
+  {id:'B1',group:'B',matchday:1,date:'12 Jun',time:'13:00',hi:0,ai:1},
+  {id:'D1',group:'D',matchday:1,date:'12 Jun',time:'19:00',hi:0,ai:1},
+  {id:'B2',group:'B',matchday:1,date:'13 Jun',time:'13:00',hi:2,ai:3},
+  {id:'C1',group:'C',matchday:1,date:'13 Jun',time:'16:00',hi:0,ai:1},
+  {id:'C2',group:'C',matchday:1,date:'13 Jun',time:'19:00',hi:2,ai:3},
+  {id:'D2',group:'D',matchday:1,date:'13 Jun',time:'22:00',hi:2,ai:3},
+  {id:'E1',group:'E',matchday:1,date:'14 Jun',time:'11:00',hi:0,ai:1},
+  {id:'F1',group:'F',matchday:1,date:'14 Jun',time:'14:00',hi:0,ai:1},
+  {id:'E2',group:'E',matchday:1,date:'14 Jun',time:'17:00',hi:2,ai:3},
+  {id:'F2',group:'F',matchday:1,date:'14 Jun',time:'20:00',hi:2,ai:3},
+  {id:'G1',group:'G',matchday:1,date:'15 Jun',time:'13:00',hi:0,ai:1},
+  {id:'H1',group:'H',matchday:1,date:'15 Jun',time:'16:00',hi:0,ai:1},
+  {id:'G2',group:'G',matchday:1,date:'15 Jun',time:'19:00',hi:2,ai:3},
+  {id:'H2',group:'H',matchday:1,date:'15 Jun',time:'22:00',hi:2,ai:3},
+  {id:'I1',group:'I',matchday:1,date:'16 Jun',time:'13:00',hi:0,ai:1},
+  {id:'J1',group:'J',matchday:1,date:'16 Jun',time:'16:00',hi:0,ai:1},
+  {id:'I2',group:'I',matchday:1,date:'16 Jun',time:'19:00',hi:2,ai:3},
+  {id:'J2',group:'J',matchday:1,date:'16 Jun',time:'22:00',hi:2,ai:3},
+  {id:'K1',group:'K',matchday:1,date:'17 Jun',time:'13:00',hi:0,ai:1},
+  {id:'L1',group:'L',matchday:1,date:'17 Jun',time:'16:00',hi:0,ai:1},
+  {id:'K2',group:'K',matchday:1,date:'17 Jun',time:'19:00',hi:2,ai:3},
+  {id:'L2',group:'L',matchday:1,date:'17 Jun',time:'22:00',hi:2,ai:3},
+  {id:'A3',group:'A',matchday:2,date:'18 Jun',time:'13:00',hi:0,ai:1},
+  {id:'A4',group:'A',matchday:2,date:'18 Jun',time:'16:00',hi:2,ai:3},
+  {id:'B3',group:'B',matchday:2,date:'19 Jun',time:'13:00',hi:0,ai:2},
+  {id:'B4',group:'B',matchday:2,date:'19 Jun',time:'16:00',hi:1,ai:3},
+  {id:'C3',group:'C',matchday:2,date:'19 Jun',time:'19:00',hi:0,ai:2},
+  {id:'C4',group:'C',matchday:2,date:'19 Jun',time:'22:00',hi:1,ai:3},
+  {id:'D3',group:'D',matchday:2,date:'20 Jun',time:'13:00',hi:0,ai:2},
+  {id:'D4',group:'D',matchday:2,date:'20 Jun',time:'16:00',hi:1,ai:3},
+  {id:'E3',group:'E',matchday:2,date:'20 Jun',time:'19:00',hi:0,ai:2},
+  {id:'E4',group:'E',matchday:2,date:'20 Jun',time:'22:00',hi:1,ai:3},
+  {id:'F3',group:'F',matchday:2,date:'21 Jun',time:'13:00',hi:0,ai:2},
+  {id:'F4',group:'F',matchday:2,date:'21 Jun',time:'16:00',hi:1,ai:3},
+  {id:'G3',group:'G',matchday:2,date:'21 Jun',time:'19:00',hi:0,ai:2},
+  {id:'G4',group:'G',matchday:2,date:'21 Jun',time:'22:00',hi:1,ai:3},
+  {id:'H3',group:'H',matchday:2,date:'22 Jun',time:'13:00',hi:0,ai:2},
+  {id:'H4',group:'H',matchday:2,date:'22 Jun',time:'16:00',hi:1,ai:3},
+  {id:'I3',group:'I',matchday:2,date:'22 Jun',time:'19:00',hi:0,ai:2},
+  {id:'I4',group:'I',matchday:2,date:'22 Jun',time:'22:00',hi:1,ai:3},
+  {id:'J3',group:'J',matchday:2,date:'23 Jun',time:'13:00',hi:0,ai:2},
+  {id:'J4',group:'J',matchday:2,date:'23 Jun',time:'16:00',hi:1,ai:3},
+  {id:'K3',group:'K',matchday:2,date:'23 Jun',time:'19:00',hi:0,ai:2},
+  {id:'K4',group:'K',matchday:2,date:'23 Jun',time:'22:00',hi:1,ai:3},
+  {id:'L3',group:'L',matchday:2,date:'24 Jun',time:'13:00',hi:0,ai:2},
+  {id:'L4',group:'L',matchday:2,date:'24 Jun',time:'16:00',hi:1,ai:3},
+  {id:'A5',group:'A',matchday:3,date:'25 Jun',time:'16:00',hi:0,ai:3},
+  {id:'A6',group:'A',matchday:3,date:'25 Jun',time:'16:00',hi:1,ai:2},
+  {id:'B5',group:'B',matchday:3,date:'25 Jun',time:'19:00',hi:0,ai:3},
+  {id:'B6',group:'B',matchday:3,date:'25 Jun',time:'19:00',hi:1,ai:2},
+  {id:'C5',group:'C',matchday:3,date:'26 Jun',time:'16:00',hi:0,ai:3},
+  {id:'C6',group:'C',matchday:3,date:'26 Jun',time:'16:00',hi:1,ai:2},
+  {id:'D5',group:'D',matchday:3,date:'26 Jun',time:'19:00',hi:0,ai:3},
+  {id:'D6',group:'D',matchday:3,date:'26 Jun',time:'19:00',hi:1,ai:2},
+  {id:'E5',group:'E',matchday:3,date:'27 Jun',time:'16:00',hi:0,ai:3},
+  {id:'E6',group:'E',matchday:3,date:'27 Jun',time:'16:00',hi:1,ai:2},
+  {id:'F5',group:'F',matchday:3,date:'27 Jun',time:'19:00',hi:0,ai:3},
+  {id:'F6',group:'F',matchday:3,date:'27 Jun',time:'19:00',hi:1,ai:2},
+  {id:'G5',group:'G',matchday:3,date:'28 Jun',time:'16:00',hi:0,ai:3},
+  {id:'G6',group:'G',matchday:3,date:'28 Jun',time:'16:00',hi:1,ai:2},
+  {id:'H5',group:'H',matchday:3,date:'28 Jun',time:'19:00',hi:0,ai:3},
+  {id:'H6',group:'H',matchday:3,date:'28 Jun',time:'19:00',hi:1,ai:2},
+  {id:'I5',group:'I',matchday:3,date:'29 Jun',time:'16:00',hi:0,ai:3},
+  {id:'I6',group:'I',matchday:3,date:'29 Jun',time:'16:00',hi:1,ai:2},
+  {id:'J5',group:'J',matchday:3,date:'29 Jun',time:'19:00',hi:0,ai:3},
+  {id:'J6',group:'J',matchday:3,date:'29 Jun',time:'19:00',hi:1,ai:2},
+  {id:'K5',group:'K',matchday:3,date:'30 Jun',time:'16:00',hi:0,ai:3},
+  {id:'K6',group:'K',matchday:3,date:'30 Jun',time:'16:00',hi:1,ai:2},
+  {id:'L5',group:'L',matchday:3,date:'30 Jun',time:'19:00',hi:0,ai:3},
+  {id:'L6',group:'L',matchday:3,date:'30 Jun',time:'19:00',hi:1,ai:2},
+];
+
+function getMatches(){
+  return DEFAULT_MATCHES.map(m=>{
+    const ts=DEFAULT_TEAMS[m.group]||['','','',''];
+    return {...m,home:ts[m.hi]||'?',away:ts[m.ai]||'?'};
+  });
+}
+
+// ── Fechas únicas ─────────────────────────────────────────
+const allDates=[...new Set(DEFAULT_MATCHES.map(m=>m.date))];
+
+function populateDateSelects(){
+  ['date-select','result-date-select'].forEach(id=>{
+    const sel=document.getElementById(id);
+    const first=sel.options[0];
+    sel.innerHTML='';
+    sel.appendChild(first);
+    allDates.forEach(d=>{
+      const o=document.createElement('option');
+      o.value=d; o.textContent=d+' — '+getMatches().filter(m=>m.date===d).map(m=>m.home+' vs '+m.away).join(' · ').substring(0,60)+'…';
+      sel.appendChild(o);
+    });
+  });
+}
+
+// ── Fecha simulada ────────────────────────────────────────
+function updateDateDisplay(){
+  const active=localStorage.getItem('q26_sim_date');
+  const disp=document.getElementById('date-display');
+  const tLink=document.getElementById('link-tablero');
+  if(active){
+    disp.textContent='📅 Simulando: '+active;
+    disp.style.background='#064e3b';
+    tLink.href='/?simdate='+encodeURIComponent(active);
+    tLink.textContent='📊 Tablero ('+active+')';
+  }else{
+    disp.textContent='Fecha real de hoy';
+    disp.style.background='#162033';
+    tLink.href='/';
+    tLink.textContent='📊 Tablero público';
+  }
+}
+function setSimDate(){
+  const val=document.getElementById('date-select').value;
+  if(!val)return alert('Selecciona una fecha');
+  localStorage.setItem('q26_sim_date',val);
+  updateDateDisplay();
+  log('result-log','📅 Fecha simulada → '+val,'ok');
+}
+function clearSimDate(){
+  localStorage.removeItem('q26_sim_date');
+  updateDateDisplay();
+  log('result-log','Fecha real restaurada','info');
+}
+
+// ── Match inputs ──────────────────────────────────────────
+let _currentResults={};
+db.ref('q26_results').on('value',snap=>{_currentResults=snap.val()||{};renderMatchInputs();});
+
+function renderMatchInputs(){
+  const date=document.getElementById('result-date-select').value;
+  const wrap=document.getElementById('match-inputs');
+  if(!date){wrap.innerHTML='';return;}
+  const matches=getMatches().filter(m=>m.date===date);
+  if(!matches.length){wrap.innerHTML='<p style="color:#64748b;font-size:.78rem">No hay partidos esta fecha</p>';return;}
+  const byGroup={};
+  matches.forEach(m=>{if(!byGroup[m.group])byGroup[m.group]=[];byGroup[m.group].push(m);});
+  wrap.innerHTML=Object.entries(byGroup).map(([g,ms])=>`
+    <div class="match-group-hdr">Grupo ${g}</div>
+    ${ms.map(m=>{
+      const r=_currentResults[m.id];
+      return `<div class="score-row">
+        <span title="${m.home}">${m.home}</span>
+        <input class="score-inp" type="number" min="0" max="20" id="sh-${m.id}" value="${r!==undefined?r.h:''}" placeholder="–">
+        <span class="score-vs">-</span>
+        <input class="score-inp" type="number" min="0" max="20" id="sa-${m.id}" value="${r!==undefined?r.a:''}" placeholder="–">
+        <span title="${m.away}">${m.away}</span>
+        ${r!==undefined?'<span style="color:#22c55e;font-size:.7rem">✓</span>':''}
+      </div>`;
+    }).join('')}
+  `).join('');
+}
+
+document.getElementById('result-date-select').addEventListener('change',renderMatchInputs);
+
+async function saveResults(){
+  const date=document.getElementById('result-date-select').value;
+  if(!date){log('result-log','Selecciona una fecha primero','warn');return;}
+  const matches=getMatches().filter(m=>m.date===date);
+  const updates={};
+  let saved=0,skipped=0;
+  matches.forEach(m=>{
+    const h=document.getElementById('sh-'+m.id)?.value;
+    const a=document.getElementById('sa-'+m.id)?.value;
+    if(h!==''&&a!==''){
+      updates['q26_results/'+m.id]={h:parseInt(h),a:parseInt(a)};
+      saved++;
+    }else skipped++;
+  });
+  if(!saved){log('result-log','No hay marcadores para guardar','warn');return;}
+  try{
+    await db.ref('/').update(updates);
+    log('result-log',`✅ ${saved} resultados guardados (${skipped} sin marcador)`,'ok');
+    setTimeout(renderMatchInputs,500);
+  }catch(e){log('result-log','❌ Error: '+e.message,'err');}
+}
+
+async function clearResults(){
+  if(!confirm('¿Borrar TODOS los resultados del torneo?'))return;
+  try{
+    await db.ref('q26_results').remove();
+    await db.ref('q26_ko_results').remove();
+    log('result-log','🗑 Todos los resultados borrados','ok');
+  }catch(e){log('result-log','❌ Error: '+e.message,'err');}
+}
+
+// ── KO ────────────────────────────────────────────────────
+const KO_TEAMS=['México','Brasil','Argentina','España','Francia','Alemania','Inglaterra','Países Bajos','Portugal','Bélgica','Uruguay','Croacia','Estados Unidos','Colombia','Senegal','Japón','Corea del Sur','Canadá','Marruecos','Australia','Suecia','Polonia','Suiza','Ecuador','Dinamarca','Ghana','Catar','Arabia Saudita','Irán','Túnez','Panamá','Costa Rica'];
+
+async function loadR16Sample(){
+  try{
+    await db.ref('q26_ko_results/r16').set(KO_TEAMS.slice(0,32));
+    log('ko-log','✅ 32 equipos cargados en 16vos','ok');
+  }catch(e){log('ko-log','❌ Error: '+e.message,'err');}
+}
+async function clearKoResults(){
+  if(!confirm('¿Borrar todos los resultados KO?'))return;
+  try{
+    await db.ref('q26_ko_results').remove();
+    log('ko-log','🗑 Resultados KO borrados','ok');
+  }catch(e){log('ko-log','❌ Error: '+e.message,'err');}
+}
+
+// ── Status ────────────────────────────────────────────────
+async function refreshStatus(){
+  const logEl=document.getElementById('status-log');
+  logEl.innerHTML='<span class="info">Cargando...</span>';
+  try{
+    const [parts,results,koResults,payments]=await Promise.all([
+      db.ref('q26_participants').once('value'),
+      db.ref('q26_results').once('value'),
+      db.ref('q26_ko_results').once('value'),
+      db.ref('q26_payments').once('value'),
+    ]);
+    const partsArr=parts.val()||[];
+    const resObj=results.val()||{};
+    const koObj=koResults.val()||{};
+    const payObj=payments.val()||{};
+    const paid=Object.entries(payObj).filter(([,v])=>['mp','efectivo_jr','efectivo_paps','publicado_pendiente'].includes(v)).map(([k])=>k);
+    const simDate=localStorage.getItem('q26_sim_date');
+    logEl.innerHTML=[
+      `<span class="ok">✅ Participantes activos: ${partsArr.length}</span>`,
+      `<span class="ok">✅ Con pago confirmado: ${paid.length}</span>`,
+      `<span class="info">⚽ Resultados grupo: ${Object.keys(resObj).length}/72</span>`,
+      `<span class="info">🏆 Rondas KO con datos: ${Object.keys(koObj).length}/6</span>`,
+      `<span class="${simDate?'warn':'info'}">📅 Fecha sim: ${simDate||'(real)'}</span>`,
+      ``,
+      `<span class="info">Participantes: ${partsArr.join(', ')}</span>`,
+    ].join('\n');
+  }catch(e){
+    logEl.innerHTML=`<span class="err">Error: ${e.message}</span>`;
+  }
+}
+
+// ── Utils ─────────────────────────────────────────────────
+function log(id,msg,cls='info'){
+  const el=document.getElementById(id);
+  el.innerHTML+=`<span class="${cls}">${msg}</span>\n`;
+  el.scrollTop=el.scrollHeight;
+}
+
+// ── Init ──────────────────────────────────────────────────
+populateDateSelects();
+updateDateDisplay();
+const saved=localStorage.getItem('q26_sim_date');
+if(saved){document.getElementById('date-select').value=saved;}
+refreshStatus();
+</script>
+</body>
+</html>

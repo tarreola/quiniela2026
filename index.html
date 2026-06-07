@@ -880,6 +880,11 @@ function setMobViewMode(mode){
 }
 /* ══ PARTIDOS DE HOY ══ */
 function getTodayMatchDate(){
+  // Simulation override: ?simdate=11+Jun or localStorage sim_date
+  const urlParam=new URLSearchParams(location.search).get('simdate');
+  const lsParam=localStorage.getItem('q26_sim_date');
+  if(urlParam)return decodeURIComponent(urlParam);
+  if(lsParam)return lsParam;
   const months=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   const d=new Date();
   return d.getDate()+' '+months[d.getMonth()];
