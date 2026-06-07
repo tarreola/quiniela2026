@@ -1381,7 +1381,7 @@ function renderResGrupos(){
         </div>
         <div class="res-actions">
           <button class="res-save-btn" onclick="saveResultInline('${m.id}')">💾</button>
-          ${hasResult?`<button class="res-clear-btn" onclick="requireAdminAuth('Borrar resultado','Se eliminará el marcador de este partido. Esta acción no se puede deshacer.',()=>clearResultInline('${m.id}'))" title="Borrar resultado">✕</button>`:''}
+          ${hasResult?`<button class="res-clear-btn" onclick="confirmClearResult('${m.id}','${m.home} vs ${m.away}')" title="Borrar resultado">✕</button>`:''}
         </div>
       </div>`;
     }).join('');
@@ -1429,6 +1429,11 @@ function saveResultInline(matchId){
   renderResProgress();
   renderTablero();
   showToast('✅ Resultado guardado');
+}
+function confirmClearResult(matchId,matchLabel){
+  if(confirm(`¿Borrar el resultado de:\n\n${matchLabel}\n\nEsta acción no se puede deshacer.`)){
+    clearResultInline(matchId);
+  }
 }
 function clearResultInline(matchId){
   const results=getResults();
