@@ -2467,8 +2467,8 @@ function renderParticipants(){
         ${unlockBtn}
         <button class="btn btn-sm" style="font-size:.75rem;padding:4px 9px;flex-shrink:0;background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5"
           onclick="requireAdminAuth('Eliminar participante','Se eliminara al participante y todas sus predicciones. Esta accion no se puede deshacer.',()=>removeParticipant('${pSafe}'))">🗑</button>
-        <button class="btn btn-sm" style="font-size:.75rem;padding:4px 9px;flex-shrink:0;background:#e0e7ff;color:#3730a3;border:1px solid #a5b4fc" title="Cambiar apodo"
-          onclick="renameParticipant('${pSafe}')">✏️</button>
+        <!--<button class="btn btn-sm" style="font-size:.75rem;padding:4px 9px;flex-shrink:0;background:#e0e7ff;color:#3730a3;border:1px solid #a5b4fc" title="Cambiar apodo"
+          onclick="renameParticipant('${pSafe}')">✏️</button>-->
       </div>
     </div>`;
   }).join('');
