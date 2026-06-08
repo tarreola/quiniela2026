@@ -510,9 +510,16 @@
   <div id="view-tablero" class="view active">
     <div class="page-title"><span>📊</span> Tablero Principal — Fase de Grupos</div>
     <div class="tablero-infobar">
-      <div class="info-card info-card-bolsa">
-        <div class="info-card-label">💰 Bolsa Acumulada</div>
-        <div class="info-card-value" id="info-bolsa">—</div>
+      <div class="info-card info-card-bolsa" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+        <div>
+          <div class="info-card-label">💰 Bolsa Acumulada</div>
+          <div class="info-card-value" id="info-bolsa">—</div>
+        </div>
+        <div style="width:1px;height:36px;background:var(--border);flex-shrink:0"></div>
+        <div>
+          <div class="info-card-label">👥 Participantes</div>
+          <div class="info-card-value" id="info-participantes" style="font-size:1.5rem">—</div>
+        </div>
       </div>
       <div class="tablero-controls">
         <button class="btn-hoy" id="btn-hoy" onclick="openHoyModal()">⚽ Partidos de hoy</button>
@@ -721,6 +728,8 @@ function renderTablero(){
   const totalGoles=Object.values(results).reduce((s,r)=>s+(r.h||0)+(r.a||0),0);
   const bolsaEl=document.getElementById('info-bolsa');
   if(bolsaEl)bolsaEl.textContent=bolsa>0?'$'+bolsa.toLocaleString('es-MX')+' MXN':'—';
+  const partEl=document.getElementById('info-participantes');
+  if(partEl)partEl.textContent=participants.length>0?participants.length:'—';
 
   const searchQ=(document.getElementById('tablero-search')?.value||'').toLowerCase();
   const visibleParticipants=searchQ?participants.filter(p=>{const nombre=(profiles[p]?.nombre||'').toLowerCase();return p.toLowerCase().includes(searchQ)||nombre.includes(searchQ);}):participants;
