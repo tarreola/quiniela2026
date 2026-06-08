@@ -837,7 +837,7 @@
   </div>
 
   <!-- ══════════ PREDICCIONES ══════════ -->
-  <div id="view-predicciones" class="view active">
+  <div id="view-predicciones" class="view">
     <div class="page-title" style="justify-content:space-between;flex-wrap:wrap;gap:10px">
       <span style="display:flex;align-items:center;gap:10px"><span>✏️</span> Predicciones</span>
       <button class="btn btn-ghost btn-sm" onclick="exportReporte()" style="font-size:.82rem">⬇ Exportar Reporte</button>
@@ -893,7 +893,7 @@
   </div>
 
   <!-- ══════════ ADMIN ══════════ -->
-  <div id="view-config" class="view">
+  <div id="view-config" class="view active">
     <div class="page-title"><span>⚙️</span> Administración</div>
 
     <!-- Pendientes de Aprobación (ancho completo) -->
@@ -1249,7 +1249,7 @@ function _updatePendingBadge(){
 
 async function startApp(){
   await initData();
-  renderPredPage();
+  renderConfig();
   // Real-time listener: detecta nuevos registros aunque el admin ya esté en la página
   _db.ref('q26_pending').on('value',snap=>{
     _cache.q26_pending=snap.val()||{};
@@ -1302,7 +1302,7 @@ function generateMatches(teams){
 // ═══════════════════════════════════════════════════════════
 //  NAVEGACIÓN
 // ═══════════════════════════════════════════════════════════
-let activeView='predicciones';
+let activeView='config';
 let activeTableroGroup='all';
 let activePredGroup='all';
 
