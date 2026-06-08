@@ -820,7 +820,7 @@
           <span style="color:var(--muted)">🔍</span>
           <input type="text" id="tablero-search" placeholder="Buscar participante…" oninput="renderTablero()" style="width:100%">
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="exportCSV()">⬇ Exportar CSV</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportReporte()">⬇ Exportar Reporte</button>
       </div>
     </div>
 
@@ -2879,27 +2879,103 @@ function renderNoPago(){
 }
 
 // ═══════════════════════════════════════════════════════════
-//  EXPORT CSV
+//  EXPORT REPORTE HTML
 // ═══════════════════════════════════════════════════════════
-function exportCSV(){
+function exportReporte(){
   const teams=getTeams();
-  const participants=getParticipants();
+  const allParticipants=getParticipants();
   const predictions=getPredictions();
+  const payments=getPayments();
+  const profiles=load('q26_profiles',{});
+  const koPreds=getKoPreds();
   const matches=generateMatches(teams);
-  if(!participants.length){showToast('⚠️ Sin participantes');return;}
+  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
+  const participants=allParticipants.filter(p=>PAID.has(payments[p]||''));
+  if(!participants.length){showToast('⚠️ Sin participantes con pago confirmado');return;}
 
-  let csv='Participante,'+matches.map(m=>`"${m.home} vs ${m.away} (G${m.group})"`).join(',')+'\n';
-  participants.forEach(p=>{
+  const bolsa=participants.length*3000;
+  const fechaExport=new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+  const GROUP_COLORS={A:'#1e40af',B:'#065f46',C:'#7c2d12',D:'#4c1d95',E:'#064e3b',F:'#92400e',G:'#1e3a5f',H:'#4a044e',I:'#0c4a6e',J:'#166534',K:'#831843',L:'#713f12'};
+  const groups=[...new Set(matches.map(m=>m.group))];
+  const matchesByGroup={};
+  groups.forEach(g=>{matchesByGroup[g]=matches.filter(m=>m.group===g);});
+
+  // Fase Grupos — headers
+  let gHead1='<th class="th-part">Participante</th>';
+  groups.forEach(g=>{const ms=matchesByGroup[g];gHead1+=`<th colspan="${ms.length}" class="th-group" style="background:${GROUP_COLORS[g]}20;color:${GROUP_COLORS[g]};border-bottom:3px solid ${GROUP_COLORS[g]}">Grupo ${g}</th>`;});
+  let gHead2='<th class="th-part-sub">Apodo / Nombre</th>';
+  groups.forEach(g=>{matchesByGroup[g].forEach(m=>{gHead2+=`<th class="th-match" style="border-top:3px solid ${GROUP_COLORS[g]}"><div class="mf">${m.home}</div><div class="mv">vs</div><div class="mf">${m.away}</div><div class="mj">J${m.matchday}</div></th>`;});});
+  let gRows='';
+  participants.forEach((p,i)=>{
     const pp=predictions[p]||{};
-    const row=[p,...matches.map(m=>{const pr=pp[m.id];return pr!==undefined?`${pr.h}-${pr.a}`:''})];
-    csv+=row.map(v=>`"${v}"`).join(',')+'\n';
+    const nombre=(profiles[p]||{}).nombre||'';
+    const filled=matches.filter(m=>pp[m.id]!==undefined).length;
+    let cells=`<td class="td-part"><div class="pa">${p}</div>${nombre?`<div class="pn">${nombre}</div>`:''}<div class="pf">${filled}/72</div></td>`;
+    groups.forEach(g=>{matchesByGroup[g].forEach(m=>{const pr=pp[m.id];cells+=pr!==undefined?`<td class="td-s" style="border-top:2px solid ${GROUP_COLORS[g]}30">${pr.h}–${pr.a}</td>`:`<td class="td-e" style="border-top:2px solid ${GROUP_COLORS[g]}30">—</td>`;});});
+    gRows+=`<tr class="${i%2===0?'re':'ro'}">${cells}</tr>`;
   });
-  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+
+  // Fase KO
+  const KR=[{id:'r16',label:'16vos de Final',pts:1},{id:'r8',label:'Octavos de Final',pts:1},{id:'r4',label:'Cuartos de Final',pts:1},{id:'r2',label:'Semifinal',pts:2},{id:'rf',label:'Final',pts:3},{id:'rc',label:'Campeón',pts:5}];
+  let kHead='<th class="th-part">Participante</th>';
+  KR.forEach(r=>{kHead+=`<th class="th-ko">${r.label}<div class="kp">${r.pts}pt c/u</div></th>`;});
+  let kRows='';
+  participants.forEach((p,i)=>{
+    const pp=koPreds[p]||{};
+    const nombre=(profiles[p]||{}).nombre||'';
+    let cells=`<td class="td-part"><div class="pa">${p}</div>${nombre?`<div class="pn">${nombre}</div>`:''}</td>`;
+    KR.forEach(r=>{const picks=pp[r.id]||[];cells+=picks.length?`<td class="td-ko">${picks.map(t=>`<span class="kpill">${t}</span>`).join('')}</td>`:`<td class="td-e">—</td>`;});
+    kRows+=`<tr class="${i%2===0?'re':'ro'}">${cells}</tr>`;
+  });
+
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Quiniela Mundial 2026 — Reporte</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4f8;color:#1a2333;font-size:13px}
+.hdr{background:linear-gradient(110deg,#0d1f3c,#1a3358 60%,#1e4a7a);border-bottom:4px solid #00a550;padding:22px 28px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.hdr h1{font-size:1.3rem;font-weight:900;margin-bottom:3px}
+.hdr p{font-size:.75rem;color:rgba(255,255,255,.55)}
+.stats{display:flex;gap:20px}
+.sv{font-size:1.4rem;font-weight:900;color:#fbbf24;line-height:1}
+.sl{font-size:.6rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.sec{margin:20px 18px}
+.sec-t{font-size:.95rem;font-weight:800;color:#0d1f3c;margin-bottom:10px;padding-bottom:7px;border-bottom:3px solid #00a550}
+.tw{overflow-x:auto;border-radius:10px;border:1px solid #e2e8f0;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+table{border-collapse:collapse;width:100%;min-width:500px}
+.th-part{background:#0d1f3c;color:#fff;font-size:.7rem;font-weight:700;padding:9px 13px;text-align:left;position:sticky;left:0;z-index:3;min-width:150px}
+.th-part-sub{background:#162033;color:rgba(255,255,255,.75);font-size:.62rem;font-weight:600;padding:7px 13px;text-align:left;position:sticky;left:0;z-index:3;min-width:150px}
+.th-group{font-size:.72rem;font-weight:800;padding:7px 4px;text-align:center;letter-spacing:.04em}
+.th-match{background:#1e293b;color:rgba(255,255,255,.8);font-size:.58rem;padding:5px 3px;text-align:center;min-width:68px;vertical-align:middle;line-height:1.3}
+.th-ko{background:#0d1f3c;color:#fff;font-size:.7rem;font-weight:700;padding:9px 10px;text-align:center;min-width:130px}
+.kp{font-size:.58rem;color:#fbbf24;margin-top:2px}
+.mf{font-size:.58rem;font-weight:700;max-width:66px;margin:0 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv{font-size:.52rem;color:rgba(255,255,255,.35);margin:1px 0}
+.mj{font-size:.52rem;color:rgba(255,255,255,.3);margin-top:1px}
+.td-part{background:#fff;position:sticky;left:0;z-index:2;padding:9px 13px;border-right:2px solid #e2e8f0;min-width:150px}
+.ro .td-part{background:#f7f9fc}
+.pa{font-size:.8rem;font-weight:800;color:#1a5fc4}
+.pn{font-size:.66rem;color:#64748b;margin-top:1px}
+.pf{font-size:.58rem;color:#94a3b8;margin-top:2px}
+.td-s{text-align:center;padding:5px 3px;font-size:.74rem;font-weight:700;color:#0d1f3c}
+.td-e{text-align:center;padding:5px 3px;font-size:.68rem;color:#cbd5e1}
+.td-ko{padding:5px 7px;vertical-align:top}
+.kpill{display:inline-block;background:#e6f9ee;border:1px solid #00a550;color:#065f46;font-size:.58rem;font-weight:700;padding:2px 5px;border-radius:8px;margin:1px 2px;white-space:nowrap}
+.re td{background:#fff}.ro td{background:#f7f9fc}
+.ftr{text-align:center;padding:16px;color:#94a3b8;font-size:.68rem;border-top:1px solid #e2e8f0;margin-top:4px}
+@media print{body{background:#fff}.tw{box-shadow:none}.hdr{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+</style></head><body>
+<div class="hdr"><div><h1>⚽ Quiniela Entre Amigos — Mundial 2026</h1><p>Reporte de predicciones &nbsp;·&nbsp; Generado el ${fechaExport}</p></div>
+<div class="stats"><div><div class="sv">${participants.length}</div><div class="sl">Participantes</div></div><div><div class="sv">$${bolsa.toLocaleString('es-MX')}</div><div class="sl">Bolsa MXN</div></div><div><div class="sv">72</div><div class="sl">Partidos</div></div></div></div>
+<div class="sec"><div class="sec-t">📋 Fase de Grupos — Predicciones</div><div class="tw"><table><thead><tr>${gHead1}</tr><tr>${gHead2}</tr></thead><tbody>${gRows}</tbody></table></div></div>
+<div class="sec"><div class="sec-t">🏆 Fase Eliminatoria — Predicciones</div><div class="tw"><table><thead><tr>${kHead}</tr></thead><tbody>${kRows}</tbody></table></div></div>
+<div class="ftr">Quiniela Entre Amigos Mundial 2026 &nbsp;·&nbsp; quiniela.tarreola.com &nbsp;·&nbsp; ${fechaExport}</div>
+</body></html>`;
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url;a.download='quiniela_mundial_2026.csv';a.click();
-  URL.revokeObjectURL(url);
-  showToast('📥 CSV descargado');
+  a.href=url;a.download='quiniela_mundial_2026_reporte_'+new Date().toISOString().slice(0,10)+'.html';
+  a.click();URL.revokeObjectURL(url);
+  showToast('📥 Reporte descargado');
 }
 
 // ═══════════════════════════════════════════════════════════
