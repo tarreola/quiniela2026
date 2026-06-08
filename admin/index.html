@@ -782,8 +782,7 @@
       <img src="../logo-wc26.png" alt="FIFA WC26" class="logo-ball"> Quiniela Entre Amigos Mundial 2026
     </div>
     <nav>
-      <button class="nav-btn active" onclick="showView('tablero')">📊 Tablero</button>
-      <button class="nav-btn" onclick="showView('predicciones')">✏️ Predicciones</button>
+      <button class="nav-btn active" onclick="showView('predicciones')">✏️ Predicciones</button>
       <button class="nav-btn" onclick="showView('ranking')">🏅 Ranking</button>
       <button class="nav-btn" onclick="showView('resultados')">⚽ Resultados</button>
       <a href="/registro" class="nav-btn" style="text-decoration:none">📝 Registro</a>
@@ -794,8 +793,7 @@
     </button>
   </div>
   <div class="mob-menu" id="mob-menu">
-    <button class="nav-btn active" onclick="showView('tablero');closeMobMenu()">📊 Tablero</button>
-    <button class="nav-btn" onclick="showView('predicciones');closeMobMenu()">✏️ Predicciones</button>
+    <button class="nav-btn active" onclick="showView('predicciones');closeMobMenu()">✏️ Predicciones</button>
     <button class="nav-btn" onclick="showView('ranking');closeMobMenu()">🏅 Ranking</button>
     <button class="nav-btn" onclick="showView('resultados');closeMobMenu()">⚽ Resultados</button>
     <a href="/registro" class="nav-btn" style="text-decoration:none">📝 Registro</a>
@@ -806,7 +804,7 @@
 <main>
 
   <!-- ══════════ TABLERO ══════════ -->
-  <div id="view-tablero" class="view active">
+  <div id="view-tablero" class="view">
     <div class="page-title"><span>📊</span> Tablero Principal — Fase de Grupos</div>
 
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
@@ -820,7 +818,6 @@
           <span style="color:var(--muted)">🔍</span>
           <input type="text" id="tablero-search" placeholder="Buscar participante…" oninput="renderTablero()" style="width:100%">
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="exportReporte()">⬇ Exportar Reporte</button>
       </div>
     </div>
 
@@ -840,8 +837,11 @@
   </div>
 
   <!-- ══════════ PREDICCIONES ══════════ -->
-  <div id="view-predicciones" class="view">
-    <div class="page-title"><span>✏️</span> Ingresar Predicciones</div>
+  <div id="view-predicciones" class="view active">
+    <div class="page-title" style="justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span style="display:flex;align-items:center;gap:10px"><span>✏️</span> Predicciones</span>
+      <button class="btn btn-ghost btn-sm" onclick="exportReporte()" style="font-size:.82rem">⬇ Exportar Reporte</button>
+    </div>
 
     <div class="pred-select-bar">
       <label>Participante:</label>
@@ -1249,7 +1249,7 @@ function _updatePendingBadge(){
 
 async function startApp(){
   await initData();
-  renderTablero();
+  renderPredPage();
   // Real-time listener: detecta nuevos registros aunque el admin ya esté en la página
   _db.ref('q26_pending').on('value',snap=>{
     _cache.q26_pending=snap.val()||{};
@@ -1302,7 +1302,7 @@ function generateMatches(teams){
 // ═══════════════════════════════════════════════════════════
 //  NAVEGACIÓN
 // ═══════════════════════════════════════════════════════════
-let activeView='tablero';
+let activeView='predicciones';
 let activeTableroGroup='all';
 let activePredGroup='all';
 
@@ -1321,11 +1321,11 @@ function showView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
-  const idx=['tablero','predicciones','ranking','resultados','registro','config'].indexOf(v);
-  // desktop nav has 6 btns (0-5), mob-menu has 6 more (6-11); Registro is an <a> so counted
+  // Tablero removed from nav — 5 items: predicciones,ranking,resultados,registro,config
+  const idx=['predicciones','ranking','resultados','registro','config'].indexOf(v);
   const allBtns=document.querySelectorAll('.nav-btn');
   if(allBtns[idx])allBtns[idx].classList.add('active');
-  if(allBtns[idx+6])allBtns[idx+6].classList.add('active');
+  if(allBtns[idx+5])allBtns[idx+5].classList.add('active');
   // sync pending badge in mob menu
   const badge=document.getElementById('nav-pending-badge');
   const badgeMob=document.getElementById('nav-pending-badge-mob');
