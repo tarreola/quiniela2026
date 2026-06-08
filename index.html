@@ -160,7 +160,11 @@
     .ranking-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
     .tablero-infobar{display:flex;align-items:stretch;gap:12px;margin-bottom:16px;flex-wrap:wrap}
     .info-card{display:flex;flex-direction:column;gap:3px;padding:12px 18px;border-radius:12px;background:var(--surface);box-shadow:var(--shadow)}
+    .info-card-group{display:flex;align-items:stretch;border-radius:12px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden;flex-shrink:0}
+    .info-card-group .info-card{box-shadow:none;border-radius:0;flex:1}
+    .info-card-divider{width:1px;background:var(--border);flex-shrink:0;margin:10px 0}
     .info-card-bolsa{border-left:4px solid var(--gold);background:linear-gradient(135deg,#fffbef 0%,#fff 60%)}
+    .info-card-partic{background:linear-gradient(135deg,#f0f4f8 0%,#fff 60%)}
     .info-card-goles{border-left:4px solid var(--green);background:linear-gradient(135deg,#e6f9ee 0%,#fff 60%)}
     .info-card-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
     .info-card-value{font-size:1.5rem;font-weight:900;color:var(--navy);line-height:1.1}
@@ -209,6 +213,8 @@
       /* Info bar */
       .tablero-infobar{flex-direction:column;gap:8px}
       .info-card{padding:10px 14px;flex-direction:row;align-items:center;gap:10px}
+      .info-card-group{width:100%}
+      .info-card-group .info-card{padding:10px 14px}
       .info-card-goles{flex-wrap:wrap}
       .info-card-goles .info-card-label{flex:0 0 auto}
       .info-card-goles .info-card-value{flex:1}
@@ -275,6 +281,8 @@
       body:not([data-mob-view="table"]) #desk-mob-toggle{display:none!important}
       /* infobar en columna para toda la franja mobile (601–768px incluido) */
       .tablero-infobar{flex-direction:column;gap:8px}
+      .info-card-group{width:100%}
+      .info-card-group .info-card{padding:10px 14px}
       .tablero-controls{flex-direction:column;margin-left:0;width:100%}
       .btn-reglas{align-self:stretch;justify-content:center;padding:10px 14px}
       .tablero-controls .btn-premios{align-self:stretch;justify-content:center;flex-shrink:1}
@@ -510,15 +518,15 @@
   <div id="view-tablero" class="view active">
     <div class="page-title"><span>📊</span> Tablero Principal — Fase de Grupos</div>
     <div class="tablero-infobar">
-      <div class="info-card info-card-bolsa" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-        <div>
+      <div class="info-card-group">
+        <div class="info-card info-card-bolsa">
           <div class="info-card-label">💰 Bolsa Acumulada</div>
           <div class="info-card-value" id="info-bolsa">—</div>
         </div>
-        <div style="width:1px;height:36px;background:var(--border);flex-shrink:0"></div>
-        <div>
+        <div class="info-card-divider"></div>
+        <div class="info-card info-card-partic">
           <div class="info-card-label">👥 Participantes</div>
-          <div class="info-card-value" id="info-participantes" style="font-size:1.5rem">—</div>
+          <div class="info-card-value" id="info-participantes">—</div>
         </div>
       </div>
       <div class="tablero-controls">
