@@ -2467,6 +2467,8 @@ function renderParticipants(){
         ${unlockBtn}
         <button class="btn btn-sm" style="font-size:.75rem;padding:4px 9px;flex-shrink:0;background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5"
           onclick="requireAdminAuth('Eliminar participante','Se eliminara al participante y todas sus predicciones. Esta accion no se puede deshacer.',()=>removeParticipant('${pSafe}'))">🗑</button>
+        <button class="btn btn-sm" style="font-size:.75rem;padding:4px 9px;flex-shrink:0;background:#e0e7ff;color:#3730a3;border:1px solid #a5b4fc" title="Cambiar apodo"
+          onclick="renameParticipant('${pSafe}')">✏️</button>
       </div>
     </div>`;
   }).join('');
@@ -2484,6 +2486,47 @@ function addParticipant(){
   inp.value='';
   renderParticipants();
   showToast('✅ Participante agregado: '+name);
+}
+
+async function renameParticipant(oldApodo){
+  const newApodo=prompt(`Nuevo apodo para "${oldApodo}":`)?.trim();
+  if(!newApodo||newApodo===oldApodo)return;
+  if(/[.#$[\]/]/.test(newApodo)){showToast('⚠️ El apodo no puede tener . # $ [ ] ni /');return;}
+  const db=_db;
+  try{
+    showToast('⏳ Renombrando…');
+    // Read all data for old apodo
+    const [partsSnap,lockedSnap,profileSnap,predsSnap,koSnap,paySnap,goalsSnap]=await Promise.all([
+      db.ref('q26_participants').once('value'),
+      db.ref('q26_locked').once('value'),
+      db.ref('q26_profiles/'+oldApodo).once('value'),
+      db.ref('q26_predictions/'+oldApodo).once('value'),
+      db.ref('q26_ko_preds/'+oldApodo).once('value'),
+      db.ref('q26_payments/'+oldApodo).once('value'),
+      db.ref('q26_goals/'+oldApodo).once('value'),
+    ]);
+    const ops=[];
+    // participants array
+    const parts=(partsSnap.val()||[]);
+    const pi=parts.indexOf(oldApodo);
+    if(pi>=0){parts[pi]=newApodo;ops.push(db.ref('q26_participants').set(parts));}
+    // locked array
+    const locked=(lockedSnap.val()||[]);
+    const li=locked.indexOf(oldApodo);
+    if(li>=0){locked[li]=newApodo;ops.push(db.ref('q26_locked').set(locked));}
+    // keyed nodes: copy to new key, delete old
+    if(profileSnap.val()){ops.push(db.ref('q26_profiles/'+newApodo).set(profileSnap.val()));ops.push(db.ref('q26_profiles/'+oldApodo).remove());}
+    if(predsSnap.val()){ops.push(db.ref('q26_predictions/'+newApodo).set(predsSnap.val()));ops.push(db.ref('q26_predictions/'+oldApodo).remove());}
+    if(koSnap.val()){ops.push(db.ref('q26_ko_preds/'+newApodo).set(koSnap.val()));ops.push(db.ref('q26_ko_preds/'+oldApodo).remove());}
+    if(paySnap.val()){ops.push(db.ref('q26_payments/'+newApodo).set(paySnap.val()));ops.push(db.ref('q26_payments/'+oldApodo).remove());}
+    if(goalsSnap.val()!==null){ops.push(db.ref('q26_goals/'+newApodo).set(goalsSnap.val()));ops.push(db.ref('q26_goals/'+oldApodo).remove());}
+    await Promise.all(ops);
+    showToast(`✅ Apodo cambiado: ${oldApodo} → ${newApodo}`);
+    renderParticipants();
+    renderConfig();
+  }catch(e){
+    showToast('❌ Error: '+(e.message||e.code||JSON.stringify(e)));
+  }
 }
 
 function showParticipantInfo(apodo){
