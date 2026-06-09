@@ -2945,7 +2945,7 @@ function renderNoPago(){
   // Payment summary
   const sumEl=document.getElementById('pago-summary');
   if(!sumEl)return;
-  const counts={mp:0,efectivo_jr:0,efectivo_paps:0,publicado_pendiente:0,efectivo_pendiente:0,pagado_sin_publicar:0};
+  const counts={mp:0,efectivo_jr:0,efectivo_paps:0,publicado_pendiente:0,efectivo_pendiente:0,pagado_sin_publicar:0,sin_pago:0};
   participants.forEach(p=>{const v=payments[p]||'efectivo_pendiente';if(counts[v]!==undefined)counts[v]++;});
   const summaryRows=[
     {label:'💳 Mercado Pago',                  val:'mp',                   color:'#009ee3'},
@@ -2954,6 +2954,7 @@ function renderNoPago(){
     {label:'📋 Publicado - Pago Pendiente',    val:'publicado_pendiente',  color:'#7c3aed'},
     {label:'🔒 Pagado - Pendiente de Publicar',val:'pagado_sin_publicar',  color:'#b45309'},
     {label:'🟡 Efectivo Pendiente',            val:'efectivo_pendiente',   color:'#92400e'},
+    {label:'⚪ Sin Pago',                      val:'sin_pago',             color:'#b91c1c'},
   ];
   const totalPaid=counts.mp+counts.efectivo_jr+counts.efectivo_paps+counts.publicado_pendiente+counts.pagado_sin_publicar;
   sumEl.innerHTML=`<table class="nopago-table">
