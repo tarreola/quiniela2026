@@ -376,6 +376,18 @@
     }
     #toast.show{transform:translateY(0);opacity:1}
 
+    /* ── PAGO PARTICIPANTS MODAL ────────────────────────── */
+    #pago-part-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(10,24,48,.6);backdrop-filter:blur(2px)}
+    #pago-part-overlay.open{display:flex;align-items:center;justify-content:center}
+    #pago-part-box{background:#fff;border-radius:16px;width:min(420px,92vw);max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}
+    #pago-part-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    #pago-part-hdr h3{font-size:.95rem;font-weight:800;color:var(--navy)}
+    #pago-part-body{overflow-y:auto;flex:1;padding:12px 16px}
+    .pago-part-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;margin-bottom:4px}
+    .pago-part-row:nth-child(odd){background:var(--surface2)}
+    .pago-part-apodo{font-size:.85rem;font-weight:700;color:var(--navy)}
+    .pago-part-nombre{font-size:.75rem;color:var(--muted)}
+    .nopago-table tr:hover td{background:var(--surface2)}
     /* ── CONFIRM MODAL ──────────────────────────────────── */
     #confirm-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(10,24,48,.6);backdrop-filter:blur(2px)}
     #confirm-overlay.open{display:flex;align-items:center;justify-content:center}
@@ -959,6 +971,17 @@
 
 </main>
 
+<!-- Pago participants modal -->
+<div id="pago-part-overlay" onclick="closePagoPartModal()">
+  <div id="pago-part-box" onclick="event.stopPropagation()">
+    <div id="pago-part-hdr">
+      <h3 id="pago-part-title">Participantes</h3>
+      <button onclick="closePagoPartModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div id="pago-part-body"></div>
+  </div>
+</div>
+
 <!-- Confirm modal (reusable) -->
 <div id="confirm-overlay">
   <div id="confirm-box">
@@ -1181,8 +1204,8 @@ const PAGO_OPTS=[
   {val:'efectivo_pendiente', label:'Efectivo Pendiente',             color:'#92400e', icon:'🟡'},
   {val:'pagado_sin_publicar',label:'Pagado - Pendiente de Publicar', color:'#b45309', icon:'🔒'},
   {val:'mp',                 label:'Mercado Pago',                   color:'#009ee3', icon:'💳'},
-  {val:'efectivo_jr',        label:'Efectivo Pagado TA JR',          color:'#0e7c2f', icon:'💵'},
-  {val:'efectivo_paps',      label:'Efectivo Pagado TA PAPS',        color:'#15803d', icon:'💵'},
+  {val:'efectivo_jr',        label:'Efectivo TA JR',                 color:'#0e7c2f', icon:'💵'},
+  {val:'efectivo_paps',      label:'Efectivo TA PAPS',               color:'#15803d', icon:'💵'},
   {val:'publicado_pendiente',label:'Publicado - Pago Pendiente',     color:'#7c3aed', icon:'📋'},
 ];
 
@@ -1452,6 +1475,32 @@ function saveResultInline(matchId){
   renderResProgress();
   renderTablero();
   showToast('✅ Resultado guardado');
+}
+function showPagoParticipants(pagoVal, pagoLabel){
+  const participants=getParticipants();
+  const payments=getPayments();
+  const profiles=load('q26_profiles',{});
+  const filtered=participants.filter(p=>(payments[p]||'efectivo_pendiente')===pagoVal);
+  document.getElementById('pago-part-title').textContent=pagoLabel+' ('+filtered.length+')';
+  const body=document.getElementById('pago-part-body');
+  if(!filtered.length){
+    body.innerHTML='<p style="color:var(--muted);font-size:.85rem;padding:12px 0;text-align:center">Sin participantes en esta categoría</p>';
+  }else{
+    body.innerHTML=filtered.map((p,i)=>{
+      const nombre=(profiles[p]||{}).nombre||'';
+      return `<div class="pago-part-row">
+        <span style="font-size:.8rem;font-weight:700;color:var(--muted);min-width:22px">${i+1}.</span>
+        <div>
+          <div class="pago-part-apodo">${p}</div>
+          ${nombre?`<div class="pago-part-nombre">${nombre}</div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('pago-part-overlay').classList.add('open');
+}
+function closePagoPartModal(){
+  document.getElementById('pago-part-overlay').classList.remove('open');
 }
 function showConfirm(title,msg,onOk){
   document.getElementById('confirm-title').textContent=title;
@@ -2899,20 +2948,22 @@ function renderNoPago(){
   const counts={mp:0,efectivo_jr:0,efectivo_paps:0,publicado_pendiente:0,efectivo_pendiente:0,pagado_sin_publicar:0};
   participants.forEach(p=>{const v=payments[p]||'efectivo_pendiente';if(counts[v]!==undefined)counts[v]++;});
   const summaryRows=[
-    {label:'💳 Mercado Pago',                  val:counts.mp,                   color:'#009ee3'},
-    {label:'💵 Efectivo Pagado TA JR',         val:counts.efectivo_jr,          color:'#0e7c2f'},
-    {label:'💵 Efectivo Pagado TA PAPS',       val:counts.efectivo_paps,        color:'#15803d'},
-    {label:'📋 Publicado - Pago Pendiente',    val:counts.publicado_pendiente,  color:'#7c3aed'},
-    {label:'🔒 Pagado - Pendiente de Publicar',val:counts.pagado_sin_publicar,  color:'#b45309'},
-    {label:'🟡 Efectivo Pendiente',            val:counts.efectivo_pendiente,   color:'#92400e'},
+    {label:'💳 Mercado Pago',                  val:'mp',                   color:'#009ee3'},
+    {label:'💵 Efectivo TA JR',                val:'efectivo_jr',          color:'#0e7c2f'},
+    {label:'💵 Efectivo TA PAPS',              val:'efectivo_paps',        color:'#15803d'},
+    {label:'📋 Publicado - Pago Pendiente',    val:'publicado_pendiente',  color:'#7c3aed'},
+    {label:'🔒 Pagado - Pendiente de Publicar',val:'pagado_sin_publicar',  color:'#b45309'},
+    {label:'🟡 Efectivo Pendiente',            val:'efectivo_pendiente',   color:'#92400e'},
   ];
   const totalPaid=counts.mp+counts.efectivo_jr+counts.efectivo_paps+counts.publicado_pendiente+counts.pagado_sin_publicar;
   sumEl.innerHTML=`<table class="nopago-table">
     <thead><tr><th>Método</th><th style="text-align:center">Cantidad</th></tr></thead>
     <tbody>
-      ${summaryRows.map(r=>`<tr>
+      ${summaryRows.map(r=>`<tr style="cursor:pointer" onclick="showPagoParticipants('${r.val}','${r.label}')">
         <td style="color:${r.color};font-weight:700">${r.label}</td>
-        <td style="text-align:center;font-weight:900;color:${r.color}">${r.val}</td>
+        <td style="text-align:center;font-weight:900;color:${r.color}">${counts[r.val]||0}
+          ${counts[r.val]?`<span style="font-size:.65rem;color:var(--muted);margin-left:4px">▸</span>`:''}
+        </td>
       </tr>`).join('')}
       <tr style="border-top:2px solid var(--border)">
         <td style="font-weight:800;color:var(--green)">✅ Total pagado</td>
