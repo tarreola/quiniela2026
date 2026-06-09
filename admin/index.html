@@ -796,7 +796,6 @@
     <nav>
       <a href="https://quiniela.tarreola.com" target="_blank" class="nav-btn" style="text-decoration:none;opacity:.75">📊 Tablero</a>
       <button class="nav-btn" onclick="showView('predicciones')">✏️ Predicciones</button>
-      <button class="nav-btn" onclick="showView('ranking')">🏅 Ranking</button>
       <button class="nav-btn" onclick="showView('resultados')">⚽ Resultados</button>
       <button class="nav-btn active" onclick="showView('config')">⚙️ Admin<span id="nav-pending-badge" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
     </nav>
@@ -807,7 +806,6 @@
   <div class="mob-menu" id="mob-menu">
     <a href="https://quiniela.tarreola.com" target="_blank" class="nav-btn" style="text-decoration:none;opacity:.75" onclick="closeMobMenu()">📊 Tablero Público</a>
     <button class="nav-btn" onclick="showView('predicciones');closeMobMenu()">✏️ Predicciones</button>
-    <button class="nav-btn" onclick="showView('ranking');closeMobMenu()">🏅 Ranking</button>
     <button class="nav-btn" onclick="showView('resultados');closeMobMenu()">⚽ Resultados</button>
     <button class="nav-btn active" onclick="showView('config');closeMobMenu()">⚙️ Admin<span id="nav-pending-badge-mob" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:5px;vertical-align:middle"></span></button>
   </div>
@@ -1346,7 +1344,7 @@ function showView(v){
   document.getElementById('view-'+v).classList.add('active');
   // Desktop nav: Tablero(0) + Predicciones(1)..Config(5) = 6 btns
   // Mob menu:    Tablero(6) + Predicciones(7)..Config(11) = 6 btns
-  const idx=['predicciones','ranking','resultados','registro','config'].indexOf(v)+1;
+  const idx=['predicciones','resultados','config'].indexOf(v)+1;
   const allBtns=document.querySelectorAll('.nav-btn');
   if(allBtns[idx])allBtns[idx].classList.add('active');
   if(allBtns[idx+6])allBtns[idx+6].classList.add('active');
