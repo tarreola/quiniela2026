@@ -472,6 +472,24 @@
     .cs-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:8px;padding:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit}
     .cs-btn:hover{background:var(--green2)}
     #cs-login-err{display:none;color:#fca5a5;font-size:.8rem;margin-bottom:8px;font-weight:600}
+    /* ── PARTICIPANT LOGIN SCREEN ──────────────────────── */
+    #part-login{position:fixed;inset:0;background:linear-gradient(160deg,#0d1f3c 0%,#1a3358 55%,#0f2a1e 100%);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+    #part-login.hidden{display:none}
+    .pl-logo{height:80px;width:auto;border-radius:10px;margin-bottom:18px;filter:drop-shadow(0 0 20px rgba(0,192,96,.4))}
+    .pl-title{font-size:1.05rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+    .pl-subtitle{font-size:1.55rem;font-weight:900;color:#fff;margin-bottom:6px}
+    .pl-hint{font-size:.88rem;color:rgba(255,255,255,.5);margin-bottom:28px}
+    .pl-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:28px 28px 24px;width:min(340px,92vw);text-align:left}
+    .pl-label{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;display:block}
+    .pl-input{width:100%;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.18);border-radius:10px;color:#fff;padding:12px 14px;font-size:1rem;font-family:inherit;outline:none;margin-bottom:14px;letter-spacing:.02em}
+    .pl-input::placeholder{color:rgba(255,255,255,.3)}
+    .pl-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,165,80,.25)}
+    .pl-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:13px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;transition:background .15s;letter-spacing:.02em}
+    .pl-btn:hover{background:var(--green2)}
+    .pl-btn:disabled{background:#064e3b;color:#4ade80;cursor:not-allowed}
+    #pl-err{display:none;color:#fca5a5;font-size:.8rem;margin-bottom:10px;font-weight:600;line-height:1.4}
+    .pl-footer{margin-top:20px;font-size:.75rem;color:rgba(255,255,255,.3)}
+    .pl-footer a{color:rgba(0,192,96,.6);text-decoration:none}
   </style>
 </head>
 <body>
@@ -489,6 +507,21 @@
     <input class="cs-input" type="password" id="cs-pass" placeholder="Contraseña" autocomplete="current-password">
     <button class="cs-btn" onclick="csLogin()">Entrar</button>
   </div>
+</div>
+
+<!-- ══ PARTICIPANT LOGIN (shown after June 10 9am CDMX) ══ -->
+<div id="part-login" class="hidden">
+  <img src="/logo-wc26.png" alt="FIFA WC26" class="pl-logo">
+  <div class="pl-title">Quiniela Entre Amigos · Mundial 2026</div>
+  <div class="pl-subtitle">¡Bienvenido al Tablero! 🏆</div>
+  <div class="pl-hint">Ingresa tu apodo para ver las predicciones y el ranking</div>
+  <div class="pl-box">
+    <div id="pl-err">Apodo no encontrado. Verifica con el organizador.</div>
+    <label class="pl-label" for="pl-apodo-input">Tu apodo</label>
+    <input class="pl-input" id="pl-apodo-input" type="text" placeholder="Ej: El TA, Carabay, Olivares…" autocomplete="off" spellcheck="false">
+    <button class="pl-btn" id="pl-btn" onclick="partLogin()">Entrar al Tablero ⚽</button>
+  </div>
+  <div class="pl-footer">¿Problemas? Escribe a <a href="mailto:admin@tarreola.com">admin@tarreola.com</a></div>
 </div>
 
 <div id="loading-bar" style="width:60%"></div>
@@ -1418,30 +1451,95 @@ firebase.database().ref('/').on('value',snap=>{
 })();
 
 // ═══════════════════════════════════════════════════════════
-//  COMING SOON GATE
+//  ACCESS GATE
 // ═══════════════════════════════════════════════════════════
 (function(){
-  const KEY='q26_admin_access';
+  const ADMIN_KEY='q26_admin_access';
+  const PART_KEY='q26_participant_access';
   const CS_EMAIL='admin@tarreola.com';
   const CS_PASS='matute';
-  if(localStorage.getItem(KEY)==='1'){
+  // June 10 2026 9am CDMX = 15:00 UTC
+  const OPEN_DATE=new Date('2026-06-10T15:00:00Z');
+  const isOpen=new Date()>=OPEN_DATE;
+
+  function hideAll(){
     document.getElementById('coming-soon').classList.add('hidden');
+    document.getElementById('part-login').classList.add('hidden');
   }
-  window.toggleCsLogin=function(){
-    document.getElementById('cs-login-box').classList.toggle('open');
-    document.getElementById('cs-login-err').style.display='none';
-  };
-  window.csLogin=function(){
-    const e=document.getElementById('cs-email').value.trim();
-    const p=document.getElementById('cs-pass').value;
-    if(e===CS_EMAIL&&p===CS_PASS){
-      localStorage.setItem(KEY,'1');
-      document.getElementById('coming-soon').classList.add('hidden');
+
+  // Already logged in as admin → straight in
+  if(localStorage.getItem(ADMIN_KEY)==='1'){hideAll();return;}
+
+  if(!isOpen){
+    // Before June 10 — show coming-soon
+    // Admin bypass
+    window.toggleCsLogin=function(){
+      document.getElementById('cs-login-box').classList.toggle('open');
+      document.getElementById('cs-login-err').style.display='none';
+    };
+    window.csLogin=function(){
+      const e=document.getElementById('cs-email').value.trim();
+      const p=document.getElementById('cs-pass').value;
+      if(e===CS_EMAIL&&p===CS_PASS){
+        localStorage.setItem(ADMIN_KEY,'1');
+        hideAll();
+      } else {
+        document.getElementById('cs-login-err').style.display='block';
+      }
+    };
+    document.getElementById('cs-pass').addEventListener('keydown',ev=>{if(ev.key==='Enter')window.csLogin();});
+  } else {
+    // June 10+ — show participant login
+    document.getElementById('coming-soon').classList.add('hidden');
+
+    // Already logged in as participant?
+    const savedApodo=localStorage.getItem(PART_KEY)||localStorage.getItem('q26_my_apodo');
+    if(savedApodo){
+      // Validate saved apodo against participants (wait for Firebase to load)
+      const checkSaved=()=>{
+        const parts=_cache.q26_participants||[];
+        if(!parts.length){setTimeout(checkSaved,300);return;}
+        if(parts.includes(savedApodo)){
+          document.getElementById('part-login').classList.add('hidden');
+          localStorage.setItem('q26_my_apodo',savedApodo);
+        } else {
+          document.getElementById('part-login').classList.remove('hidden');
+        }
+      };
+      setTimeout(checkSaved,600);
     } else {
-      document.getElementById('cs-login-err').style.display='block';
+      document.getElementById('part-login').classList.remove('hidden');
     }
-  };
-  document.getElementById('cs-pass').addEventListener('keydown',ev=>{if(ev.key==='Enter')window.csLogin();});
+
+    window.partLogin=function(){
+      const inp=document.getElementById('pl-apodo-input');
+      const apodo=inp.value.trim();
+      const btn=document.getElementById('pl-btn');
+      const err=document.getElementById('pl-err');
+      if(!apodo)return;
+      btn.disabled=true; btn.textContent='Verificando…';
+      err.style.display='none';
+      // Check against Firebase participants
+      const tryCheck=()=>{
+        const parts=_cache.q26_participants||[];
+        if(!parts.length){setTimeout(tryCheck,300);return;}
+        // Case-insensitive match
+        const match=parts.find(p=>p.toLowerCase()===apodo.toLowerCase());
+        if(match){
+          localStorage.setItem(PART_KEY,match);
+          localStorage.setItem('q26_my_apodo',match);
+          document.getElementById('part-login').classList.add('hidden');
+          btn.disabled=false; btn.textContent='Entrar al Tablero ⚽';
+        } else {
+          err.style.display='block';
+          btn.disabled=false; btn.textContent='Entrar al Tablero ⚽';
+          inp.focus(); inp.select();
+        }
+      };
+      tryCheck();
+    };
+    document.getElementById('pl-apodo-input').addEventListener('keydown',ev=>{if(ev.key==='Enter')window.partLogin();});
+  }
 })();
 
 // Auto-select tab from URL hash
