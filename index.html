@@ -551,17 +551,12 @@
   <div id="view-tablero" class="view active">
     <div class="page-title"><span>📊</span> Tablero Principal — Fase de Grupos</div>
     <div class="tablero-infobar">
-      <div class="info-card-group">
-        <div class="info-card info-card-bolsa">
-          <div class="info-card-label">💰 Bolsa Acumulada</div>
-          <div class="info-card-value" id="info-bolsa">—</div>
-        </div>
-        <div class="info-card-divider"></div>
-        <div class="info-card info-card-partic">
-          <div class="info-card-label">👥 Participantes</div>
-          <div class="info-card-value" id="info-participantes">—</div>
-        </div>
+      <div class="info-card info-card-bolsa">
+        <div class="info-card-label">💰 Bolsa Acumulada</div>
+        <div class="info-card-value" id="info-bolsa">—</div>
       </div>
+      <!-- hidden elements keep JS working -->
+      <span id="info-participantes" style="display:none"></span>
       <div class="tablero-controls">
         <button class="btn-hoy" id="btn-hoy" onclick="openHoyModal()">⚽ Partidos de hoy</button>
         <button class="btn-premios" onclick="openPremiosModal()">🏆 Ver Premios</button>
@@ -618,6 +613,16 @@
     <button class="pmx-close" onclick="closePremiosModal()">✕</button>
   </div>
   <div class="pmx-body">
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <div class="pmx-row" style="flex:1;margin-bottom:0;flex-direction:column;align-items:center;gap:2px;background:linear-gradient(135deg,#fffbef,#fff);border-color:#fde68a">
+        <span style="font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">👥 Participantes</span>
+        <span id="pmx-participantes" style="font-size:1.5rem;font-weight:900;color:var(--navy)">—</span>
+      </div>
+      <div class="pmx-row" style="flex:1;margin-bottom:0;flex-direction:column;align-items:center;gap:2px;background:linear-gradient(135deg,#fffbef,#fff);border-color:#fde68a">
+        <span style="font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">💰 Bolsa</span>
+        <span id="pmx-bolsa" style="font-size:1.1rem;font-weight:900;color:var(--gold)">—</span>
+      </div>
+    </div>
     <div class="pmx-row" style="flex-direction:column;align-items:flex-start;gap:4px">
       <div style="display:flex;justify-content:space-between;width:100%">
         <span class="pmx-label">🥇 1er lugar</span><span class="pmx-pct">60%</span>
@@ -771,6 +776,11 @@ function renderTablero(){
   if(bolsaEl)bolsaEl.textContent=bolsa>0?'$'+bolsa.toLocaleString('es-MX')+' MXN':'—';
   const partEl=document.getElementById('info-participantes');
   if(partEl)partEl.textContent=participants.length>0?participants.length:'—';
+  // Sync Ver Premios modal stats
+  const pmxP=document.getElementById('pmx-participantes');
+  const pmxB=document.getElementById('pmx-bolsa');
+  if(pmxP)pmxP.textContent=participants.length>0?participants.length:'—';
+  if(pmxB)pmxB.textContent=bolsa>0?'$'+bolsa.toLocaleString('es-MX')+' MXN':'—';
 
   const searchQ=(document.getElementById('tablero-search')?.value||'').toLowerCase();
   const visibleParticipants=searchQ?participants.filter(p=>{const nombre=(profiles[p]?.nombre||'').toLowerCase();return p.toLowerCase().includes(searchQ)||nombre.includes(searchQ);}):participants;
