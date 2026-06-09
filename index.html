@@ -981,6 +981,8 @@ function closeAllHoyDd(){
   });
 }
 document.addEventListener('click',closeAllHoyDd);
+// Close dropdown on scroll — prevents misaligned fixed list on mobile
+document.addEventListener('scroll',closeAllHoyDd,{passive:true,capture:true});
 function setHoyApodo(val){
   if(val)localStorage.setItem('q26_my_apodo',val);
   else localStorage.removeItem('q26_my_apodo');
