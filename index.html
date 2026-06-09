@@ -1467,7 +1467,7 @@ firebase.database().ref('/').on('value',snap=>{
   const ADMIN_KEY='q26_admin_access';
   const PART_KEY='q26_participant_access';
   const CS_EMAIL='admin@tarreola.com';
-  const CS_PASS='matute';
+  const CS_HASH='50b1c27523e01a1e0d01dcd02ddbc7fc23d2eded24ae56c2505bed96a8c0b885';
   // June 10 2026 9am CDMX = 15:00 UTC
   const OPEN_DATE=new Date('2026-06-10T15:00:00Z');
   const isOpen=new Date()>=OPEN_DATE;
@@ -1487,10 +1487,12 @@ firebase.database().ref('/').on('value',snap=>{
       document.getElementById('cs-login-box').classList.toggle('open');
       document.getElementById('cs-login-err').style.display='none';
     };
-    window.csLogin=function(){
+    window.csLogin=async function(){
       const e=document.getElementById('cs-email').value.trim();
       const p=document.getElementById('cs-pass').value;
-      if(e===CS_EMAIL&&p===CS_PASS){
+      const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));
+      const hash=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+      if(e===CS_EMAIL&&hash===CS_HASH){
         localStorage.setItem(ADMIN_KEY,'1');
         hideAll();
       } else {
