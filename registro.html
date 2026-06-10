@@ -4,6 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Quiniela Mundial 2026 — Registro</title>
+  <script>
+    // Registro cerrado a las 9pm CDMX del 9 Jun 2026 = 03:00 UTC Jun 10
+    if(new Date() >= new Date('2026-06-10T03:00:00Z')){
+      document.addEventListener('DOMContentLoaded',function(){
+        document.body.innerHTML=`
+        <style>
+          *{margin:0;padding:0;box-sizing:border-box}
+          body{min-height:100vh;font-family:'Inter',system-ui,sans-serif;background:linear-gradient(160deg,#0d1f3c 0%,#1a3358 55%,#0f2a1e 100%);color:#fff;display:flex;flex-direction:column}
+          header{background:rgba(255,255,255,.04);border-bottom:3px solid #00a550;padding:14px 24px}
+          .hi{max-width:600px;margin:0 auto;display:flex;align-items:center;gap:10px}
+          .li{height:38px;width:auto;border-radius:6px}
+          .lt{font-size:.95rem;font-weight:800;color:#fff;line-height:1.2}
+          .ls{font-size:.68rem;color:rgba(255,255,255,.45);display:block;text-transform:uppercase;letter-spacing:.08em}
+          main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+          .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:40px 36px;max-width:480px;width:100%;text-align:center}
+          .ic{font-size:3.5rem;margin-bottom:16px;filter:drop-shadow(0 0 20px rgba(245,158,11,.5))}
+          h1{font-size:1.55rem;font-weight:900;color:#fff;margin-bottom:10px;line-height:1.3}
+          .sub{font-size:.95rem;color:rgba(255,255,255,.6);margin-bottom:28px;line-height:1.6}
+          .ib{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;margin-bottom:28px;text-align:left}
+          .ir{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:.88rem;color:rgba(255,255,255,.75)}
+          .ir:last-child{border-bottom:none}
+          .ir strong{color:#fff}
+          .bp{display:block;width:100%;padding:14px;background:#00a550;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;text-decoration:none;transition:background .15s;margin-bottom:12px;text-align:center}
+          .bp:hover{background:#00c060}
+          .bg{display:block;width:100%;padding:12px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);border-radius:12px;font-size:.88rem;font-weight:600;text-decoration:none;text-align:center}
+          .bg:hover{background:rgba(255,255,255,.14);color:#fff}
+          footer{text-align:center;padding:20px;font-size:.75rem;color:rgba(255,255,255,.3)}
+          footer a{color:rgba(0,192,96,.6);text-decoration:none}
+        </style>
+        <header><div class="hi"><img src="/logo-wc26.png" class="li"><div class="lt">Quiniela Entre Amigos<span class="ls">Mundial 2026</span></div></div></header>
+        <main><div class="card">
+          <div class="ic">🔒</div>
+          <h1>El registro está cerrado</h1>
+          <p class="sub">El periodo de inscripción ha concluido.<br>El torneo ya comenzó — ¡buena suerte a todos!</p>
+          <div class="ib">
+            <div class="ir">⚽ <span>El torneo <strong>FIFA Mundial 2026</strong> ya está en curso</span></div>
+            <div class="ir">📅 <span>Fecha de cierre: <strong>9 de Junio, 2026</strong></span></div>
+            <div class="ir">📊 <span>Ya puedes ver el tablero con predicciones y resultados</span></div>
+          </div>
+          <a href="https://quiniela.tarreola.com" class="bp">📊 Ver el Tablero →</a>
+          <a href="mailto:admin@tarreola.com" class="bg">✉️ Contactar al organizador</a>
+        </div></main>
+        <footer>Quiniela Entre Amigos Mundial 2026 &nbsp;·&nbsp; <a href="mailto:admin@tarreola.com">admin@tarreola.com</a></footer>`;
+      });
+    }
+  </script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
