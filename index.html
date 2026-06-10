@@ -1025,13 +1025,11 @@ function renderPartidosHoyImpl(targetId){
   let myApodo=localStorage.getItem('q26_my_apodo')||'';
   if(myApodo&&!participants.includes(myApodo))myApodo='';
 
-  // Pts totales de la quiniela completa (para badge junto al selector)
-  let totalPtsQuiniela=0;
+  // Pts de hoy únicamente (para badge junto al selector)
+  let dayPtsBadge=0;
   if(myApodo){
     const pp=predictions[myApodo]||{};
-    matches.forEach(m=>{const pts=calcPoints(pp[m.id],results[m.id]);if(pts!==null)totalPtsQuiniela+=pts;});
-    const koPreds=getKoPreds();const koResults=getKoResults();
-    KNOCKOUT_ROUNDS.forEach(r=>{const pts=calcKoRoundPts((koPreds[myApodo]||{})[r.id]||[],koResults[r.id]||[],r.pts);if(pts!==null)totalPtsQuiniela+=pts;});
+    todayMatches.forEach(m=>{const pts=calcPoints(pp[m.id],results[m.id]);if(pts!==null)dayPtsBadge+=pts;});
   }
 
   const ddId='hoy-dd-'+targetId;
@@ -1050,7 +1048,7 @@ function renderPartidosHoyImpl(targetId){
       <div class="hoy-dd-trigger">${selDisplay}<span class="hoy-dd-arrow">▾</span></div>
       <div class="hoy-dd-list">${ddItems}</div>
     </div>
-    ${myApodo?`<span class="hoy-total-badge">${totalPtsQuiniela} pts</span>`:''}
+    ${myApodo?`<span class="hoy-total-badge">${dayPtsBadge} pts hoy</span>`:''}
   </div>`;
 
   if(!todayMatches.length){
