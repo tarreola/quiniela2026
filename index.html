@@ -981,8 +981,10 @@ function closeAllHoyDd(){
   });
 }
 document.addEventListener('click',closeAllHoyDd);
-// Close dropdown on scroll — prevents misaligned fixed list on mobile
-document.addEventListener('scroll',closeAllHoyDd,{passive:true,capture:true});
+// Close dropdown on scroll — but NOT when scrolling inside the list itself
+document.addEventListener('scroll',e=>{
+  if(!e.target.closest||!e.target.closest('.hoy-dd-list'))closeAllHoyDd();
+},{passive:true,capture:true});
 function setHoyApodo(val){
   if(val)localStorage.setItem('q26_my_apodo',val);
   else localStorage.removeItem('q26_my_apodo');
@@ -1472,7 +1474,7 @@ firebase.database().ref('/').on('value',snap=>{
   const CS_HASH='50b1c27523e01a1e0d01dcd02ddbc7fc23d2eded24ae56c2505bed96a8c0b885';
   // June 10 2026 9am CDMX = 15:00 UTC
   const OPEN_DATE=new Date('2026-06-10T15:00:00Z');
-  const isOpen=new Date()>=OPEN_DATE;
+  const isOpen=new Date()>=OPEN_DATE||new URLSearchParams(location.search).has('preview_login');
 
   function hideAll(){
     document.getElementById('coming-soon').classList.add('hidden');
