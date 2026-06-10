@@ -2672,8 +2672,9 @@ async function _authSubmit(){
   const cred=firebase.auth.EmailAuthProvider.credential(user.email,p);
   try{
     await user.reauthenticateWithCredential(cred);
+    const cb=_authCallback;   // save before _authClose nulls it
     _authClose();
-    if(_authCallback)_authCallback();
+    if(cb)cb();
   }catch(err){
     errEl.textContent='Contraseña incorrecta';
     errEl.style.display='block';
