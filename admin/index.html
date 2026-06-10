@@ -2653,7 +2653,6 @@ function requireAdminAuth(title,desc,callback){
   _authCallback=callback;
   document.getElementById('auth-modal-title').textContent=title;
   document.getElementById('auth-modal-desc').textContent=desc;
-  document.getElementById('auth-email').value='';
   document.getElementById('auth-pass').value='';
   document.getElementById('auth-error').style.display='none';
   document.getElementById('auth-modal').classList.add('show');
