@@ -443,8 +443,6 @@
     td.col-participant{cursor:pointer}
     td.col-participant:hover{background:#e0f0ff!important}
     td.col-participant:hover .p-apodo{color:#1247a0}
-    .p-ver{display:none;font-size:.6rem;color:#60a5fa;font-weight:600;margin-top:2px}
-    td.col-participant:hover .p-ver{display:block}
     /* Loading */
     #loading-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--green);z-index:9999;transition:width .4s}
     #loading-bar.done{opacity:0;transition:opacity .5s}
@@ -723,7 +721,13 @@ function calcKoRoundPts(picks,actual,ptsEach){const p=_toArr(picks);const a=_toA
 function getTeams(){return load('q26_teams',DEFAULT_TEAMS)}
 function getParticipants(){return load('q26_participants',[])}
 function getPredictions(){return load('q26_predictions',{})}
-function getResults(){return load('q26_results',{})}
+function getResults(){
+  const base=load('q26_results',{});
+  // URL sim override: ?simresult=A1:2-1,B1:0-0
+  const sim=new URLSearchParams(location.search).get('simresult');
+  if(sim){sim.split(',').forEach(s=>{const[id,sc]=s.split(':');if(id&&sc){const[h,a]=sc.split('-');if(h!==undefined&&a!==undefined)base[id]={h:parseInt(h),a:parseInt(a)};}});}
+  return base;
+}
 function getKoPreds(){return load('q26_ko_preds',{})}
 function getKoResults(){return load('q26_ko_results',{})}
 
@@ -886,7 +890,7 @@ function renderTablero(){
     const rankCls=showMedal?(rank===1?'rank-num-1':rank===2?'rank-num-2':'rank-num-3'):'';
     return `<tr>
       <td class="col-rank"><span class="${rankCls}">${rankLabel}</span></td>
-      <td class="col-participant" onclick="window.open('/quiniela?p='+encodeURIComponent('${p.replace(/'/g,"\\'")}'),'_blank')"><span class="p-apodo">${p}</span>${nombre?`<span class="p-name">${nombre}</span>`:''}<span class="p-pts" title="Grupos: ${groupPts}pts + KO: ${koPts}pts">${(hasResults||hasKoResults)?totalPts+'pts':'—'}</span><span class="p-ver">👁 ver quiniela</span></td>
+      <td class="col-participant"><span class="p-apodo">${p}</span>${nombre?`<span class="p-name">${nombre}</span>`:''}<span class="p-pts" title="Grupos: ${groupPts}pts + KO: ${koPts}pts">${(hasResults||hasKoResults)?totalPts+'pts':'—'}</span></td>
       <td class="col-spacer"></td>
       <td class="col-total" title="Grupos: ${groupPts}pts + KO: ${koPts}pts">${(hasResults||hasKoResults)?totalPts:'—'}</td>
       <td class="col-goals">${goalsMap[p]!==undefined?goalsMap[p]:'—'}</td>
