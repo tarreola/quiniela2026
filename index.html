@@ -407,6 +407,21 @@
     .mob-ko-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:.69rem;font-weight:700;background:var(--gold-light);color:#92400e;border:1px solid var(--gold2)}
     .mob-card-body{max-height:0;overflow:hidden;transition:max-height .32s ease;border-top:0 solid var(--border)}
     .mob-card.expanded .mob-card-body{max-height:4000px;border-top:1px solid var(--border)}
+    /* ══ MI QUINIELA CARD ══ */
+    .mq-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+    .mq-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .mq-title{font-size:.85rem;font-weight:800;color:var(--navy);white-space:nowrap;flex-shrink:0}
+    .mq-trigger{min-width:160px;max-width:260px}
+    .mq-stats{display:flex;align-items:stretch;margin-bottom:12px;background:var(--surface2);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+    .mq-stat{flex:1;text-align:center;padding:10px 8px}
+    .mq-stat-val{font-size:1.4rem;font-weight:900;color:var(--navy);line-height:1}
+    .mq-stat-lbl{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+    .mq-stat-div{width:1px;background:var(--border);flex-shrink:0}
+    .mq-empty{font-size:.82rem;color:var(--muted);text-align:center;padding:4px 0 12px;font-style:italic}
+    .mq-progress-wrap{display:flex;align-items:center;gap:10px}
+    .mq-progress-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+    .mq-progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:3px;transition:width .5s}
+    .mq-progress-label{font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap}
     .mob-group-phase{padding:10px 12px 6px}
     .mob-section-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:10px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
     .mob-section-title button{font-size:.7rem;font-weight:700;color:#1a5fc4;background:none;border:none;cursor:pointer;padding:0;font-family:inherit;text-transform:none;letter-spacing:0}
@@ -569,6 +584,7 @@
         <button id="desk-mob-toggle" class="mob-topbar-btn" onclick="setMobViewMode('cards')">📱 Versión Móvil<small>recomendado si lo abres en tu iPhone</small></button>
       </div>
     </div>
+    <div id="mi-quiniela-desk"></div>
     <div class="table-view-container">
       <div class="table-wrap">
         <table id="tablero-table">
@@ -587,6 +603,7 @@
       <div class="mob-topbar">
         <button class="mob-topbar-btn" onclick="setMobViewMode('table')">📊 Tablero de Resultados<small>recomendado para pantallas grandes</small></button>
       </div>
+      <div id="mi-quiniela-mob"></div>
       <div id="hoy-wrap"></div>
       <div class="mob-cards-list" id="mob-cards-list"></div>
       <div class="mob-empty-cards" id="mob-empty-cards" style="display:none">
@@ -741,7 +758,7 @@ function showView(v){
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.querySelectorAll('.nav-btn')[['tablero','ranking'].indexOf(v)].classList.add('active');
-  if(v==='tablero'){renderTablero();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();}}
+  if(v==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();}}
   if(v==='ranking')renderRanking();
 }
 
@@ -944,7 +961,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePicksViewer();
 function setMobViewMode(mode){
   document.body.setAttribute('data-mob-view',mode);
   localStorage.setItem('q26_mob_view_pref',mode);
-  if(mode==='cards'&&activeView==='tablero'){renderTableroMobile();renderPartidosHoy();}
+  if(mode==='cards'&&activeView==='tablero'){renderTableroMobile();renderMiQuiniela();renderPartidosHoy();}
 }
 /* ══ PARTIDOS DE HOY ══ */
 function getTodayMatchDate(){
@@ -997,6 +1014,95 @@ function setHoyApodo(val){
   if(val)localStorage.setItem('q26_my_apodo',val);
   else localStorage.removeItem('q26_my_apodo');
   renderPartidosHoy();
+  renderMiQuiniela();
+}
+function renderMiQuiniela(){
+  renderMiQuinielaTo('mi-quiniela-desk');
+  renderMiQuinielaTo('mi-quiniela-mob');
+}
+function renderMiQuinielaTo(targetId){
+  const el=document.getElementById(targetId);
+  if(!el)return;
+  const teams=getTeams();
+  const matches=generateMatches(teams);
+  const results=getResults();
+  const predictions=getPredictions();
+  const payments=load('q26_payments',{});
+  const profiles=load('q26_profiles',{});
+  const koPreds=getKoPreds();
+  const koResults=getKoResults();
+  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
+  const participants=getParticipants().filter(p=>PAID.has(payments[p]||''));
+
+  let myApodo=localStorage.getItem('q26_my_apodo')||'';
+  if(myApodo&&!participants.includes(myApodo))myApodo='';
+
+  // Progress: group stage matches played
+  const groupMatchIds=new Set(matches.map(m=>m.id));
+  const playedCount=Object.keys(results).filter(id=>groupMatchIds.has(id)).length;
+  const totalCount=matches.length;
+  const pct=totalCount>0?Math.min(100,Math.round(playedCount/totalCount*100)):0;
+
+  // Rank + stats for myApodo
+  let rank=null,totalPts=0,exactCount=0;
+  const hasAnyResult=Object.keys(results).length>0;
+  if(myApodo){
+    const globalScores=participants.map(p=>{
+      const pp=predictions[p]||{};
+      let gPts=0,eCount=0;
+      matches.forEach(m=>{const pts=calcPoints(pp[m.id],results[m.id]);if(pts!==null){gPts+=pts;if(pts===3)eCount++;}});
+      let kPts=0;
+      KNOCKOUT_ROUNDS.forEach(r=>{const pts=calcKoRoundPts((koPreds[p]||{})[r.id]||[],koResults[r.id]||[],r.pts);if(pts!==null)kPts+=pts;});
+      return{p,totalPts:gPts+kPts,exactCount:eCount};
+    });
+    globalScores.sort((a,b)=>b.totalPts-a.totalPts);
+    const rankMap={};
+    globalScores.forEach((s,i)=>{
+      if(i===0)rankMap[s.p]=1;
+      else if(s.totalPts===globalScores[i-1].totalPts)rankMap[s.p]=rankMap[globalScores[i-1].p];
+      else rankMap[s.p]=i+1;
+    });
+    const mine=globalScores.find(s=>s.p===myApodo);
+    if(mine){totalPts=mine.totalPts;exactCount=mine.exactCount;rank=rankMap[myApodo]||null;}
+  }
+
+  // Dropdown
+  const ddId='mq-dd-'+targetId;
+  const selDisplay=myApodo
+    ?`<span class="hoy-dd-apodo">${myApodo}</span>${(profiles[myApodo]||{}).nombre?`<span class="hoy-dd-nombre">${(profiles[myApodo]||{}).nombre}</span>`:''}`
+    :`<span class="hoy-dd-placeholder">— Elige tu nombre —</span>`;
+  const ddItems=participants.map(p=>{
+    const nombre=(profiles[p]||{}).nombre||'';
+    return`<div class="hoy-dd-item${p===myApodo?' sel':''}" onclick="event.stopPropagation();closeAllHoyDd();setHoyApodo('${p.replace(/'/g,"\\'")}')"><span class="hoy-dd-apodo">${p}</span>${nombre?`<span class="hoy-dd-nombre">${nombre}</span>`:''}</div>`;
+  }).join('')+(myApodo?`<div class="hoy-dd-item" onclick="event.stopPropagation();closeAllHoyDd();setHoyApodo('')"><span class="hoy-dd-placeholder">— Sin selección —</span></div>`:'');
+
+  let bodyHtml='';
+  if(myApodo&&rank!==null){
+    bodyHtml=`<div class="mq-stats">
+      <div class="mq-stat"><div class="mq-stat-val">#${rank}</div><div class="mq-stat-lbl">Lugar</div></div>
+      <div class="mq-stat-div"></div>
+      <div class="mq-stat"><div class="mq-stat-val">${hasAnyResult?totalPts:'—'}</div><div class="mq-stat-lbl">Puntos</div></div>
+      <div class="mq-stat-div"></div>
+      <div class="mq-stat"><div class="mq-stat-val">${hasAnyResult?exactCount:'—'}</div><div class="mq-stat-lbl">Exactos</div></div>
+    </div>`;
+  }else if(!myApodo){
+    bodyHtml=`<div class="mq-empty">Selecciona tu nombre para ver tu posición en la quiniela</div>`;
+  }
+
+  el.innerHTML=`<div class="mq-card">
+    <div class="mq-header">
+      <span class="mq-title">🏆 Mi Quiniela</span>
+      <div class="hoy-custom-dd" id="${ddId}" onclick="toggleHoyDd('${ddId}',event)">
+        <div class="hoy-dd-trigger mq-trigger">${selDisplay}<span class="hoy-dd-arrow">▾</span></div>
+        <div class="hoy-dd-list">${ddItems}</div>
+      </div>
+    </div>
+    ${bodyHtml}
+    <div class="mq-progress-wrap">
+      <div class="mq-progress-bar"><div class="mq-progress-fill" style="width:${pct}%"></div></div>
+      <span class="mq-progress-label">${playedCount} / ${totalCount} partidos</span>
+    </div>
+  </div>`;
 }
 function renderPartidosHoyTo(targetId){
   renderPartidosHoyImpl(targetId);
@@ -1448,7 +1554,7 @@ firebase.database().ref('/').on('value',snap=>{
   _cache=snap.val()||{};
   const lb=document.getElementById('loading-bar');
   if(lb){lb.style.width='100%';setTimeout(()=>lb.classList.add('done'),400);}
-  if(activeView==='tablero'){renderTablero();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();}}
+  if(activeView==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();}}
   else if(activeView==='ranking')renderRanking();
 },err=>{
   clearTimeout(_connTimeout);
