@@ -1102,7 +1102,10 @@ const KNOCKOUT_ROUNDS=[
 
 // Partidos de fase eliminatoria (actualizar conforme avanza el torneo)
 const KO_MATCHES=[
-  {id:'ko_r16_1',round:'r16',home:'Sudáfrica',away:'Canadá',date:'27 Jun',time:'13:00',venue:'Los Ángeles'},
+  {id:'ko_r16_1', round:'r16',home:'Sudáfrica',  away:'Canadá',    date:'27 Jun',time:'13:00',venue:'Los Ángeles'},
+  {id:'ko_r16_2', round:'r16',home:'Australia',  away:'Egipto',    date:'3 Jul', time:'12:00',venue:'Dallas'},
+  {id:'ko_r16_3', round:'r16',home:'Argentina',  away:'Cabo Verde',date:'3 Jul', time:'16:00',venue:'Miami'},
+  {id:'ko_r16_4', round:'r16',home:'Colombia',   away:'Ghana',     date:'3 Jul', time:'19:30',venue:'Kansas City'},
 ];
 function getKoMatchResults(){return load('q26_ko_match_results',{});}
 function saveKoMatchResult(matchId,h,a){
