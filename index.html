@@ -515,12 +515,12 @@
     .mob-lastko-btn.centered{display:flex;align-items:center;gap:8px}
     .mob-lastko-btn.centered .lk-center{flex:1;display:flex;justify-content:center}
     /* Sub-renglones (Final, Campeón bajo Semis/Final) */
-    .mob-lastsub{border-top:1px dashed var(--border);padding:7px 14px 6px;display:flex;flex-direction:column;gap:5px;background:linear-gradient(180deg,#f8fafc,#f3f7fc)}
-    .mob-lastsub-row{display:flex;align-items:center;gap:8px}
-    .mob-lastsub-badge{font-size:.56rem;font-weight:900;color:#fff;background:#334155;border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;white-space:nowrap}
+    .mob-lastflags-wrap{border-top:1px solid var(--border);display:flex;flex-direction:column;background:linear-gradient(180deg,#fbfdff,#f3f7fc)}
+    .mlf-top{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 14px 6px;width:100%}
+    .mob-lastsub{display:flex;flex-direction:column}
+    .mob-lastsub-row{display:flex;align-items:flex-start;gap:9px;padding:7px 14px;border-top:1px solid var(--border)}
+    .mob-lastsub-badge{font-size:.56rem;font-weight:900;color:#fff;background:#334155;border-radius:5px;padding:3px 8px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;white-space:nowrap;margin-top:2px}
     .mob-lastsub-flags{display:flex;flex-wrap:wrap;gap:4px;flex:1}
-    .mob-lastflags-wrap{border-top:1px solid var(--border);padding:8px 14px 9px;display:flex;flex-direction:column;gap:7px;background:linear-gradient(180deg,#fbfdff,#f3f7fc)}
-    .mlf-top{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%}
     .mob-lastflags{display:flex;flex-wrap:wrap;gap:5px;width:100%}
     .mob-lastflag{position:relative;display:inline-flex;align-items:center;gap:3px;padding:2px 7px 2px 4px;border-radius:20px;background:var(--surface2);border:1.5px solid var(--border)}
     .mob-lastflag .fi{width:16px;height:12px;border-radius:2px;flex-shrink:0}
@@ -1486,6 +1486,33 @@ function renderMiQuinielaTo(targetId){
     const rankNum=rank||'—';
     const showMedal=rank&&rank<=3;
     const rankCls=showMedal?`mq-rank-badge mq-rank-${rank}`:'mq-rank-badge mq-rank-n';
+    // Construir datos KO para Mi Quiniela
+    const koDetail=KNOCKOUT_ROUNDS.map(r=>{
+      const picks=(koPreds[myApodo]||{})[r.id]||[];
+      const actual=koResults[r.id]||[];
+      const pts2=calcKoRoundPts(picks,actual,r.pts);
+      return{round:r,picks:_toArr(picks),actual:_toArr(actual),pts:pts2};
+    });
+    const matchList=matches.map(m=>{
+      const pp=predictions[myApodo]||{};
+      const pred=pp[m.id]||null,res=results[m.id]||null;
+      const pts2=calcPoints(pred,res);
+      return{...m,pred,res,pts:pts2};
+    });
+    const phase=getCurrentPhase();
+    const dMq={p:myApodo,matchList,koDetail};
+    const mqLastSection=buildLastSection(dMq,phase);
+    // Banner ganador si aplica
+    const gw=getGroupStageWinner();
+    const bolsa=participants.length*3000;
+    const grpPrize2=bolsa>0?'$'+Math.round(bolsa*0.15).toLocaleString('es-MX')+' MXN':'$22,050 MXN';
+    const mqWinnerBanner=(gw&&gw.p===myApodo)?`<div class="mob-winner-banner">
+      <span class="mwb-trophy">🏆</span>
+      <div class="mwb-text">
+        <span class="mwb-title">Ganador Fase de Grupos</span>
+        <span class="mwb-prize">${grpPrize2}</span>
+      </div>
+    </div>`:'';
     bodyHtml=`<div class="mq-identity-row">
       <span class="${rankCls}">${rankNum}</span>
       <div class="mq-id">
@@ -1497,7 +1524,7 @@ function renderMiQuinielaTo(targetId){
         <span class="mq-pts">${hasAnyResult?totalPts+' pts':'—'}</span>
         <span class="mq-exactos">🎯 ${hasAnyResult?exactCount:'—'} exactos</span>
       </div>
-    </div>`;
+    </div>${mqWinnerBanner}${mqLastSection}`;
   }else{
     bodyHtml=`<div class="mq-empty-state">Selecciona tu nombre para ver tu posición</div>`;
   }
@@ -1528,6 +1555,8 @@ function toggleHoyCard(){_hoyOpen=!_hoyOpen;renderPartidosHoy();}
 function renderPartidosHoyImpl(targetId){
   const wrap=document.getElementById(targetId);
   if(!wrap)return;
+  // Ocultar en fase eliminatoria (R16 en adelante)
+  if(['r16','r8','r4','r2','rf','rc'].includes(getCurrentPhase())){wrap.innerHTML='';return;}
   const teams=getTeams();
   const matches=generateMatches(teams);
   const results=getResults();
@@ -1872,7 +1901,7 @@ function buildLastSection(d,phase){
   // ── R16 / 8vos: layout centrado ─────────────────────────────────────────
   if(phase==='r16'||phase==='r8'){
     const box=ptsBox(kd,activeRound,`openKoPhaseModal('${pa}','${phase}')`);
-    const verBtn=`<span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultado ▾</span>`;
+    const verBtn=`<span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultados ▾</span>`;
     return `<div class="mob-lastko-btn centered">
       <span class="mob-lastko-round">${activeRound.short}</span>
       <div class="lk-center">${box||`<span style="font-size:.75rem;color:var(--muted)">${picks.length} picks</span>`}</div>
@@ -1910,13 +1939,14 @@ function buildLastSection(d,phase){
     }
   }
 
+  // Renglón principal (fase activa) en el mismo formato que sub-renglones
+  const mainRow=`<div class="mob-lastsub-row">
+    <span class="mob-lastsub-badge">${activeRound.short}</span>
+    <div class="mob-lastsub-flags">${mainFlags}</div>
+  </div>`;
   return `<div class="mob-lastflags-wrap">
-    <div class="mlf-top">
-      <span class="mob-lastko-round">${activeRound.short}</span>
-      ${box}
-    </div>
-    <div class="mob-lastflags">${mainFlags}</div>
-    ${subRows?`<div class="mob-lastsub">${subRows}</div>`:''}
+    <div class="mlf-top">${box}</div>
+    <div class="mob-lastsub">${mainRow}${subRows}</div>
   </div>`;
 }
 
