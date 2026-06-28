@@ -512,8 +512,9 @@
     .lk-pts-box .lk-pts{font-size:.88rem;font-weight:900;color:#b45309}
     .lk-pts-box .lk-ver{font-size:.65rem;font-weight:800;color:#78350f;border-left:1px solid #f59e0b;margin-left:4px;padding-left:6px;white-space:nowrap}
     /* Layout R16/R8: badge | [centrado] | ver */
-    .mob-lastko-btn.centered{display:flex;align-items:center;gap:8px}
-    .mob-lastko-btn.centered .lk-center{flex:1;display:flex;justify-content:center}
+    .mob-lastko-btn.centered{display:flex;flex-direction:column;align-items:center;gap:5px}
+    .mob-lastko-btn.centered .lk-center{display:flex;justify-content:center;width:100%}
+    .mob-lastko-btn.centered .lk-foot{display:flex;align-items:center;justify-content:space-between;width:100%}
     /* Sub-renglones (Final, Campeón bajo Semis/Final) */
     .mob-lastflags-wrap{border-top:1px solid var(--border);display:flex;flex-direction:column;background:linear-gradient(180deg,#fbfdff,#f3f7fc)}
     .mlf-top{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 14px 6px;width:100%}
@@ -970,6 +971,10 @@ function load(key,def){
 const DEFAULT_TEAMS={A:['México','Corea del Sur','Sudáfrica','Rep. Checa'],B:['Canadá','Bosnia-Herzegovina','Catar','Suiza'],C:['Brasil','Marruecos','Haití','Escocia'],D:['Estados Unidos','Paraguay','Australia','Turquía'],E:['Alemania','Curazao','Costa de Marfil','Ecuador'],F:['Países Bajos','Japón','Suecia','Túnez'],G:['Bélgica','Egipto','Irán','Nueva Zelanda'],H:['España','Cabo Verde','Arabia Saudita','Uruguay'],I:['Francia','Senegal','Irak','Noruega'],J:['Argentina','Austria','Argelia','Jordania'],K:['Portugal','Colombia','Rep. Dem. Congo','Uzbekistán'],L:['Inglaterra','Croacia','Ghana','Panamá']};
 const GROUP_LETTERS=Object.keys(DEFAULT_TEAMS);
 const KNOCKOUT_ROUNDS=[{id:'r16',label:'16vos de Final',short:'R16',count:32,pts:1},{id:'r8',label:'Octavos de Final',short:'Octavos',count:16,pts:1},{id:'r4',label:'Cuartos de Final',short:'Cuartos',count:8,pts:1},{id:'r2',label:'Semifinal',short:'Semis',count:4,pts:2},{id:'rf',label:'Final',short:'Final',count:2,pts:3},{id:'rc',label:'Campeón',short:'Campeón',count:1,pts:5}];
+// Partidos de fase eliminatoria (actualizar conforme avanza el torneo)
+const KO_MATCHES=[
+  {id:'ko_r16_1',round:'r16',home:'Sudáfrica',away:'Canadá',date:'27 Jun',time:'13:00',venue:'Los Ángeles'},
+];
 const KO_PREVIEW_ROUNDS=new Set(['r16','r8','r4']);
 const DEFAULT_MATCHES=[{id:'A1',group:'A',matchday:1,date:'11 Jun',time:'13:00',venue:'Ciudad de México',hi:0,ai:2},{id:'A2',group:'A',matchday:1,date:'11 Jun',time:'20:00',venue:'Guadalajara',hi:1,ai:3},{id:'B1',group:'B',matchday:1,date:'12 Jun',time:'13:00',venue:'Toronto',hi:0,ai:1},{id:'D1',group:'D',matchday:1,date:'12 Jun',time:'19:00',venue:'Los Ángeles',hi:0,ai:1},{id:'B2',group:'B',matchday:1,date:'13 Jun',time:'13:00',venue:'San Francisco',hi:2,ai:3},{id:'C1',group:'C',matchday:1,date:'13 Jun',time:'16:00',venue:'Nueva York / NJ',hi:0,ai:1},{id:'C2',group:'C',matchday:1,date:'13 Jun',time:'19:00',venue:'Boston',hi:2,ai:3},{id:'D2',group:'D',matchday:1,date:'13 Jun',time:'22:00',venue:'Vancouver',hi:2,ai:3},{id:'E1',group:'E',matchday:1,date:'14 Jun',time:'11:00',venue:'Houston',hi:0,ai:1},{id:'F1',group:'F',matchday:1,date:'14 Jun',time:'14:00',venue:'Dallas',hi:0,ai:1},{id:'E2',group:'E',matchday:1,date:'14 Jun',time:'17:00',venue:'Filadelfia',hi:2,ai:3},{id:'F2',group:'F',matchday:1,date:'14 Jun',time:'20:00',venue:'Monterrey',hi:2,ai:3},{id:'H1',group:'H',matchday:1,date:'15 Jun',time:'10:00',venue:'Atlanta',hi:0,ai:1},{id:'G1',group:'G',matchday:1,date:'15 Jun',time:'13:00',venue:'Seattle',hi:0,ai:1},{id:'H2',group:'H',matchday:1,date:'15 Jun',time:'16:00',venue:'Miami',hi:2,ai:3},{id:'G2',group:'G',matchday:1,date:'15 Jun',time:'19:00',venue:'Los Ángeles',hi:2,ai:3},{id:'I1',group:'I',matchday:1,date:'16 Jun',time:'13:00',venue:'Nueva York / NJ',hi:0,ai:1},{id:'I2',group:'I',matchday:1,date:'16 Jun',time:'16:00',venue:'Boston',hi:2,ai:3},{id:'J1',group:'J',matchday:1,date:'16 Jun',time:'19:00',venue:'Kansas City',hi:0,ai:2},{id:'J2',group:'J',matchday:1,date:'16 Jun',time:'22:00',venue:'San Francisco',hi:1,ai:3},{id:'K1',group:'K',matchday:1,date:'17 Jun',time:'11:00',venue:'Houston',hi:0,ai:2},{id:'L1',group:'L',matchday:1,date:'17 Jun',time:'14:00',venue:'Dallas',hi:0,ai:1},{id:'L2',group:'L',matchday:1,date:'17 Jun',time:'17:00',venue:'Toronto',hi:2,ai:3},{id:'K2',group:'K',matchday:1,date:'17 Jun',time:'20:00',venue:'Ciudad de México',hi:3,ai:1},{id:'A3',group:'A',matchday:2,date:'18 Jun',time:'10:00',venue:'Atlanta',hi:3,ai:2},{id:'B3',group:'B',matchday:2,date:'18 Jun',time:'13:00',venue:'Los Ángeles',hi:3,ai:1},{id:'B4',group:'B',matchday:2,date:'18 Jun',time:'16:00',venue:'Vancouver',hi:0,ai:2},{id:'A4',group:'A',matchday:2,date:'18 Jun',time:'19:00',venue:'Guadalajara',hi:0,ai:1},{id:'D3',group:'D',matchday:2,date:'19 Jun',time:'13:00',venue:'Seattle',hi:0,ai:2},{id:'C3',group:'C',matchday:2,date:'19 Jun',time:'16:00',venue:'Boston',hi:3,ai:1},{id:'C4',group:'C',matchday:2,date:'19 Jun',time:'19:00',venue:'Filadelfia',hi:0,ai:2},{id:'D4',group:'D',matchday:2,date:'19 Jun',time:'22:00',venue:'San Francisco',hi:3,ai:1},{id:'F3',group:'F',matchday:2,date:'20 Jun',time:'11:00',venue:'Houston',hi:0,ai:2},{id:'E3',group:'E',matchday:2,date:'20 Jun',time:'14:00',venue:'Toronto',hi:0,ai:2},{id:'E4',group:'E',matchday:2,date:'20 Jun',time:'18:00',venue:'Kansas City',hi:3,ai:1},{id:'F4',group:'F',matchday:2,date:'20 Jun',time:'22:00',venue:'Guadalajara',hi:3,ai:1},{id:'H3',group:'H',matchday:2,date:'21 Jun',time:'10:00',venue:'Atlanta',hi:0,ai:2},{id:'G3',group:'G',matchday:2,date:'21 Jun',time:'13:00',venue:'Los Ángeles',hi:0,ai:2},{id:'H4',group:'H',matchday:2,date:'21 Jun',time:'16:00',venue:'Miami',hi:3,ai:1},{id:'G4',group:'G',matchday:2,date:'21 Jun',time:'19:00',venue:'Vancouver',hi:3,ai:1},{id:'J3',group:'J',matchday:2,date:'22 Jun',time:'11:00',venue:'Dallas',hi:0,ai:1},{id:'I3',group:'I',matchday:2,date:'22 Jun',time:'15:00',venue:'Filadelfia',hi:0,ai:2},{id:'I4',group:'I',matchday:2,date:'22 Jun',time:'18:00',venue:'Nueva York / NJ',hi:3,ai:1},{id:'J4',group:'J',matchday:2,date:'22 Jun',time:'21:00',venue:'San Francisco',hi:3,ai:2},{id:'K3',group:'K',matchday:2,date:'23 Jun',time:'11:00',venue:'Houston',hi:0,ai:3},{id:'L3',group:'L',matchday:2,date:'23 Jun',time:'14:00',venue:'Boston',hi:0,ai:2},{id:'L4',group:'L',matchday:2,date:'23 Jun',time:'17:00',venue:'Toronto',hi:3,ai:1},{id:'K4',group:'K',matchday:2,date:'23 Jun',time:'20:00',venue:'Guadalajara',hi:1,ai:2},{id:'B5',group:'B',matchday:3,date:'24 Jun',time:'13:00',venue:'Vancouver',hi:3,ai:0},{id:'B6',group:'B',matchday:3,date:'24 Jun',time:'13:00',venue:'Seattle',hi:1,ai:2},{id:'C5',group:'C',matchday:3,date:'24 Jun',time:'16:00',venue:'Miami',hi:3,ai:0},{id:'C6',group:'C',matchday:3,date:'24 Jun',time:'16:00',venue:'Atlanta',hi:1,ai:2},{id:'A5',group:'A',matchday:3,date:'24 Jun',time:'19:00',venue:'Ciudad de México',hi:3,ai:0},{id:'A6',group:'A',matchday:3,date:'24 Jun',time:'19:00',venue:'Monterrey',hi:2,ai:1},{id:'E5',group:'E',matchday:3,date:'25 Jun',time:'14:00',venue:'Filadelfia',hi:1,ai:2},{id:'E6',group:'E',matchday:3,date:'25 Jun',time:'14:00',venue:'Nueva York / NJ',hi:3,ai:0},{id:'F5',group:'F',matchday:3,date:'25 Jun',time:'17:00',venue:'Dallas',hi:1,ai:2},{id:'F6',group:'F',matchday:3,date:'25 Jun',time:'17:00',venue:'Kansas City',hi:3,ai:0},{id:'D5',group:'D',matchday:3,date:'25 Jun',time:'20:00',venue:'Los Ángeles',hi:3,ai:0},{id:'D6',group:'D',matchday:3,date:'25 Jun',time:'20:00',venue:'San Francisco',hi:1,ai:2},{id:'I5',group:'I',matchday:3,date:'26 Jun',time:'13:00',venue:'Boston',hi:3,ai:0},{id:'I6',group:'I',matchday:3,date:'26 Jun',time:'13:00',venue:'Toronto',hi:1,ai:2},{id:'H5',group:'H',matchday:3,date:'26 Jun',time:'18:00',venue:'Houston',hi:1,ai:2},{id:'H6',group:'H',matchday:3,date:'26 Jun',time:'18:00',venue:'Guadalajara',hi:3,ai:0},{id:'G5',group:'G',matchday:3,date:'26 Jun',time:'21:00',venue:'Seattle',hi:1,ai:2},{id:'G6',group:'G',matchday:3,date:'26 Jun',time:'21:00',venue:'Vancouver',hi:3,ai:0},{id:'L5',group:'L',matchday:3,date:'27 Jun',time:'15:00',venue:'Nueva York / NJ',hi:3,ai:0},{id:'L6',group:'L',matchday:3,date:'27 Jun',time:'15:00',venue:'Filadelfia',hi:1,ai:2},{id:'K5',group:'K',matchday:3,date:'27 Jun',time:'17:30',venue:'Miami',hi:1,ai:0},{id:'K6',group:'K',matchday:3,date:'27 Jun',time:'17:30',venue:'Atlanta',hi:2,ai:3},{id:'J5',group:'J',matchday:3,date:'27 Jun',time:'20:00',venue:'Kansas City',hi:2,ai:1},{id:'J6',group:'J',matchday:3,date:'27 Jun',time:'20:00',venue:'Dallas',hi:3,ai:0}];
 const TEAM_CODES={'México':'mx','Corea del Sur':'kr','Sudáfrica':'za','Rep. Checa':'cz','Canadá':'ca','Bosnia-Herzegovina':'ba','Catar':'qa','Suiza':'ch','Brasil':'br','Marruecos':'ma','Haití':'ht','Escocia':'gb-sct','Estados Unidos':'us','Paraguay':'py','Australia':'au','Turquía':'tr','Alemania':'de','Curazao':'cw','Costa de Marfil':'ci','Ecuador':'ec','Países Bajos':'nl','Japón':'jp','Suecia':'se','Túnez':'tn','Bélgica':'be','Egipto':'eg','Irán':'ir','Nueva Zelanda':'nz','España':'es','Cabo Verde':'cv','Arabia Saudita':'sa','Uruguay':'uy','Francia':'fr','Senegal':'sn','Irak':'iq','Noruega':'no','Argentina':'ar','Austria':'at','Argelia':'dz','Jordania':'jo','Portugal':'pt','Colombia':'co','Rep. Dem. Congo':'cd','Uzbekistán':'uz','Inglaterra':'gb-eng','Croacia':'hr','Ghana':'gh','Panamá':'pa'};
@@ -1556,8 +1561,41 @@ function toggleHoyCard(){_hoyOpen=!_hoyOpen;renderPartidosHoy();}
 function renderPartidosHoyImpl(targetId){
   const wrap=document.getElementById(targetId);
   if(!wrap)return;
-  // Ocultar en fase eliminatoria (R16 en adelante)
-  if(['r16','r8','r4','r2','rf','rc'].includes(getCurrentPhase())){wrap.innerHTML='';return;}
+  // En fase eliminatoria: mostrar partidos KO del día
+  const koPhaseActive=['r16','r8','r4','r2','rf','rc'].includes(getCurrentPhase());
+  if(koPhaseActive){
+    const today=getTodayMatchDate();
+    const todayKo=KO_MATCHES.filter(m=>m.date===today);
+    if(!todayKo.length){wrap.innerHTML='';return;}
+    const koResults=getKoResults();
+    const roundLabel={'r16':'16vos de Final','r8':'Octavos','r4':'Cuartos','r2':'Semis','rf':'Final','rc':'Campeón'};
+    const matchesHtml=todayKo.map(m=>{
+      // Buscar resultado del partido KO en Firebase (ko_match_results si existe)
+      const koMatchRes=load('q26_ko_match_results',{})[m.id]||null;
+      const scoreboxHtml=koMatchRes
+        ?`<div class="hoy-scorebox"><span class="hoy-score-num">${koMatchRes.h}</span><span class="hoy-score-sep">-</span><span class="hoy-score-num">${koMatchRes.a}</span></div>`
+        :`<div class="hoy-vs-badge">VS</div>`;
+      const roundBadge=roundLabel[m.round]||m.round;
+      return `<div class="hoy-match">
+        <div class="hoy-match-meta" style="padding:10px 14px 0;display:flex;flex-direction:column;align-items:flex-start;gap:5px">
+          <span style="font-size:.65rem;font-weight:800;color:#fff;background:var(--navy);border-radius:5px;padding:2px 10px;letter-spacing:.03em">${roundBadge}</span>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%">
+            <span class="hoy-time">🕐 ${m.time} CDMX</span>
+            <span class="hoy-venue">📍 ${m.venue}</span>
+          </div>
+        </div>
+        <div class="hoy-faceoff">
+          <div class="hoy-team"><div class="hoy-team-flag">${flag(m.home)}</div><div class="hoy-team-name">${m.home}</div></div>
+          ${scoreboxHtml}
+          <div class="hoy-team"><div class="hoy-team-flag">${flag(m.away)}</div><div class="hoy-team-name">${m.away}</div></div>
+        </div>
+      </div>`;
+    }).join('');
+    const pct=100;
+    const titleHtml=`<div class="hoy-title"><span>⚽ Partidos de hoy — ${today}</span><div class="hoy-title-prog"><div class="hoy-title-prog-bar"><div class="hoy-title-prog-fill" style="width:${pct}%"></div></div><span class="hoy-title-prog-label">Fase eliminatoria</span></div></div>`;
+    wrap.innerHTML=`<div class="hoy-card">${titleHtml}<div class="hoy-body">${matchesHtml}</div></div>`;
+    return;
+  }
   const teams=getTeams();
   const matches=generateMatches(teams);
   const results=getResults();
@@ -1904,9 +1942,14 @@ function buildLastSection(d,phase){
     const box=ptsBox(kd,activeRound,`openKoPhaseModal('${pa}','${phase}')`);
     const verBtn=`<span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultados ▾</span>`;
     return `<div class="mob-lastko-btn centered">
-      <span class="mob-lastko-round">${activeRound.short}</span>
+      <div class="lk-foot">
+        <span class="mob-lastko-round">${activeRound.short}</span>
+      </div>
       <div class="lk-center">${box||`<span style="font-size:.75rem;color:var(--muted)">${picks.length} picks</span>`}</div>
-      ${verBtn}
+      <div class="lk-foot">
+        <span></span>
+        ${verBtn}
+      </div>
     </div>`;
   }
 
