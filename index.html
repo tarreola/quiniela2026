@@ -512,9 +512,10 @@
     .lk-pts-box .lk-pts{font-size:.88rem;font-weight:900;color:#b45309}
     .lk-pts-box .lk-ver{font-size:.65rem;font-weight:800;color:#78350f;border-left:1px solid #f59e0b;margin-left:4px;padding-left:6px;white-space:nowrap}
     /* Layout R16/R8: badge | [centrado] | ver */
-    .mob-lastko-btn.centered{display:flex;flex-direction:column;align-items:center;gap:5px}
-    .mob-lastko-btn.centered .lk-center{display:flex;justify-content:center;width:100%}
-    .mob-lastko-btn.centered .lk-foot{display:flex;align-items:center;justify-content:space-between;width:100%}
+    .mob-lastko-btn.centered{display:flex;flex-direction:column;align-items:stretch;gap:4px}
+    .mob-lastko-btn.centered .lk-top-row{display:flex;align-items:center;gap:8px}
+    .mob-lastko-btn.centered .lk-top-row .lk-center{flex:1;display:flex;justify-content:flex-start}
+    .mob-lastko-btn.centered .lk-foot{display:flex;align-items:center;justify-content:flex-end;width:100%}
     /* Sub-renglones (Final, Campeón bajo Semis/Final) */
     .mob-lastflags-wrap{border-top:1px solid var(--border);display:flex;flex-direction:column;background:linear-gradient(180deg,#fbfdff,#f3f7fc)}
     .mlf-top{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 14px 6px;width:100%}
@@ -1582,12 +1583,11 @@ function toggleHoyCard(){_hoyOpen=!_hoyOpen;renderPartidosHoy();}
 function renderPartidosHoyImpl(targetId){
   const wrap=document.getElementById(targetId);
   if(!wrap)return;
-  // En fase eliminatoria: mostrar partidos KO del día
-  const koPhaseActive=['r16','r8','r4','r2','rf','rc'].includes(getCurrentPhase());
-  if(koPhaseActive){
-    const today=getTodayMatchDate();
-    const todayKo=KO_MATCHES.filter(m=>m.date===today);
-    if(!todayKo.length){wrap.innerHTML='';return;}
+  // Mostrar partidos KO del día si existen (independiente de si hay resultados KO cargados)
+  const today=getTodayMatchDate();
+  const todayKo=KO_MATCHES.filter(m=>m.date===today);
+  if(todayKo.length>0){
+    // hay partidos KO hoy → mostrarlos siempre
     const koResults=getKoResults();
     const roundLabel={'r16':'16vos de Final','r8':'Octavos','r4':'Cuartos','r2':'Semis','rf':'Final','rc':'Campeón'};
     const matchesHtml=todayKo.map(m=>{
@@ -1612,8 +1612,7 @@ function renderPartidosHoyImpl(targetId){
         </div>
       </div>`;
     }).join('');
-    const pct=100;
-    const titleHtml=`<div class="hoy-title"><span>⚽ Partidos de hoy — ${today}</span><div class="hoy-title-prog"><div class="hoy-title-prog-bar"><div class="hoy-title-prog-fill" style="width:${pct}%"></div></div><span class="hoy-title-prog-label">Fase eliminatoria</span></div></div>`;
+    const titleHtml=`<div class="hoy-title"><span>⚽ Partidos de hoy — ${today}</span><div class="hoy-title-prog"><div class="hoy-title-prog-bar"><div class="hoy-title-prog-fill" style="width:100%"></div></div><span class="hoy-title-prog-label">Fase eliminatoria</span></div></div>`;
     wrap.innerHTML=`<div class="hoy-card">${titleHtml}<div class="hoy-body">${matchesHtml}</div></div>`;
     return;
   }
@@ -1626,7 +1625,6 @@ function renderPartidosHoyImpl(targetId){
   const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
   const participants=getParticipants().filter(p=>PAID.has(payments[p]||''));
 
-  const today=getTodayMatchDate();
   const todayMatches=matches.filter(m=>m.date===today).sort((a,b)=>{
     const t=x=>parseInt((x.time||'00:00').replace(':',''));
     return t(a)-t(b);
@@ -1963,14 +1961,11 @@ function buildLastSection(d,phase){
     const box=ptsBox(kd,activeRound,`openKoPhaseModal('${pa}','${phase}')`);
     const verBtn=`<span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultados ▾</span>`;
     return `<div class="mob-lastko-btn centered">
-      <div class="lk-foot">
+      <div class="lk-top-row">
         <span class="mob-lastko-round">${activeRound.short}</span>
+        <div class="lk-center">${box||`<span style="font-size:.75rem;color:var(--muted)">${picks.length} picks</span>`}</div>
       </div>
-      <div class="lk-center">${box||`<span style="font-size:.75rem;color:var(--muted)">${picks.length} picks</span>`}</div>
-      <div class="lk-foot">
-        <span></span>
-        ${verBtn}
-      </div>
+      <div class="lk-foot">${verBtn}</div>
     </div>`;
   }
 

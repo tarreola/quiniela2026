@@ -912,15 +912,15 @@
     <div class="page-title"><span>⚽</span> Resultados</div>
     <div class="res-subtabs">
       <button class="res-subtab active" id="res-tab-grupos" onclick="switchResTab('grupos')">📋 Fase de Grupos</button>
+      <button class="res-subtab" id="res-tab-ko-match" onclick="switchResTab('ko-match')">⚽ Resultados KO</button>
       <button class="res-subtab" id="res-tab-ko" onclick="switchResTab('ko')">🏆 Fase Eliminatoria</button>
     </div>
     <div id="res-progress-bar"></div>
     <div id="res-grupos-wrap"></div>
-    <div id="res-ko-wrap" style="display:none">
-      <div class="page-title" style="font-size:.95rem;margin:16px 0 10px">⚽ Resultados de partidos</div>
+    <div id="res-ko-match-wrap" style="display:none">
       <div id="res-ko-matches-wrap"></div>
-      <div class="page-title" style="font-size:.95rem;margin:20px 0 10px">🏆 Equipos clasificados por ronda</div>
     </div>
+    <div id="res-ko-wrap" style="display:none"></div>
   </div>
 
   <!-- ══════════ ADMIN ══════════ -->
@@ -1465,8 +1465,10 @@ let _resTab='grupos';
 function switchResTab(tab){
   _resTab=tab;
   document.getElementById('res-tab-grupos').classList.toggle('active',tab==='grupos');
+  document.getElementById('res-tab-ko-match').classList.toggle('active',tab==='ko-match');
   document.getElementById('res-tab-ko').classList.toggle('active',tab==='ko');
   document.getElementById('res-grupos-wrap').style.display=tab==='grupos'?'':'none';
+  document.getElementById('res-ko-match-wrap').style.display=tab==='ko-match'?'':'none';
   document.getElementById('res-ko-wrap').style.display=tab==='ko'?'':'none';
 }
 function renderResultados(){
