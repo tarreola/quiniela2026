@@ -504,6 +504,21 @@
     .mob-lastko-cta{font-size:.72rem;font-weight:800;color:#1a5fc4;flex-shrink:0;white-space:nowrap;cursor:pointer;border-left:1px solid var(--border);padding-left:8px}
     .mob-lastko-score{font-size:.74rem;font-weight:800;color:var(--navy);flex-shrink:0;white-space:nowrap;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px 9px;display:inline-flex;align-items:center;gap:3px}
     .mob-lastflag.champ{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#f59e0b;font-size:.7rem}
+    /* Recuadro dorado de puntos KO */
+    .lk-pts-box{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #f59e0b;border-radius:10px;padding:4px 12px;cursor:pointer;transition:opacity .15s}
+    .lk-pts-box:active{opacity:.8}
+    .lk-pts-box .lk-score{font-size:.82rem;font-weight:900;color:#92400e}
+    .lk-pts-box .lk-sep{color:#d97706;font-weight:400;margin:0 2px}
+    .lk-pts-box .lk-pts{font-size:.88rem;font-weight:900;color:#b45309}
+    .lk-pts-box .lk-ver{font-size:.65rem;font-weight:800;color:#78350f;border-left:1px solid #f59e0b;margin-left:4px;padding-left:6px;white-space:nowrap}
+    /* Layout R16/R8: badge | [centrado] | ver */
+    .mob-lastko-btn.centered{display:flex;align-items:center;gap:8px}
+    .mob-lastko-btn.centered .lk-center{flex:1;display:flex;justify-content:center}
+    /* Sub-renglones (Final, Campeón bajo Semis/Final) */
+    .mob-lastsub{border-top:1px dashed var(--border);padding:7px 14px 6px;display:flex;flex-direction:column;gap:5px;background:linear-gradient(180deg,#f8fafc,#f3f7fc)}
+    .mob-lastsub-row{display:flex;align-items:center;gap:8px}
+    .mob-lastsub-badge{font-size:.56rem;font-weight:900;color:#fff;background:#334155;border-radius:5px;padding:2px 7px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;white-space:nowrap}
+    .mob-lastsub-flags{display:flex;flex-wrap:wrap;gap:4px;flex:1}
     .mob-lastflags-wrap{border-top:1px solid var(--border);padding:8px 14px 9px;display:flex;flex-direction:column;gap:7px;background:linear-gradient(180deg,#fbfdff,#f3f7fc)}
     .mlf-top{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%}
     .mob-lastflags{display:flex;flex-wrap:wrap;gap:5px;width:100%}
@@ -1621,11 +1636,16 @@ function toggleMobCard(apodo){
   if(mobExpanded.has(apodo)){mobExpanded.delete(apodo);}
   else{
     mobExpanded.add(apodo);
-    // Al abrir en fase KO, desplegar automáticamente la SIGUIENTE fase
+    // Al abrir en fase KO, desplegar automáticamente las fases indicadas por fase
     const phase=getCurrentPhase();
-    const order=['r16','r8','r4','r2','rf','rc'];
-    const idx=order.indexOf(phase);
-    if(idx>=0&&idx+1<order.length){mobKoExpanded.add(order[idx+1]+'|'+apodo);}
+    const autoExpand={
+      r16:['r16','r8'],
+      r8: ['r8','r4'],
+      r4: ['r4','r2'],
+      r2: ['r2','rf','rc'],
+      rf: ['rf','rc'],
+    };
+    (autoExpand[phase]||[]).forEach(rid=>mobKoExpanded.add(rid+'|'+apodo));
   }
   renderTableroMobile();
 }
@@ -1813,53 +1833,90 @@ function buildLastSection(d,phase){
   // Fase KO: encontrar la ronda activa y los picks del participante
   const activeRound=KNOCKOUT_ROUNDS.find(r=>r.id===phase);
   if(!activeRound)return '';
+  const pa=p.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+
+  // Helper: construye el recuadro dorado de puntos
+  function ptsBox(kd2,round2,clickFn){
+    const pk=kd2?_toArr(kd2.picks):[];
+    const ac=kd2?_toArr(kd2.actual):[];
+    if(!pk.length)return '';
+    const cor=pk.filter(t=>ac.includes(t)).length;
+    const rp=cor*round2.pts;
+    if(ac.length){
+      return `<span class="lk-pts-box" onclick="event.stopPropagation();${clickFn}">
+        <span class="lk-score"><span style="color:#166534">${cor}</span>/${pk.length} aciertos</span>
+        <span class="lk-sep">|</span>
+        <span class="lk-pts">+${rp} pts</span>
+        <span class="lk-ver">ver ▸</span>
+      </span>`;
+    }
+    return `<span class="lk-pts-box" onclick="event.stopPropagation();${clickFn}">
+      <span class="lk-score">${pk.length} picks</span>
+      <span class="lk-ver">ver ▸</span>
+    </span>`;
+  }
+
+  // Helper: mini fila de banderitas para sub-renglones
+  function flagRow(picks2,actual2){
+    return picks2.map(t=>{
+      const ok=actual2.length&&actual2.includes(t);
+      const cls=actual2.length?(ok?'ok':'miss'):'';
+      return `<span class="mob-lastflag ${cls}">${flag(t)}<span class="mob-lastflag-name">${t}</span></span>`;
+    }).join('');
+  }
+
   const kd=koDetail.find(x=>x.round.id===phase);
   const picks=kd?_toArr(kd.picks):[];
   const actual=kd?_toArr(kd.actual):[];
-  const pa=p.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-  if(!picks.length)return `<div class="mob-lastko-btn"><span class="mob-lastko-round">${activeRound.short}</span><span class="mob-lastko-summary">Sin picks en esta ronda</span><span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultado ▾</span></div>`;
-  const correct=picks.filter(t=>actual.includes(t)).length;
-  const roundPts=correct*activeRound.pts;
-  // Resumen clickeable → abre modal de resultados de la fase (separado de "Ver resultado")
-  const scoreClick=`onclick="event.stopPropagation();openKoPhaseModal('${pa}','${phase}')"`;
-  // 16vos y 8vos → botón con aciertos+puntos (click=modal) y "Ver resultado" (click=expandir)
+
+  // ── R16 / 8vos: layout centrado ─────────────────────────────────────────
   if(phase==='r16'||phase==='r8'){
-    const summary=actual.length
-      ?`<span class="lk-ok">${correct}</span>/${picks.length} aciertos <span class="lk-sep">|</span> <span class="lk-pts">+${roundPts} puntos</span>`
-      :`${picks.length} equipos elegidos`;
-    return `<div class="mob-lastko-btn">
+    const box=ptsBox(kd,activeRound,`openKoPhaseModal('${pa}','${phase}')`);
+    const verBtn=`<span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultado ▾</span>`;
+    return `<div class="mob-lastko-btn centered">
       <span class="mob-lastko-round">${activeRound.short}</span>
-      <span class="mob-lastko-summary mob-lastko-clickable" ${scoreClick}>${summary}</span>
-      <span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultado ▾</span>
+      <div class="lk-center">${box||`<span style="font-size:.75rem;color:var(--muted)">${picks.length} picks</span>`}</div>
+      ${verBtn}
     </div>`;
   }
-  // 4tos, semis, final, campeón → banderitas + aciertos/puntos a la derecha (click=modal)
-  let flags=picks.map(t=>{
-    const ok=actual.length&&actual.includes(t);
-    const cls=actual.length?(ok?'ok':'miss'):'';
-    return `<span class="mob-lastflag ${cls}">${flag(t)}<span class="mob-lastflag-name">${t}</span></span>`;
-  }).join('');
-  // En la Final, agregar la selección de campeón
-  if(phase==='rf'){
-    const champKd=koDetail.find(x=>x.round.id==='rc');
-    const champPicks=champKd?_toArr(champKd.picks):[];
-    const champActual=champKd?_toArr(champKd.actual):[];
-    if(champPicks.length){
-      const t=champPicks[0];
-      const ok=champActual.length&&champActual.includes(t);
-      const cls=champActual.length?(ok?'ok':'miss'):'';
-      flags+=`<span class="mob-lastflag champ ${cls}" title="Campeón">👑 ${flag(t)}<span class="mob-lastflag-name">${t}</span></span>`;
+
+  // ── 4tos / Semis / Final: banderitas + recuadro dorado ───────────────────
+  const mainFlags=flagRow(picks,actual);
+  const correct=picks.filter(t=>actual.includes(t)).length;
+  const box=ptsBox(kd,activeRound,`openKoPhaseModal('${pa}','${phase}')`);
+
+  // Sub-renglones adicionales según fase
+  let subRows='';
+  if(phase==='r2'||phase==='rf'){
+    // Final
+    const rfKd=koDetail.find(x=>x.round.id==='rf');
+    const rfPicks=rfKd?_toArr(rfKd.picks):[];
+    const rfActual=rfKd?_toArr(rfKd.actual):[];
+    if(rfPicks.length&&phase==='r2'){
+      subRows+=`<div class="mob-lastsub-row">
+        <span class="mob-lastsub-badge">Final</span>
+        <div class="mob-lastsub-flags">${flagRow(rfPicks,rfActual)}</div>
+      </div>`;
+    }
+    // Campeón
+    const rcKd=koDetail.find(x=>x.round.id==='rc');
+    const rcPicks=rcKd?_toArr(rcKd.picks):[];
+    const rcActual=rcKd?_toArr(rcKd.actual):[];
+    if(rcPicks.length){
+      subRows+=`<div class="mob-lastsub-row">
+        <span class="mob-lastsub-badge">👑 Campeón</span>
+        <div class="mob-lastsub-flags">${flagRow(rcPicks,rcActual)}</div>
+      </div>`;
     }
   }
-  const scoreBox=actual.length
-    ?`<span class="mob-lastko-score mob-lastko-clickable" ${scoreClick}><span class="lk-ok">${correct}</span>/${picks.length} <span class="lk-pts">+${roundPts} pts</span></span>`
-    :`<span class="mob-lastko-score mob-lastko-clickable" ${scoreClick}>${picks.length} picks ▸</span>`;
+
   return `<div class="mob-lastflags-wrap">
     <div class="mlf-top">
       <span class="mob-lastko-round">${activeRound.short}</span>
-      ${scoreBox}
+      ${box}
     </div>
-    <div class="mob-lastflags">${flags}</div>
+    <div class="mob-lastflags">${mainFlags}</div>
+    ${subRows?`<div class="mob-lastsub">${subRows}</div>`:''}
   </div>`;
 }
 
