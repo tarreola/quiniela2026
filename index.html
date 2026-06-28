@@ -520,6 +520,7 @@
     .mob-lastsub{display:flex;flex-direction:column}
     .mob-lastsub-row{display:flex;align-items:flex-start;gap:9px;padding:7px 14px;border-top:1px solid var(--border)}
     .mob-lastsub-badge{font-size:.56rem;font-weight:900;color:#fff;background:#334155;border-radius:5px;padding:3px 8px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;white-space:nowrap;margin-top:2px}
+    .mob-lastsub-badge.champ-badge{background:linear-gradient(135deg,#b45309,#d97706);color:#fff;border:1px solid #f59e0b}
     .mob-lastsub-flags{display:flex;flex-wrap:wrap;gap:4px;flex:1}
     .mob-lastflags{display:flex;flex-wrap:wrap;gap:5px;width:100%}
     .mob-lastflag{position:relative;display:inline-flex;align-items:center;gap:3px;padding:2px 7px 2px 4px;border-radius:20px;background:var(--surface2);border:1.5px solid var(--border)}
@@ -1933,7 +1934,7 @@ function buildLastSection(d,phase){
     const rcActual=rcKd?_toArr(rcKd.actual):[];
     if(rcPicks.length){
       subRows+=`<div class="mob-lastsub-row">
-        <span class="mob-lastsub-badge">👑 Campeón</span>
+        <span class="mob-lastsub-badge champ-badge">👑 Campeón</span>
         <div class="mob-lastsub-flags">${flagRow(rcPicks,rcActual)}</div>
       </div>`;
     }
