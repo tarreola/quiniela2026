@@ -373,6 +373,9 @@
     /* ══ PARTIDOS DE HOY ══ */
     .hoy-card{background:var(--surface);border:1.5px solid #059669;border-radius:14px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
     .hoy-title{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;font-size:.88rem;font-weight:800;padding:10px 16px;letter-spacing:.01em;display:flex;align-items:center;gap:7px;justify-content:space-between}
+    .hoy-collapse-icon{font-size:.66rem;display:inline-block;transition:transform .2s}
+    .hoy-card.collapsed .hoy-collapse-icon{transform:rotate(-90deg)}
+    .hoy-card.collapsed .hoy-body{display:none}
     .hoy-title-prog{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
     .hoy-title-prog-bar{width:72px;height:4px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden}
     .hoy-title-prog-fill{height:100%;background:#fff;border-radius:3px;transition:width .5s}
@@ -1505,11 +1508,11 @@ function renderPartidosHoy(){
     renderPartidosHoyImpl('hoy-modal-body');
   }
 }
+let _hoyOpen=null;
+function toggleHoyCard(){_hoyOpen=!_hoyOpen;renderPartidosHoy();}
 function renderPartidosHoyImpl(targetId){
   const wrap=document.getElementById(targetId);
   if(!wrap)return;
-  // Al terminar la fase de grupos ya no hay partidos de hoy
-  if(isGroupStageComplete()){wrap.innerHTML='';return;}
   const teams=getTeams();
   const matches=generateMatches(teams);
   const results=getResults();
@@ -1528,7 +1531,12 @@ function renderPartidosHoyImpl(targetId){
   const playedCount=Object.keys(results).filter(id=>matches.some(m=>m.id===id)).length;
   const totalCount=matches.length;
   const pct=totalCount>0?Math.min(100,Math.round(playedCount/totalCount*100)):0;
-  const titleHtml=`<div class="hoy-title"><span>⚽ Partidos de hoy — ${today}</span><div class="hoy-title-prog"><div class="hoy-title-prog-bar"><div class="hoy-title-prog-fill" style="width:${pct}%"></div></div><span class="hoy-title-prog-label">${playedCount} / ${totalCount} partidos</span></div></div>`;
+  const collapsible=(targetId==='hoy-wrap');
+  if(_hoyOpen===null)_hoyOpen=!isGroupStageComplete();
+  const collapsedCls=(collapsible&&!_hoyOpen)?' collapsed':'';
+  const chevron=collapsible?`<span class="hoy-collapse-icon">▼</span> `:'';
+  const titleAttr=collapsible?' onclick="toggleHoyCard()" style="cursor:pointer"':'';
+  const titleHtml=`<div class="hoy-title"${titleAttr}><span>${chevron}⚽ Partidos de hoy — ${today}</span><div class="hoy-title-prog"><div class="hoy-title-prog-bar"><div class="hoy-title-prog-fill" style="width:${pct}%"></div></div><span class="hoy-title-prog-label">${playedCount} / ${totalCount} partidos</span></div></div>`;
 
   let myApodo=localStorage.getItem('q26_my_apodo')||'';
   if(myApodo&&!participants.includes(myApodo))myApodo='';
@@ -1544,7 +1552,7 @@ function renderPartidosHoyImpl(targetId){
     :`<div class="hoy-identity"><span class="hoy-dd-placeholder" style="font-size:.78rem">Selecciona tu nombre en Mi Quiniela ↑</span></div>`;
 
   if(!todayMatches.length){
-    wrap.innerHTML=`<div class="hoy-card">${titleHtml}${selectorHtml}<p class="hoy-empty">No hay partidos programados para hoy 🛋️</p></div>`;
+    wrap.innerHTML=`<div class="hoy-card${collapsedCls}">${titleHtml}<div class="hoy-body">${selectorHtml}<p class="hoy-empty">No hay partidos programados para hoy 🛋️</p></div></div>`;
     return;
   }
 
@@ -1606,7 +1614,7 @@ function renderPartidosHoyImpl(targetId){
     </div>`;
   }).join('');
 
-  wrap.innerHTML=`<div class="hoy-card">${titleHtml}${selectorHtml}${matchesHtml}</div>`;
+  wrap.innerHTML=`<div class="hoy-card${collapsedCls}">${titleHtml}<div class="hoy-body">${selectorHtml}${matchesHtml}</div></div>`;
 }
 
 function toggleMobCard(apodo){
