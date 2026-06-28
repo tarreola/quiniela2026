@@ -186,6 +186,26 @@
     .tablero-controls{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
     #premios-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(10,24,48,.55);backdrop-filter:blur(3px)}
     #premios-overlay.open{display:block}
+    #kophase-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(13,31,60,.55)}
+    #kophase-overlay.open{display:block}
+    #kophase-modal{display:none;position:fixed;z-index:601;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.22);width:min(460px,94vw);max-height:84vh;flex-direction:column;overflow:hidden}
+    #kophase-modal.open{display:flex}
+    .kpm-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#0c2244,#1e3860);color:#fff}
+    .kpm-header h3{font-size:1rem;font-weight:800;margin:0}
+    .kpm-header p{font-size:.74rem;color:rgba(255,255,255,.65);margin:2px 0 0}
+    .kpm-close{background:rgba(255,255,255,.12);border:none;color:#fff;width:30px;height:30px;border-radius:8px;font-size:1rem;cursor:pointer;flex-shrink:0}
+    .kpm-body{padding:14px 16px;overflow-y:auto}
+    .kpm-statline{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;padding:10px;background:var(--surface2);border-radius:12px}
+    .kpm-stat{display:flex;flex-direction:column;align-items:center;gap:1px}
+    .kpm-stat-num{font-size:1.3rem;font-weight:900;line-height:1}
+    .kpm-stat-lbl{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+    .kpm-stat-div{width:1px;align-self:stretch;background:var(--border)}
+    .kpm-group-lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin:10px 0 6px;display:flex;align-items:center;gap:6px}
+    .kpm-teams{display:flex;flex-wrap:wrap;gap:6px}
+    .kpm-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:.74rem;font-weight:700;border:1.5px solid var(--border);background:var(--surface2)}
+    .kpm-pill .fi{width:18px;height:13px;border-radius:2px;flex-shrink:0}
+    .kpm-pill.correct{background:#ecfdf5;border-color:#34d399;color:#065f46}
+    .kpm-pill.wrong{background:#fef2f2;border-color:#fca5a5;color:#991b1b;text-decoration:line-through;text-decoration-color:#dc2626}
     #premios-modal{display:none;position:fixed;z-index:601;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.22);width:min(520px,94vw);max-height:82vh;flex-direction:column;overflow:hidden}
     #premios-modal.open{display:flex}
     .btn-hoy{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;border:none;cursor:pointer;font-size:.85rem;font-weight:700;white-space:nowrap;transition:all .18s;flex-shrink:0}
@@ -436,6 +456,13 @@
     .mob-col-header{display:flex;align-items:center;gap:5px;padding:2px 6px 2px;font-size:.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
     .mob-col-header .mob-teams{color:transparent}
     /* ══ ÚLTIMO PARTIDO BANNER ══ */
+    @keyframes mwb-shine{0%{transform:translateX(-130%)}55%,100%{transform:translateX(240%)}}
+    .mob-winner-banner{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:9px;padding:9px 14px;background:linear-gradient(135deg,#fde68a 0%,#fbbf24 50%,#f59e0b 100%);border-top:1px solid #f59e0b;border-bottom:2px solid #b45309}
+    .mob-winner-banner::after{content:'';position:absolute;top:0;left:0;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);transform:translateX(-130%);animation:mwb-shine 3.2s ease-in-out infinite 1s;pointer-events:none}
+    .mwb-trophy{font-size:1.5rem;line-height:1;flex-shrink:0;filter:drop-shadow(0 1px 1px rgba(0,0,0,.2))}
+    .mwb-text{display:flex;flex-direction:column;gap:1px;min-width:0;text-align:center}
+    .mwb-title{font-size:.66rem;font-weight:900;color:#7c2d12;text-transform:uppercase;letter-spacing:.05em;line-height:1.1}
+    .mwb-prize{font-size:.82rem;font-weight:900;color:#1a3a0e;line-height:1.1}
     .mob-lastmatch-wrap{border-top:1px solid var(--border);padding:6px 14px;display:flex;align-items:center;gap:8px}
     .mob-lastmatch-wrap.exact{background:#6ee7b7;border-left:4px solid #059669;padding-left:11px}
     .mob-lastmatch-wrap.exact .mob-lm-title{color:#065f46;font-weight:800}
@@ -461,6 +488,33 @@
     .mob-lastmatch-wrap.wrong .mob-lm-pts-val{color:var(--muted)}
     .mob-ko-inline{display:flex;flex-wrap:wrap;gap:4px;padding:4px 14px 8px;border-top:1px solid var(--border)}
     .mob-ko-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:.69rem;font-weight:700;background:var(--gold-light);color:#92400e;border:1px solid var(--gold2)}
+    /* Último por fase KO */
+    .mob-lastko-btn{border-top:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;background:linear-gradient(180deg,#fbfdff,#f3f7fc);transition:background .15s}
+    .mob-lastko-btn:active{background:#eef3f9}
+    .mob-lastko-round{font-size:.6rem;font-weight:800;color:#fff;background:var(--navy);border-radius:6px;padding:2px 8px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
+    .mob-lastko-summary{font-size:.76rem;font-weight:800;color:var(--navy);flex:1}
+    .lk-ok{color:var(--green)}
+    .lk-sep{color:var(--border);font-weight:400;margin:0 1px}
+    .lk-pts{color:var(--gold);font-weight:900}
+    .mob-lastko-clickable{cursor:pointer;border-radius:7px;transition:background .15s}
+    .mob-lastko-clickable:active{background:rgba(0,0,0,.05)}
+    .mob-lastko-cta{font-size:.72rem;font-weight:800;color:#1a5fc4;flex-shrink:0;white-space:nowrap;cursor:pointer;border-left:1px solid var(--border);padding-left:8px}
+    .mob-lastko-score{font-size:.74rem;font-weight:800;color:var(--navy);flex-shrink:0;white-space:nowrap;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px 9px;display:inline-flex;align-items:center;gap:3px}
+    .mob-lastflag.champ{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#f59e0b;font-size:.7rem}
+    .mob-lastflags-wrap{border-top:1px solid var(--border);padding:8px 14px 9px;display:flex;flex-direction:column;gap:7px;background:linear-gradient(180deg,#fbfdff,#f3f7fc)}
+    .mlf-top{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%}
+    .mob-lastflags{display:flex;flex-wrap:wrap;gap:5px;width:100%}
+    .mob-lastflag{position:relative;display:inline-flex;align-items:center;gap:3px;padding:2px 7px 2px 4px;border-radius:20px;background:var(--surface2);border:1.5px solid var(--border)}
+    .mob-lastflag .fi{width:16px;height:12px;border-radius:2px;flex-shrink:0}
+    .mob-lastflag-name{font-size:.6rem;font-weight:700;color:var(--navy);white-space:nowrap}
+    .mob-lastflag.ok{background:#ecfdf5;border-color:#34d399}
+    .mob-lastflag.ok .mob-lastflag-name{color:#065f46}
+    .mob-lastflag.ok::after{content:'✓';font-size:.6rem;font-weight:900;color:#059669;margin-left:1px}
+    .mob-lastflag.miss{opacity:.55}
+    .mob-groups-collapsible{margin-top:10px;border-top:1px dashed var(--border);padding-top:8px}
+    .mob-groups-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;font-family:inherit;font-size:.74rem;font-weight:800;color:var(--navy);cursor:pointer;text-transform:uppercase;letter-spacing:.03em}
+    .mob-groups-toggle:active{background:var(--border)}
+    .mgt-arrow{font-size:.72rem;font-weight:800;color:#1a5fc4;text-transform:none;letter-spacing:0}
     .mob-card-body{max-height:0;overflow:hidden;transition:max-height .32s ease;border-top:0 solid var(--border)}
     .mob-card.expanded .mob-card-body{max-height:4000px;border-top:1px solid var(--border)}
     /* ══ MI QUINIELA CARD ══ */
@@ -573,6 +627,56 @@
     #pl-err{display:none;color:#fca5a5;font-size:.8rem;margin-bottom:10px;font-weight:600;line-height:1.4}
     .pl-footer{margin-top:20px;font-size:.75rem;color:rgba(255,255,255,.3)}
     .pl-footer a{color:rgba(0,192,96,.6);text-decoration:none}
+    /* ══ CARRERA DE POSICIONES ══ */
+    .race-section{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+    .race-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:linear-gradient(135deg,#0c2244,#1e3860);color:#fff;cursor:pointer}
+    .race-head-left{display:flex;align-items:center;gap:8px;min-width:0}
+    .race-title{font-size:.82rem;font-weight:800;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .race-match-info{font-size:.68rem;color:rgba(255,255,255,.65);font-weight:600;white-space:nowrap}
+    .race-collapse-icon{font-size:.7rem;color:rgba(255,255,255,.75);flex-shrink:0;transition:transform .2s}
+    .race-section.collapsed .race-collapse-icon{transform:rotate(-90deg)}
+    .race-section.collapsed .race-body{display:none}
+    .race-list{padding:10px 10px 6px;display:flex;flex-direction:column;gap:5px}
+    @keyframes race-glow{0%,100%{box-shadow:0 2px 8px rgba(245,158,11,.1)}50%{box-shadow:0 4px 22px rgba(245,158,11,.5)}}
+    @keyframes race-shine{0%{transform:translateX(-150%)}60%,100%{transform:translateX(220%)}}
+    .race-row{display:flex;align-items:center;justify-content:center;gap:9px;padding:7px 34px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);transition:all .3s;position:relative;overflow:hidden}
+    .race-row.rr-1{background:linear-gradient(135deg,#fffbeb,#fef9e7);border-color:#f59e0b;border-bottom:3px solid #d97706;padding:15px 12px 15px 15px;animation:race-glow 2.5s ease-in-out infinite}
+    .race-row.rr-1::after{content:'';position:absolute;top:0;left:0;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-150%);animation:race-shine 4s ease-in-out infinite 1.2s;pointer-events:none}
+    .race-row.rr-2{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-color:#94a3b8;border-bottom:3px solid #64748b;padding:11px 10px 11px 13px}
+    .race-row.rr-3{background:linear-gradient(135deg,#fff7ed,#fef3e2);border-color:#cd7c3f;border-bottom:3px solid #b45309;padding:9px 10px 9px 13px}
+    .race-row.rr-mine{outline:2px solid var(--green);outline-offset:2px}
+    .race-row.trend-up::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:2px 0 0 2px}
+    .race-row.trend-dn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#f87171,#dc2626);border-radius:2px 0 0 2px}
+    .race-medal{line-height:1;flex-shrink:0;text-align:center;transition:font-size .3s}
+    .race-row.rr-1 .race-medal{font-size:2.1rem;width:38px}
+    .race-row.rr-2 .race-medal{font-size:1.65rem;width:34px}
+    .race-row.rr-3 .race-medal{font-size:1.4rem;width:32px}
+    .race-medal{font-size:1.2rem;width:30px}
+    .race-pos-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-weight:900;font-size:.7rem;background:var(--surface);border:1.5px solid var(--border);color:var(--muted);flex-shrink:0}
+    .race-info{flex:0 1 auto;min-width:0;text-align:center}
+    .race-apodo{font-weight:800;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.82rem}
+    .race-row.rr-1 .race-apodo{font-size:1.02rem;color:#78350f;letter-spacing:-.01em}
+    .race-row.rr-2 .race-apodo{font-size:.9rem}
+    .race-row.rr-3 .race-apodo{font-size:.86rem}
+    .race-pts-wrap{display:flex;align-items:baseline;justify-content:center;gap:3px;margin-top:1px}
+    .race-pts{font-weight:900;color:var(--green);line-height:1;font-size:.75rem}
+    .race-row.rr-1 .race-pts{font-size:.92rem}
+    .race-row.rr-2 .race-pts{font-size:.82rem}
+    .race-pts-lbl{font-size:.5rem;color:var(--muted);font-weight:600}
+    .race-leader-chip{display:inline-flex;align-items:center;gap:3px;font-size:.5rem;font-weight:900;color:#b45309;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:1px 6px;letter-spacing:.4px;margin-top:3px;text-transform:uppercase}
+    .race-gap{font-size:.55rem;color:var(--muted);font-weight:700;margin-top:2px;letter-spacing:.2px}
+    .race-right{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;flex-shrink:0;min-width:24px}
+    .race-move{font-size:.65rem;font-weight:800;white-space:nowrap;line-height:1}
+    .race-move.up{color:#16a34a}
+    .race-move.dn{color:#dc2626}
+    .race-move.eq{color:transparent}
+    .race-controls{padding:10px 14px 12px;border-top:1px solid var(--border);background:var(--surface2)}
+    .race-slider-wrap{display:flex;align-items:center;gap:8px}
+    .race-arrow-hint{font-size:.85rem;color:#94a3b8;user-select:none;pointer-events:none;flex-shrink:0}
+    .race-slider{flex:1;-webkit-appearance:none;appearance:none;height:5px;border-radius:3px;cursor:pointer;outline:none;background:linear-gradient(to right,var(--navy) var(--fill,100%),#e2e8f0 var(--fill,100%))}
+    .race-slider::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--navy);border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.3);cursor:pointer}
+    .race-date-label{text-align:center;font-size:.6rem;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-top:7px;text-transform:uppercase}
+    .race-no-data{padding:20px;text-align:center;color:var(--muted);font-size:.8rem;font-style:italic}
   </style>
 </head>
 <body>
@@ -676,6 +780,28 @@
     </div>
     <div id="mob-tablero-wrap">
       <div id="mi-quiniela-mob"></div>
+      <div id="race-wrap" style="display:none">
+        <div class="race-section collapsed" id="race-section">
+          <div class="race-header" onclick="toggleRace()">
+            <div class="race-head-left">
+              <span class="race-collapse-icon">▼</span>
+              <span class="race-title">🏁 Carrera de Posiciones · Fase de Grupos</span>
+            </div>
+            <span class="race-match-info" id="race-match-info">72 / 72 partidos</span>
+          </div>
+          <div class="race-body">
+            <div class="race-list" id="race-list"></div>
+            <div class="race-controls">
+              <div class="race-slider-wrap">
+                <span class="race-arrow-hint">◂</span>
+                <input type="range" id="race-slider" min="0" max="0" value="0" class="race-slider" oninput="raceSeek(parseInt(this.value))">
+                <span class="race-arrow-hint">▸</span>
+              </div>
+              <div class="race-date-label" id="race-date-label"></div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div id="hoy-wrap"></div>
       <div class="page-title" style="margin-top:10px"><span>🏆</span> Ranking</div>
       <div class="search-box" style="margin:0 0 4px">
@@ -782,6 +908,16 @@
   <div class="pron-body" id="pron-body"></div>
 </div>
 
+<!-- Resultados de fase KO (popup) -->
+<div id="kophase-overlay" onclick="closeKoPhaseModal()"></div>
+<div id="kophase-modal">
+  <div class="kpm-header">
+    <div><h3 id="kpm-title">Resultados</h3><p id="kpm-subtitle"></p></div>
+    <button class="kpm-close" onclick="closeKoPhaseModal()">✕</button>
+  </div>
+  <div class="kpm-body" id="kpm-body"></div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -814,7 +950,7 @@ function load(key,def){
 // ═══════════════════════════════════════════════════════════
 const DEFAULT_TEAMS={A:['México','Corea del Sur','Sudáfrica','Rep. Checa'],B:['Canadá','Bosnia-Herzegovina','Catar','Suiza'],C:['Brasil','Marruecos','Haití','Escocia'],D:['Estados Unidos','Paraguay','Australia','Turquía'],E:['Alemania','Curazao','Costa de Marfil','Ecuador'],F:['Países Bajos','Japón','Suecia','Túnez'],G:['Bélgica','Egipto','Irán','Nueva Zelanda'],H:['España','Cabo Verde','Arabia Saudita','Uruguay'],I:['Francia','Senegal','Irak','Noruega'],J:['Argentina','Austria','Argelia','Jordania'],K:['Portugal','Colombia','Rep. Dem. Congo','Uzbekistán'],L:['Inglaterra','Croacia','Ghana','Panamá']};
 const GROUP_LETTERS=Object.keys(DEFAULT_TEAMS);
-const KNOCKOUT_ROUNDS=[{id:'r16',label:'16vos de Final',short:'R16',count:32,pts:1},{id:'r8',label:'Octavos de Final',short:'Octavos',count:16,pts:1},{id:'r4',label:'Cuartos de Final',short:'Cuartos',count:8,pts:1},{id:'r2',label:'Semifinal',short:'Semi',count:4,pts:2},{id:'rf',label:'Final',short:'Final',count:2,pts:3},{id:'rc',label:'Campeón',short:'Campeón',count:1,pts:5}];
+const KNOCKOUT_ROUNDS=[{id:'r16',label:'16vos de Final',short:'R16',count:32,pts:1},{id:'r8',label:'Octavos de Final',short:'Octavos',count:16,pts:1},{id:'r4',label:'Cuartos de Final',short:'Cuartos',count:8,pts:1},{id:'r2',label:'Semifinal',short:'Semis',count:4,pts:2},{id:'rf',label:'Final',short:'Final',count:2,pts:3},{id:'rc',label:'Campeón',short:'Campeón',count:1,pts:5}];
 const KO_PREVIEW_ROUNDS=new Set(['r16','r8','r4']);
 const DEFAULT_MATCHES=[{id:'A1',group:'A',matchday:1,date:'11 Jun',time:'13:00',venue:'Ciudad de México',hi:0,ai:2},{id:'A2',group:'A',matchday:1,date:'11 Jun',time:'20:00',venue:'Guadalajara',hi:1,ai:3},{id:'B1',group:'B',matchday:1,date:'12 Jun',time:'13:00',venue:'Toronto',hi:0,ai:1},{id:'D1',group:'D',matchday:1,date:'12 Jun',time:'19:00',venue:'Los Ángeles',hi:0,ai:1},{id:'B2',group:'B',matchday:1,date:'13 Jun',time:'13:00',venue:'San Francisco',hi:2,ai:3},{id:'C1',group:'C',matchday:1,date:'13 Jun',time:'16:00',venue:'Nueva York / NJ',hi:0,ai:1},{id:'C2',group:'C',matchday:1,date:'13 Jun',time:'19:00',venue:'Boston',hi:2,ai:3},{id:'D2',group:'D',matchday:1,date:'13 Jun',time:'22:00',venue:'Vancouver',hi:2,ai:3},{id:'E1',group:'E',matchday:1,date:'14 Jun',time:'11:00',venue:'Houston',hi:0,ai:1},{id:'F1',group:'F',matchday:1,date:'14 Jun',time:'14:00',venue:'Dallas',hi:0,ai:1},{id:'E2',group:'E',matchday:1,date:'14 Jun',time:'17:00',venue:'Filadelfia',hi:2,ai:3},{id:'F2',group:'F',matchday:1,date:'14 Jun',time:'20:00',venue:'Monterrey',hi:2,ai:3},{id:'H1',group:'H',matchday:1,date:'15 Jun',time:'10:00',venue:'Atlanta',hi:0,ai:1},{id:'G1',group:'G',matchday:1,date:'15 Jun',time:'13:00',venue:'Seattle',hi:0,ai:1},{id:'H2',group:'H',matchday:1,date:'15 Jun',time:'16:00',venue:'Miami',hi:2,ai:3},{id:'G2',group:'G',matchday:1,date:'15 Jun',time:'19:00',venue:'Los Ángeles',hi:2,ai:3},{id:'I1',group:'I',matchday:1,date:'16 Jun',time:'13:00',venue:'Nueva York / NJ',hi:0,ai:1},{id:'I2',group:'I',matchday:1,date:'16 Jun',time:'16:00',venue:'Boston',hi:2,ai:3},{id:'J1',group:'J',matchday:1,date:'16 Jun',time:'19:00',venue:'Kansas City',hi:0,ai:2},{id:'J2',group:'J',matchday:1,date:'16 Jun',time:'22:00',venue:'San Francisco',hi:1,ai:3},{id:'K1',group:'K',matchday:1,date:'17 Jun',time:'11:00',venue:'Houston',hi:0,ai:2},{id:'L1',group:'L',matchday:1,date:'17 Jun',time:'14:00',venue:'Dallas',hi:0,ai:1},{id:'L2',group:'L',matchday:1,date:'17 Jun',time:'17:00',venue:'Toronto',hi:2,ai:3},{id:'K2',group:'K',matchday:1,date:'17 Jun',time:'20:00',venue:'Ciudad de México',hi:3,ai:1},{id:'A3',group:'A',matchday:2,date:'18 Jun',time:'10:00',venue:'Atlanta',hi:3,ai:2},{id:'B3',group:'B',matchday:2,date:'18 Jun',time:'13:00',venue:'Los Ángeles',hi:3,ai:1},{id:'B4',group:'B',matchday:2,date:'18 Jun',time:'16:00',venue:'Vancouver',hi:0,ai:2},{id:'A4',group:'A',matchday:2,date:'18 Jun',time:'19:00',venue:'Guadalajara',hi:0,ai:1},{id:'D3',group:'D',matchday:2,date:'19 Jun',time:'13:00',venue:'Seattle',hi:0,ai:2},{id:'C3',group:'C',matchday:2,date:'19 Jun',time:'16:00',venue:'Boston',hi:3,ai:1},{id:'C4',group:'C',matchday:2,date:'19 Jun',time:'19:00',venue:'Filadelfia',hi:0,ai:2},{id:'D4',group:'D',matchday:2,date:'19 Jun',time:'22:00',venue:'San Francisco',hi:3,ai:1},{id:'F3',group:'F',matchday:2,date:'20 Jun',time:'11:00',venue:'Houston',hi:0,ai:2},{id:'E3',group:'E',matchday:2,date:'20 Jun',time:'14:00',venue:'Toronto',hi:0,ai:2},{id:'E4',group:'E',matchday:2,date:'20 Jun',time:'18:00',venue:'Kansas City',hi:3,ai:1},{id:'F4',group:'F',matchday:2,date:'20 Jun',time:'22:00',venue:'Guadalajara',hi:3,ai:1},{id:'H3',group:'H',matchday:2,date:'21 Jun',time:'10:00',venue:'Atlanta',hi:0,ai:2},{id:'G3',group:'G',matchday:2,date:'21 Jun',time:'13:00',venue:'Los Ángeles',hi:0,ai:2},{id:'H4',group:'H',matchday:2,date:'21 Jun',time:'16:00',venue:'Miami',hi:3,ai:1},{id:'G4',group:'G',matchday:2,date:'21 Jun',time:'19:00',venue:'Vancouver',hi:3,ai:1},{id:'J3',group:'J',matchday:2,date:'22 Jun',time:'11:00',venue:'Dallas',hi:0,ai:1},{id:'I3',group:'I',matchday:2,date:'22 Jun',time:'15:00',venue:'Filadelfia',hi:0,ai:2},{id:'I4',group:'I',matchday:2,date:'22 Jun',time:'18:00',venue:'Nueva York / NJ',hi:3,ai:1},{id:'J4',group:'J',matchday:2,date:'22 Jun',time:'21:00',venue:'San Francisco',hi:3,ai:2},{id:'K3',group:'K',matchday:2,date:'23 Jun',time:'11:00',venue:'Houston',hi:0,ai:3},{id:'L3',group:'L',matchday:2,date:'23 Jun',time:'14:00',venue:'Boston',hi:0,ai:2},{id:'L4',group:'L',matchday:2,date:'23 Jun',time:'17:00',venue:'Toronto',hi:3,ai:1},{id:'K4',group:'K',matchday:2,date:'23 Jun',time:'20:00',venue:'Guadalajara',hi:1,ai:2},{id:'B5',group:'B',matchday:3,date:'24 Jun',time:'13:00',venue:'Vancouver',hi:3,ai:0},{id:'B6',group:'B',matchday:3,date:'24 Jun',time:'13:00',venue:'Seattle',hi:1,ai:2},{id:'C5',group:'C',matchday:3,date:'24 Jun',time:'16:00',venue:'Miami',hi:3,ai:0},{id:'C6',group:'C',matchday:3,date:'24 Jun',time:'16:00',venue:'Atlanta',hi:1,ai:2},{id:'A5',group:'A',matchday:3,date:'24 Jun',time:'19:00',venue:'Ciudad de México',hi:3,ai:0},{id:'A6',group:'A',matchday:3,date:'24 Jun',time:'19:00',venue:'Monterrey',hi:2,ai:1},{id:'E5',group:'E',matchday:3,date:'25 Jun',time:'14:00',venue:'Filadelfia',hi:1,ai:2},{id:'E6',group:'E',matchday:3,date:'25 Jun',time:'14:00',venue:'Nueva York / NJ',hi:3,ai:0},{id:'F5',group:'F',matchday:3,date:'25 Jun',time:'17:00',venue:'Dallas',hi:1,ai:2},{id:'F6',group:'F',matchday:3,date:'25 Jun',time:'17:00',venue:'Kansas City',hi:3,ai:0},{id:'D5',group:'D',matchday:3,date:'25 Jun',time:'20:00',venue:'Los Ángeles',hi:3,ai:0},{id:'D6',group:'D',matchday:3,date:'25 Jun',time:'20:00',venue:'San Francisco',hi:1,ai:2},{id:'I5',group:'I',matchday:3,date:'26 Jun',time:'13:00',venue:'Boston',hi:3,ai:0},{id:'I6',group:'I',matchday:3,date:'26 Jun',time:'13:00',venue:'Toronto',hi:1,ai:2},{id:'H5',group:'H',matchday:3,date:'26 Jun',time:'18:00',venue:'Houston',hi:1,ai:2},{id:'H6',group:'H',matchday:3,date:'26 Jun',time:'18:00',venue:'Guadalajara',hi:3,ai:0},{id:'G5',group:'G',matchday:3,date:'26 Jun',time:'21:00',venue:'Seattle',hi:1,ai:2},{id:'G6',group:'G',matchday:3,date:'26 Jun',time:'21:00',venue:'Vancouver',hi:3,ai:0},{id:'L5',group:'L',matchday:3,date:'27 Jun',time:'15:00',venue:'Nueva York / NJ',hi:3,ai:0},{id:'L6',group:'L',matchday:3,date:'27 Jun',time:'15:00',venue:'Filadelfia',hi:1,ai:2},{id:'K5',group:'K',matchday:3,date:'27 Jun',time:'17:30',venue:'Miami',hi:1,ai:0},{id:'K6',group:'K',matchday:3,date:'27 Jun',time:'17:30',venue:'Atlanta',hi:2,ai:3},{id:'J5',group:'J',matchday:3,date:'27 Jun',time:'20:00',venue:'Kansas City',hi:2,ai:1},{id:'J6',group:'J',matchday:3,date:'27 Jun',time:'20:00',venue:'Dallas',hi:3,ai:0}];
 const TEAM_CODES={'México':'mx','Corea del Sur':'kr','Sudáfrica':'za','Rep. Checa':'cz','Canadá':'ca','Bosnia-Herzegovina':'ba','Catar':'qa','Suiza':'ch','Brasil':'br','Marruecos':'ma','Haití':'ht','Escocia':'gb-sct','Estados Unidos':'us','Paraguay':'py','Australia':'au','Turquía':'tr','Alemania':'de','Curazao':'cw','Costa de Marfil':'ci','Ecuador':'ec','Países Bajos':'nl','Japón':'jp','Suecia':'se','Túnez':'tn','Bélgica':'be','Egipto':'eg','Irán':'ir','Nueva Zelanda':'nz','España':'es','Cabo Verde':'cv','Arabia Saudita':'sa','Uruguay':'uy','Francia':'fr','Senegal':'sn','Irak':'iq','Noruega':'no','Argentina':'ar','Austria':'at','Argelia':'dz','Jordania':'jo','Portugal':'pt','Colombia':'co','Rep. Dem. Congo':'cd','Uzbekistán':'uz','Inglaterra':'gb-eng','Croacia':'hr','Ghana':'gh','Panamá':'pa'};
@@ -830,10 +966,72 @@ function getResults(){
   // URL sim override: ?simresult=A1:2-1,B1:0-0
   const sim=new URLSearchParams(location.search).get('simresult');
   if(sim){sim.split(',').forEach(s=>{const[id,sc]=s.split(':');if(id&&sc){const[h,a]=sc.split('-');if(h!==undefined&&a!==undefined)base[id]={h:parseInt(h),a:parseInt(a)};}});}
+  // Sim: completar la fase de grupos (?simgroupsdone=1 o cualquier ?simko=)
+  const qp=new URLSearchParams(location.search);
+  if(qp.get('simgroupsdone')==='1'||qp.get('simko')){
+    DEFAULT_MATCHES.forEach(m=>{if(!base[m.id])base[m.id]={h:1,a:0};});
+  }
   return base;
 }
 function getKoPreds(){return load('q26_ko_preds',{})}
-function getKoResults(){return load('q26_ko_results',{})}
+// ── Datos de simulación KO (solo memoria, para previsualizar fases) ──
+const _SIM_KO_BRACKET={
+  rc:['Argentina'],
+  rf:['Argentina','España'],
+  r2:['Argentina','España','Francia','Brasil'],
+  r4:['Argentina','España','Francia','Brasil','Inglaterra','Países Bajos','Portugal','Alemania'],
+  r8:['Argentina','España','Francia','Brasil','Inglaterra','Países Bajos','Portugal','Alemania','México','Croacia','Bélgica','Uruguay','Marruecos','Colombia','Japón','Suiza'],
+  r16:['Argentina','España','Francia','Brasil','Inglaterra','Países Bajos','Portugal','Alemania','México','Croacia','Bélgica','Uruguay','Marruecos','Colombia','Japón','Suiza','Corea del Sur','Senegal','Ecuador','Australia','Egipto','Noruega','Paraguay','Túnez','Catar','Austria','Escocia','Irán','Ghana','Curazao','Panamá','Sudáfrica']
+};
+function _simKoLevel(){
+  const v=(new URLSearchParams(location.search).get('simko')||'').toLowerCase();
+  if(!v)return null;
+  const map={'16':'r16','r16':'r16','8':'r8','r8':'r8','octavos':'r8','4':'r4','r4':'r4','cuartos':'r4','semi':'r2','semis':'r2','r2':'r2','final':'rf','rf':'rf','campeon':'rc','rc':'rc'};
+  return map[v]||null;
+}
+function getKoResults(){
+  const base=load('q26_ko_results',{});
+  const lvl=_simKoLevel();
+  if(lvl){
+    // Llenar todas las rondas ANTERIORES completas y la ronda activa = lvl
+    const order=['r16','r8','r4','r2','rf','rc'];
+    const upto=order.indexOf(lvl);
+    order.forEach((rid,i)=>{if(i<=upto&&_SIM_KO_BRACKET[rid])base[rid]=_SIM_KO_BRACKET[rid].slice();});
+  }
+  return base;
+}
+// ── Fase actual del torneo ──
+function getCurrentPhase(){
+  const groupResults=load('q26_results',{});
+  const qp=new URLSearchParams(location.search);
+  let groupCount=DEFAULT_MATCHES.filter(m=>groupResults[m.id]).length;
+  if(qp.get('simgroupsdone')==='1'||qp.get('simko'))groupCount=72;
+  const ko=getKoResults();
+  let phase=groupCount>=72?'groups_done':'groups';
+  KNOCKOUT_ROUNDS.forEach(r=>{if((ko[r.id]||[]).length>0)phase=r.id;});
+  return phase;
+}
+function isGroupStageComplete(){
+  const qp=new URLSearchParams(location.search);
+  if(qp.get('simgroupsdone')==='1'||qp.get('simko'))return true;
+  const gr=load('q26_results',{});
+  return DEFAULT_MATCHES.filter(m=>gr[m.id]).length>=72;
+}
+// Ganador de la fase de grupos: solo puntos de grupos, desempate por exactos (regla 1)
+function getGroupStageWinner(){
+  if(!isGroupStageComplete())return null;
+  const payments=load('q26_payments',{});
+  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
+  const participants=getParticipants().filter(p=>PAID.has(payments[p]||''));
+  const predictions=getPredictions();const results=getResults();const teams=getTeams();const matches=generateMatches(teams);
+  let best=null;
+  participants.forEach(p=>{
+    const pp=predictions[p]||{};let g=0,ex=0;
+    matches.forEach(m=>{const pts=calcPoints(pp[m.id],results[m.id]);if(pts!==null){g+=pts;if(pts===3)ex++;}});
+    if(!best||g>best.pts||(g===best.pts&&ex>best.ex)){best={p,pts:g,ex};}
+  });
+  return best;
+}
 
 // ═══════════════════════════════════════════════════════════
 //  NAVEGACIÓN
@@ -845,7 +1043,7 @@ function showView(v){
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.querySelectorAll('.nav-btn')[['tablero','ranking'].indexOf(v)].classList.add('active');
-  if(v==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();}}
+  if(v==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();raceInit();}}
   if(v==='ranking')renderRanking();
 }
 
@@ -859,6 +1057,7 @@ let mobSort={by:'total',dir:'desc'};
 const mobExpanded=new Set();
 const mobKoExpanded=new Set();
 const mobFutureExp=new Set();
+const mobGroupsExp=new Set();
 function setTableroSort(by){
   if(tableroSort.by===by)tableroSort.dir=tableroSort.dir==='desc'?'asc':'desc';
   else{tableroSort.by=by;tableroSort.dir='desc';}
@@ -893,6 +1092,15 @@ function renderTablero(){
   const pmxB=document.getElementById('pmx-bolsa');
   if(pmxP)pmxP.textContent=participants.length>0?participants.length:'—';
   if(pmxB)pmxB.textContent=bolsa>0?'$'+bolsa.toLocaleString('es-MX')+' MXN':'—';
+  // Ganador de la fase de grupos en Premios
+  const pmxGrupos=document.getElementById('pmx-ganador-grupos');
+  if(pmxGrupos){
+    const w=getGroupStageWinner();
+    const prize=bolsa>0?'$'+Math.round(bolsa*0.15).toLocaleString('es-MX')+' MXN':'$22,050 MXN';
+    pmxGrupos.innerHTML=w
+      ?`<span style="color:var(--gold);font-weight:900">🏆 ${w.p}</span> <span style="color:var(--muted);font-weight:600;font-size:.78rem">(${w.pts} pts)</span> · <span style="color:var(--green)">${prize}</span>`
+      :prize;
+  }
 
   const searchQ=(document.getElementById('tablero-search')?.value||document.getElementById('mob-tablero-search')?.value||'').toLowerCase();
   const visibleParticipants=searchQ?participants.filter(p=>{const nombre=(profiles[p]?.nombre||'').toLowerCase();return p.toLowerCase().includes(searchQ)||nombre.includes(searchQ);}):participants;
@@ -1084,6 +1292,44 @@ function closePronosticosModal(){
 }
 function openPremiosModal(){document.getElementById('premios-overlay').classList.add('open');document.getElementById('premios-modal').classList.add('open');}
 function closePremiosModal(){document.getElementById('premios-overlay').classList.remove('open');document.getElementById('premios-modal').classList.remove('open');}
+// Modal: resultados de una fase KO para un participante
+function openKoPhaseModal(apodo,roundId){
+  const round=KNOCKOUT_ROUNDS.find(r=>r.id===roundId);if(!round)return;
+  const koPreds=getKoPreds();const koResults=getKoResults();
+  const picks=_toArr((koPreds[apodo]||{})[roundId]);
+  const actual=_toArr(koResults[roundId]);
+  const correct=picks.filter(t=>actual.includes(t));
+  const wrong=picks.filter(t=>!actual.includes(t));
+  const pts=correct.length*round.pts;
+  document.getElementById('kpm-title').textContent=`${round.label}`;
+  document.getElementById('kpm-subtitle').textContent=`${apodo} · ${round.pts} pt por equipo`;
+  let html='';
+  if(actual.length){
+    html+=`<div class="kpm-statline">
+      <div class="kpm-stat"><span class="kpm-stat-num" style="color:var(--green)">${correct.length}/${picks.length}</span><span class="kpm-stat-lbl">Aciertos</span></div>
+      <div class="kpm-stat-div"></div>
+      <div class="kpm-stat"><span class="kpm-stat-num" style="color:var(--gold)">+${pts}</span><span class="kpm-stat-lbl">Puntos</span></div>
+    </div>`;
+    if(correct.length){
+      html+=`<div class="kpm-group-lbl" style="color:#166534">✅ Acertaste (${correct.length})</div><div class="kpm-teams">`;
+      correct.forEach(t=>html+=`<span class="kpm-pill correct">${flag(t)} ${t}</span>`);
+      html+='</div>';
+    }
+    if(wrong.length){
+      html+=`<div class="kpm-group-lbl" style="color:#991b1b">❌ No avanzaron (${wrong.length})</div><div class="kpm-teams">`;
+      wrong.forEach(t=>html+=`<span class="kpm-pill wrong">${flag(t)} ${t}</span>`);
+      html+='</div>';
+    }
+  }else{
+    html+=`<div class="kpm-group-lbl">Tus ${picks.length} equipos seleccionados</div><div class="kpm-teams">`;
+    picks.forEach(t=>html+=`<span class="kpm-pill">${flag(t)} ${t}</span>`);
+    html+='</div><p style="font-size:.76rem;color:var(--muted);margin-top:12px;text-align:center">⏳ Esta fase aún no tiene resultados cargados.</p>';
+  }
+  document.getElementById('kpm-body').innerHTML=html;
+  document.getElementById('kophase-overlay').classList.add('open');
+  document.getElementById('kophase-modal').classList.add('open');
+}
+function closeKoPhaseModal(){document.getElementById('kophase-overlay').classList.remove('open');document.getElementById('kophase-modal').classList.remove('open');}
 function openHoyModal(){
   const today=getTodayMatchDate();
   const el=document.getElementById('hoy-modal-date');
@@ -1104,7 +1350,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePicksViewer();
 function setMobViewMode(mode){
   document.body.setAttribute('data-mob-view',mode);
   localStorage.setItem('q26_mob_view_pref',mode);
-  if(mode==='cards'&&activeView==='tablero'){renderTableroMobile();renderMiQuiniela();renderPartidosHoy();}
+  if(mode==='cards'&&activeView==='tablero'){renderTableroMobile();renderMiQuiniela();renderPartidosHoy();raceInit();}
 }
 /* ══ PARTIDOS DE HOY ══ */
 function getTodayMatchDate(){
@@ -1262,6 +1508,8 @@ function renderPartidosHoy(){
 function renderPartidosHoyImpl(targetId){
   const wrap=document.getElementById(targetId);
   if(!wrap)return;
+  // Al terminar la fase de grupos ya no hay partidos de hoy
+  if(isGroupStageComplete()){wrap.innerHTML='';return;}
   const teams=getTeams();
   const matches=generateMatches(teams);
   const results=getResults();
@@ -1362,7 +1610,15 @@ function renderPartidosHoyImpl(targetId){
 }
 
 function toggleMobCard(apodo){
-  if(mobExpanded.has(apodo))mobExpanded.delete(apodo);else mobExpanded.add(apodo);
+  if(mobExpanded.has(apodo)){mobExpanded.delete(apodo);}
+  else{
+    mobExpanded.add(apodo);
+    // Al abrir en fase KO, desplegar automáticamente la SIGUIENTE fase
+    const phase=getCurrentPhase();
+    const order=['r16','r8','r4','r2','rf','rc'];
+    const idx=order.indexOf(phase);
+    if(idx>=0&&idx+1<order.length){mobKoExpanded.add(order[idx+1]+'|'+apodo);}
+  }
   renderTableroMobile();
 }
 function toggleMobFuture(apodo){
@@ -1371,6 +1627,10 @@ function toggleMobFuture(apodo){
 }
 function toggleMobKoRound(key){
   if(mobKoExpanded.has(key))mobKoExpanded.delete(key);else mobKoExpanded.add(key);
+  renderTableroMobile();
+}
+function toggleMobGroups(apodo){
+  if(mobGroupsExp.has(apodo))mobGroupsExp.delete(apodo);else mobGroupsExp.add(apodo);
   renderTableroMobile();
 }
 function toggleMobSort(){
@@ -1447,12 +1707,24 @@ function renderTableroMobile(){
     emptyEl.style.display='flex';return;
   }
   emptyEl.style.display='none';
-  listEl.innerHTML=cardData.map(d=>buildMobCard(d,hasResults,hasKoResults)).join('');
+  const gw=getGroupStageWinner();
+  const bolsa=participants.length*3000;
+  const grpPrize=bolsa>0?'$'+Math.round(bolsa*0.15).toLocaleString('es-MX')+' MXN':'$22,050 MXN';
+  const phase=getCurrentPhase();
+  listEl.innerHTML=cardData.map(d=>buildMobCard(d,hasResults,hasKoResults,gw,grpPrize,phase)).join('');
 }
 
-function buildMobCard(d,hasResults,hasKoResults){
+function buildMobCard(d,hasResults,hasKoResults,groupWinner,grpPrize,phase){
   const{p,nombre,totalPts,exactCount,goalsVal,matchList,koDetail,rank}=d;
   const isExpanded=mobExpanded.has(p);
+  const isWinner=groupWinner&&groupWinner.p===p;
+  const winnerBanner=isWinner?`<div class="mob-winner-banner">
+    <span class="mwb-trophy">🏆</span>
+    <div class="mwb-text">
+      <span class="mwb-title">Ganador Fase de Grupos</span>
+      <span class="mwb-prize">${grpPrize}</span>
+    </div>
+  </div>`:'';
   const showMedal=(hasResults||hasKoResults)&&rank>=1&&rank<=3;
   const rankLabel=!(hasResults||hasKoResults)?'—':`${rank}`;
   const rankCls=rank===1?'t-rank-1':rank===2?'t-rank-2':rank===3?'t-rank-3':'t-rank-n';
@@ -1465,16 +1737,56 @@ function buildMobCard(d,hasResults,hasKoResults){
     <span class="mob-pts-sub">🎯 ${exactDisplay} exactos</span>
   </div>`;
 
-  // Último partido completado
-  const done=matchList.filter(m=>m.res);
-  let lastMatchHtml='';
-  if(done.length){
+  // Sección "Último" — cambia según la fase del torneo
+  const lastSection=buildLastSection(d,phase);
+
+  // KO totals (solo rondas con resultados cargados) — solo en fase de grupos/groups_done
+  let koInlineHtml='';
+  if(phase==='groups'||phase==='groups_done'){
+    const koWithRes=koDetail.filter(({actual})=>actual.length>0);
+    if(koWithRes.length){
+      const chips=koWithRes.map(({round,picks,actual})=>{
+        const c=picks.filter(t=>actual.includes(t)).length;
+        return `<span class="mob-ko-chip">${round.short} ${c}/${picks.length}</span>`;
+      }).join('');
+      koInlineHtml=`<div class="mob-ko-inline">${chips}</div>`;
+    }
+  }
+
+  // Cuerpo expandido: en fase KO va primero la eliminatoria, grupos colapsado
+  const koActive=phase!=='groups'&&phase!=='groups_done';
+  const bodyHtml=isExpanded?(koActive?buildMobKoDetail(d,hasKoResults)+buildMobGroupCollapsible(d,hasResults):buildMobGroupDetail(d,hasResults)+buildMobKoDetail(d,hasKoResults)):'';
+  const pa=p.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  return `<div class="mob-card${isExpanded?' expanded':''}" data-apodo="${pa}">
+    <div class="mob-card-header" onclick="toggleMobCard(this.closest('[data-apodo]').dataset.apodo)">
+      <span class="mob-rank-badge ${rankCls}">${rankLabel}</span>
+      <div class="mob-card-identity">
+        <span class="mob-apodo">${p}</span>
+        ${nombre?`<span class="mob-nombre">${nombre}</span>`:''}
+        ${goalsVal!=null?`<span class="mob-goles-tag">⚽ ${goalsVal} goles</span>`:''}
+      </div>
+      ${rightCol}
+      <span class="mob-expand-icon">${isExpanded?'▲':'▼'}</span>
+    </div>
+    ${winnerBanner}
+    ${lastSection}
+    ${koInlineHtml}
+    <div class="mob-card-body">${bodyHtml}</div>
+  </div>`;
+}
+
+// Sección "Último" según fase: grupos→último partido; 16vos/8vos→botón; 4tos+→banderitas de picks
+function buildLastSection(d,phase){
+  const{p,matchList,koDetail}=d;
+  // Fase de grupos: último partido completado
+  if(phase==='groups'||phase==='groups_done'){
+    const done=matchList.filter(m=>m.res);
+    if(!done.length)return '';
     const lm=done[done.length-1];
     const pred=lm.pred?`${lm.pred.h}-${lm.pred.a}`:'—';
-    const res=`${lm.res.h}-${lm.res.a}`;
     const ptsCls=lm.pts===3?'exact':lm.pts===1?'correct':'wrong';
     const ptsStr=lm.pts===3?'+3p':lm.pts===1?'+1p':'0p';
-    lastMatchHtml=`<div class="mob-lastmatch-wrap ${ptsCls}">
+    return `<div class="mob-lastmatch-wrap ${ptsCls}">
       <span class="mob-lm-title">Último</span>
       <div class="mob-lm-faceoff">
         <div class="mob-lm-team">${flag(lm.home)}<span class="mob-lm-team-name">${lm.home}</span></div>
@@ -1490,35 +1802,72 @@ function buildMobCard(d,hasResults,hasKoResults){
       </div>
     </div>`;
   }
-
-  // KO totals (solo rondas con resultados cargados)
-  let koInlineHtml='';
-  const koWithRes=koDetail.filter(({actual})=>actual.length>0);
-  if(koWithRes.length){
-    const chips=koWithRes.map(({round,picks,actual})=>{
-      const c=picks.filter(t=>actual.includes(t)).length;
-      return `<span class="mob-ko-chip">${round.short} ${c}/${picks.length}</span>`;
-    }).join('');
-    koInlineHtml=`<div class="mob-ko-inline">${chips}</div>`;
-  }
-
-  const bodyHtml=isExpanded?buildMobGroupDetail(d,hasResults)+buildMobKoDetail(d,hasKoResults):'';
+  // Fase KO: encontrar la ronda activa y los picks del participante
+  const activeRound=KNOCKOUT_ROUNDS.find(r=>r.id===phase);
+  if(!activeRound)return '';
+  const kd=koDetail.find(x=>x.round.id===phase);
+  const picks=kd?_toArr(kd.picks):[];
+  const actual=kd?_toArr(kd.actual):[];
   const pa=p.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-  return `<div class="mob-card${isExpanded?' expanded':''}" data-apodo="${pa}">
-    <div class="mob-card-header" onclick="toggleMobCard(this.closest('[data-apodo]').dataset.apodo)">
-      <span class="mob-rank-badge ${rankCls}">${rankLabel}</span>
-      <div class="mob-card-identity">
-        <span class="mob-apodo">${p}</span>
-        ${nombre?`<span class="mob-nombre">${nombre}</span>`:''}
-        ${goalsVal!=null?`<span class="mob-goles-tag">⚽ ${goalsVal} goles</span>`:''}
-      </div>
-      ${rightCol}
-      <span class="mob-expand-icon">${isExpanded?'▲':'▼'}</span>
+  if(!picks.length)return `<div class="mob-lastko-btn"><span class="mob-lastko-round">${activeRound.short}</span><span class="mob-lastko-summary">Sin picks en esta ronda</span><span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultado ▾</span></div>`;
+  const correct=picks.filter(t=>actual.includes(t)).length;
+  const roundPts=correct*activeRound.pts;
+  // Resumen clickeable → abre modal de resultados de la fase (separado de "Ver resultado")
+  const scoreClick=`onclick="event.stopPropagation();openKoPhaseModal('${pa}','${phase}')"`;
+  // 16vos y 8vos → botón con aciertos+puntos (click=modal) y "Ver resultado" (click=expandir)
+  if(phase==='r16'||phase==='r8'){
+    const summary=actual.length
+      ?`<span class="lk-ok">${correct}</span>/${picks.length} aciertos <span class="lk-sep">|</span> <span class="lk-pts">+${roundPts} puntos</span>`
+      :`${picks.length} equipos elegidos`;
+    return `<div class="mob-lastko-btn">
+      <span class="mob-lastko-round">${activeRound.short}</span>
+      <span class="mob-lastko-summary mob-lastko-clickable" ${scoreClick}>${summary}</span>
+      <span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultado ▾</span>
+    </div>`;
+  }
+  // 4tos, semis, final, campeón → banderitas + aciertos/puntos a la derecha (click=modal)
+  let flags=picks.map(t=>{
+    const ok=actual.length&&actual.includes(t);
+    const cls=actual.length?(ok?'ok':'miss'):'';
+    return `<span class="mob-lastflag ${cls}">${flag(t)}<span class="mob-lastflag-name">${t}</span></span>`;
+  }).join('');
+  // En la Final, agregar la selección de campeón
+  if(phase==='rf'){
+    const champKd=koDetail.find(x=>x.round.id==='rc');
+    const champPicks=champKd?_toArr(champKd.picks):[];
+    const champActual=champKd?_toArr(champKd.actual):[];
+    if(champPicks.length){
+      const t=champPicks[0];
+      const ok=champActual.length&&champActual.includes(t);
+      const cls=champActual.length?(ok?'ok':'miss'):'';
+      flags+=`<span class="mob-lastflag champ ${cls}" title="Campeón">👑 ${flag(t)}<span class="mob-lastflag-name">${t}</span></span>`;
+    }
+  }
+  const scoreBox=actual.length
+    ?`<span class="mob-lastko-score mob-lastko-clickable" ${scoreClick}><span class="lk-ok">${correct}</span>/${picks.length} <span class="lk-pts">+${roundPts} pts</span></span>`
+    :`<span class="mob-lastko-score mob-lastko-clickable" ${scoreClick}>${picks.length} picks ▸</span>`;
+  return `<div class="mob-lastflags-wrap">
+    <div class="mlf-top">
+      <span class="mob-lastko-round">${activeRound.short}</span>
+      ${scoreBox}
     </div>
-    ${lastMatchHtml}
-    ${koInlineHtml}
-    <div class="mob-card-body">${bodyHtml}</div>
+    <div class="mob-lastflags">${flags}</div>
   </div>`;
+}
+
+// Bloque colapsable de resultados de fase de grupos (cerrado por defecto en fase KO)
+function buildMobGroupCollapsible(d,hasResults){
+  const{p}=d;
+  const isOpen=mobGroupsExp.has(p);
+  const pa=p.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  let html=`<div class="mob-groups-collapsible">
+    <button class="mob-groups-toggle" onclick="event.stopPropagation();toggleMobGroups('${pa}')">
+      <span>📋 Resultados de Fase de Grupos</span>
+      <span class="mgt-arrow">${isOpen?'Ocultar ▲':'Ver ▾'}</span>
+    </button>`;
+  if(isOpen)html+=buildMobGroupDetail(d,hasResults);
+  html+='</div>';
+  return html;
 }
 
 function buildMobGroupDetail(d,hasResults){
@@ -1629,6 +1978,99 @@ function buildMobKoDetail(d,hasKoResults){
 // ═══════════════════════════════════════════════════════════
 //  RANKING
 // ═══════════════════════════════════════════════════════════
+// ══ CARRERA DE POSICIONES ══
+let _raceSnaps=[];let _raceIdx=0;let _racePrevTop5=[];
+
+function _buildRaceSnaps(){
+  const teams=getTeams();const matches=generateMatches(teams);const results=getResults();
+  const predictions=getPredictions();const payments=load('q26_payments',{});
+  const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
+  const participants=getParticipants().filter(p=>PAID.has(payments[p]||''));
+  const profiles=load('q26_profiles',{});
+  const DAY={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+  const sortKey=m=>{const[d,mo]=( m.date||'1 Jun').split(' ');const[h,mi]=(m.time||'00:00').split(':');return(DAY[mo]||6)*100000+(parseInt(d)||1)*1000+parseInt(h)*10+parseInt(mi)/60;};
+  const sorted=[...matches].sort((a,b)=>sortKey(a)-sortKey(b));
+  const total=sorted.length;
+  const cum={};participants.forEach(p=>cum[p]=0);
+  const snaps=[];
+  for(let i=0;i<sorted.length;i++){
+    const m=sorted[i];const res=results[m.id];
+    if(!res)break;
+    participants.forEach(p=>{const pts=calcPoints((predictions[p]||{})[m.id],res);if(pts!==null)cum[p]+=pts;});
+    const allSorted=[...participants].map(p=>({p,pts:cum[p],nombre:(profiles[p]||{}).nombre||''})).sort((a,b)=>b.pts-a.pts);
+    let rk=1;allSorted.forEach((e,i)=>{if(i>0&&e.pts<allSorted[i-1].pts)rk=i+1;e.rank=rk;});
+    const top5=allSorted.slice(0,5);
+    snaps.push({matchNum:i+1,total,matchId:m.id,match:m,top5});
+  }
+  return snaps;
+}
+
+function _renderRaceFrame(idx){
+  const snap=_raceSnaps[idx];if(!snap)return;
+  const myApodo=(localStorage.getItem('q26_my_apodo')||'').trim();
+  const prevRankMap={};_racePrevTop5.forEach(x=>prevRankMap[x.p]=x.rank);
+  const medalEmoji={1:'🥇',2:'🥈',3:'🥉'};
+  const leaderPts=snap.top5[0]?.pts||0;
+  const moMap={Jan:'Ene',Feb:'Feb',Mar:'Mar',Apr:'Abr',May:'May',Jun:'Jun',Jul:'Jul',Aug:'Ago',Sep:'Sep',Oct:'Oct',Nov:'Nov',Dec:'Dic'};
+  const list=document.getElementById('race-list');
+  if(list){
+    list.innerHTML=snap.top5.map((e)=>{
+      const rank=e.rank;
+      const isMine=myApodo&&e.p===myApodo;
+      const rrCls=rank<=3?'rr-'+rank:'';
+      const prev=prevRankMap[e.p];const moved=prev!=null?prev-rank:0;
+      const moveCls=moved>0?'up':moved<0?'dn':'eq';
+      const moveTxt=moved>0?'▲'+moved:moved<0?'▼'+Math.abs(moved):'';
+      const trendCls=moved>0?' trend-up':moved<0?' trend-dn':'';
+      const icon=medalEmoji[rank]
+        ?`<span class="race-medal">${medalEmoji[rank]}</span>`
+        :`<span class="race-pos-num">${rank}</span>`;
+      const gap=leaderPts-e.pts;
+      const subInfo=rank===1
+        ?`<div class="race-leader-chip">👑 Líder</div>`
+        :gap>0?`<div class="race-gap">−${gap} pts del 1°</div>`:'';
+      return `<div class="race-row ${rrCls}${isMine?' rr-mine':''}${trendCls}">
+        ${icon}
+        <div class="race-info">
+          <div class="race-apodo">${e.p}</div>
+          <div class="race-pts-wrap"><span class="race-pts">${e.pts}</span><span class="race-pts-lbl"> pts</span></div>
+          ${subInfo}
+        </div>
+        <div class="race-right"><span class="race-move ${moveCls}">${moveTxt}</span></div>
+      </div>`;
+    }).join('');
+  }
+  const info=document.getElementById('race-match-info');
+  if(info)info.textContent=`${snap.matchNum} / ${snap.total} partidos`;
+  const sl=document.getElementById('race-slider');
+  if(sl){
+    sl.value=idx;
+    const pct=sl.max>0?(idx/parseInt(sl.max)*100):100;
+    sl.style.setProperty('--fill',pct.toFixed(1)+'%');
+  }
+  const dateEl=document.getElementById('race-date-label');
+  if(dateEl){
+    const[d,mo]=(snap.match?.date||'').split(' ');
+    dateEl.textContent=d&&mo?`Partido ${snap.matchNum} · ${d} ${moMap[mo]||mo}`:'';
+  }
+  _racePrevTop5=[...snap.top5];
+}
+
+function raceInit(){
+  const wrap=document.getElementById('race-wrap');if(!wrap)return;
+  // La Carrera de Posiciones solo se muestra al completar la fase de grupos (72/72)
+  if(!isGroupStageComplete()){wrap.style.display='none';return;}
+  _raceSnaps=_buildRaceSnaps();
+  if(!_raceSnaps.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  const sl=document.getElementById('race-slider');
+  if(sl){sl.max=_raceSnaps.length-1;sl.value=_raceSnaps.length-1;}
+  _raceIdx=_raceSnaps.length-1;_racePrevTop5=_raceIdx>0?_raceSnaps[_raceIdx-1].top5:[];
+  _renderRaceFrame(_raceIdx);
+}
+function toggleRace(){document.getElementById('race-section')?.classList.toggle('collapsed');}
+function raceSeek(val){_racePrevTop5=val>0?_raceSnaps[val-1].top5:[];_raceIdx=val;_renderRaceFrame(_raceIdx);}
+
 function renderRanking(){
   const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
   const payments=load('q26_payments',{});
@@ -1688,7 +2130,7 @@ firebase.database().ref('/').on('value',snap=>{
   _cache=snap.val()||{};
   const lb=document.getElementById('loading-bar');
   if(lb){lb.style.width='100%';setTimeout(()=>lb.classList.add('done'),400);}
-  if(activeView==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();}}
+  if(activeView==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderTableroMobile();renderPartidosHoy();raceInit();}}
   else if(activeView==='ranking')renderRanking();
 },err=>{
   clearTimeout(_connTimeout);
