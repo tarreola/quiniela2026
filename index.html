@@ -1101,7 +1101,7 @@ function renderTablero(){
     const w=getGroupStageWinner();
     const prize=bolsa>0?'$'+Math.round(bolsa*0.15).toLocaleString('es-MX')+' MXN':'$22,050 MXN';
     pmxGrupos.innerHTML=w
-      ?`<span style="color:var(--gold);font-weight:900">🏆 ${w.p}</span> <span style="color:var(--muted);font-weight:600;font-size:.78rem">(${w.pts} pts)</span> · <span style="color:var(--green)">${prize}</span>`
+      ?`<span style="color:var(--gold);font-weight:900">🏆 ${w.p}</span> · <span style="color:var(--green)">${prize}</span>`
       :prize;
   }
 
