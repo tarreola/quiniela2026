@@ -1102,10 +1102,28 @@ const KNOCKOUT_ROUNDS=[
 
 // Partidos de fase eliminatoria (actualizar conforme avanza el torneo)
 const KO_MATCHES=[
-  {id:'ko_r16_1', round:'r16',home:'Sudáfrica',  away:'Canadá',    date:'27 Jun',time:'13:00',venue:'Los Ángeles'},
-  {id:'ko_r16_2', round:'r16',home:'Australia',  away:'Egipto',    date:'3 Jul', time:'12:00',venue:'Dallas'},
-  {id:'ko_r16_3', round:'r16',home:'Argentina',  away:'Cabo Verde',date:'3 Jul', time:'16:00',venue:'Miami'},
-  {id:'ko_r16_4', round:'r16',home:'Colombia',   away:'Ghana',     date:'3 Jul', time:'19:30',venue:'Kansas City'},
+  // 28 Jun
+  {id:'ko_r16_1', round:'r16',home:'Sudáfrica',        away:'Canadá',             date:'28 Jun',time:'13:00',venue:'Los Ángeles'},
+  // 29 Jun
+  {id:'ko_r16_5', round:'r16',home:'Brasil',           away:'Japón',              date:'29 Jun',time:'11:00',venue:'Houston'},
+  {id:'ko_r16_6', round:'r16',home:'Alemania',         away:'Paraguay',           date:'29 Jun',time:'14:30',venue:'Boston'},
+  {id:'ko_r16_7', round:'r16',home:'Países Bajos',     away:'Marruecos',          date:'29 Jun',time:'19:00',venue:'Monterrey'},
+  // 30 Jun
+  {id:'ko_r16_8', round:'r16',home:'Costa de Marfil',  away:'Noruega',            date:'30 Jun',time:'11:00',venue:'Dallas'},
+  {id:'ko_r16_9', round:'r16',home:'Francia',          away:'Suecia',             date:'30 Jun',time:'15:00',venue:'Nueva York'},
+  {id:'ko_r16_10',round:'r16',home:'México',           away:'Ecuador',            date:'30 Jun',time:'19:00',venue:'Ciudad de México'},
+  // 1 Jul
+  {id:'ko_r16_11',round:'r16',home:'Inglaterra',       away:'Rep. Dem. Congo',    date:'1 Jul', time:'10:00',venue:'Atlanta'},
+  {id:'ko_r16_12',round:'r16',home:'Bélgica',          away:'Senegal',            date:'1 Jul', time:'14:00',venue:'Seattle'},
+  {id:'ko_r16_13',round:'r16',home:'Estados Unidos',   away:'Bosnia-Herzegovina', date:'1 Jul', time:'18:00',venue:'San Francisco'},
+  // 2 Jul
+  {id:'ko_r16_14',round:'r16',home:'España',           away:'Austria',            date:'2 Jul', time:'13:00',venue:'Los Ángeles'},
+  {id:'ko_r16_15',round:'r16',home:'Portugal',         away:'Croacia',            date:'2 Jul', time:'17:00',venue:'Toronto'},
+  {id:'ko_r16_16',round:'r16',home:'Suiza',            away:'Argelia',            date:'2 Jul', time:'21:00',venue:'Vancouver'},
+  // 3 Jul
+  {id:'ko_r16_2', round:'r16',home:'Australia',        away:'Egipto',             date:'3 Jul', time:'12:00',venue:'Dallas'},
+  {id:'ko_r16_3', round:'r16',home:'Argentina',        away:'Cabo Verde',         date:'3 Jul', time:'16:00',venue:'Miami'},
+  {id:'ko_r16_4', round:'r16',home:'Colombia',         away:'Ghana',              date:'3 Jul', time:'19:30',venue:'Kansas City'},
 ];
 function getKoMatchResults(){return load('q26_ko_match_results',{});}
 function saveKoMatchResult(matchId,h,a){
