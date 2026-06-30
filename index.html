@@ -501,7 +501,7 @@
     .lk-pts{color:var(--gold);font-weight:900}
     .mob-lastko-clickable{cursor:pointer;border-radius:7px;transition:background .15s}
     .mob-lastko-clickable:active{background:rgba(0,0,0,.05)}
-    .mob-lastko-cta{font-size:.72rem;font-weight:800;color:#1a5fc4;flex-shrink:0;white-space:nowrap;cursor:pointer;border-left:1px solid var(--border);padding-left:8px}
+    .mob-lastko-cta{font-size:.62rem;font-weight:800;color:#1a5fc4;flex-shrink:0;white-space:normal;cursor:pointer;border-left:1px solid var(--border);padding-left:8px;line-height:1.2;text-align:center;max-width:52px}
     .mob-lastko-score{font-size:.74rem;font-weight:800;color:var(--navy);flex-shrink:0;white-space:nowrap;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px 9px;display:inline-flex;align-items:center;gap:3px}
     .mob-lastflag.champ{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#f59e0b;font-size:.7rem}
     /* Recuadro dorado de puntos KO */
@@ -512,10 +512,10 @@
     .lk-pts-box .lk-pts{font-size:.88rem;font-weight:900;color:#b45309}
     .lk-pts-box .lk-ver{font-size:.65rem;font-weight:800;color:#78350f;border-left:1px solid #f59e0b;margin-left:4px;padding-left:6px;white-space:nowrap}
     /* Layout R16/R8: badge | [centrado] | ver */
-    .mob-lastko-btn.centered{display:flex;flex-direction:column;align-items:stretch;gap:4px}
-    .mob-lastko-btn.centered .lk-top-row{display:flex;align-items:center;gap:8px}
-    .mob-lastko-btn.centered .lk-top-row .lk-center{flex:1;display:flex;justify-content:flex-start}
-    .mob-lastko-btn.centered .lk-foot{display:flex;align-items:center;justify-content:flex-end;width:100%}
+    .mob-lastko-btn.centered{display:flex;align-items:center;gap:8px}
+    .mob-lastko-btn.centered .lk-right{display:flex;align-items:center;gap:8px;flex:1}
+    .mob-lastko-btn.centered .lk-center{display:flex;flex:1}
+    .mob-lastko-btn.centered .lk-foot{display:flex;align-items:center;flex-shrink:0}
     /* Sub-renglones (Final, Campeón bajo Semis/Final) */
     .mob-lastflags-wrap{border-top:1px solid var(--border);display:flex;flex-direction:column;background:linear-gradient(180deg,#fbfdff,#f3f7fc)}
     .mlf-top{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 14px 6px;width:100%}
@@ -1128,7 +1128,7 @@ function renderTablero(){
   // Info cards: bolsa y goles del mundial
   const bolsa=participants.length*3000;
   const golesM=_cache.q26_goles_mundial;
-  const totalGoles=Object.values(results).reduce((s,r)=>s+(r.h||0)+(r.a||0),0);
+  const totalGoles=Object.entries(results).reduce((s,[,r])=>s+(r.h||0)+(r.a||0),0);
   const bolsaEl=document.getElementById('info-bolsa');
   if(bolsaEl)bolsaEl.textContent=bolsa>0?'$'+bolsa.toLocaleString('es-MX')+' MXN':'—';
   const partEl=document.getElementById('info-participantes');
@@ -1592,7 +1592,7 @@ function renderPartidosHoyImpl(targetId){
     const roundLabel={'r16':'16vos de Final','r8':'Octavos','r4':'Cuartos','r2':'Semis','rf':'Final','rc':'Campeón'};
     const matchesHtml=todayKo.map(m=>{
       // Buscar resultado del partido KO en Firebase (ko_match_results si existe)
-      const koMatchRes=load('q26_ko_match_results',{})[m.id]||null;
+      const koMatchRes=getResults()[m.id]||null;
       const scoreboxHtml=koMatchRes
         ?`<div class="hoy-scorebox"><span class="hoy-score-num">${koMatchRes.h}</span><span class="hoy-score-sep">-</span><span class="hoy-score-num">${koMatchRes.a}</span></div>`
         :`<div class="hoy-vs-badge">VS</div>`;
@@ -1961,11 +1961,11 @@ function buildLastSection(d,phase){
     const box=ptsBox(kd,activeRound,`openKoPhaseModal('${pa}','${phase}')`);
     const verBtn=`<span class="mob-lastko-cta" onclick="event.stopPropagation();toggleMobCard('${pa}')">Ver resultados ▾</span>`;
     return `<div class="mob-lastko-btn centered">
-      <div class="lk-top-row">
-        <span class="mob-lastko-round">${activeRound.short}</span>
+      <span class="mob-lastko-round">${activeRound.short}</span>
+      <div class="lk-right">
         <div class="lk-center">${box||`<span style="font-size:.75rem;color:var(--muted)">${picks.length} picks</span>`}</div>
+        <div class="lk-foot">${verBtn}</div>
       </div>
-      <div class="lk-foot">${verBtn}</div>
     </div>`;
   }
 

@@ -1125,19 +1125,26 @@ const KO_MATCHES=[
   {id:'ko_r16_3', round:'r16',home:'Argentina',        away:'Cabo Verde',         date:'3 Jul', time:'16:00',venue:'Miami'},
   {id:'ko_r16_4', round:'r16',home:'Colombia',         away:'Ghana',              date:'3 Jul', time:'19:30',venue:'Kansas City'},
 ];
-function getKoMatchResults(){return load('q26_ko_match_results',{});}
+function getKoMatchResults(){
+  const all=load('q26_results',{});
+  const ko={};
+  KO_MATCHES.forEach(m=>{if(all[m.id])ko[m.id]=all[m.id];});
+  return ko;
+}
 function saveKoMatchResult(matchId,h,a){
-  const r=getKoMatchResults();
-  r[matchId]={h,a};
-  save('q26_ko_match_results',r);
+  const all=load('q26_results',{});
+  all[matchId]={h,a};
+  save('q26_results',all);
   renderResKoMatches();
+  renderResProgress();
   showToast('✅ Resultado KO guardado');
 }
 function clearKoMatchResult(matchId){
-  const r=getKoMatchResults();
-  delete r[matchId];
-  save('q26_ko_match_results',r);
+  const all=load('q26_results',{});
+  delete all[matchId];
+  save('q26_results',all);
   renderResKoMatches();
+  renderResProgress();
   showToast('🗑 Resultado KO eliminado');
 }
 function renderResKoMatches(){
