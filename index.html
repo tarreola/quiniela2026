@@ -1615,11 +1615,10 @@ function renderPartidosHoyImpl(targetId){
           </div>
         </div>
         <div class="hoy-faceoff">
-          <div class="hoy-team"><div class="hoy-team-flag">${flag(m.home)}</div><div class="hoy-team-name">${m.home}</div></div>
+          <div class="hoy-team"><div class="hoy-team-flag">${flag(m.home)}</div><div class="hoy-team-name">${m.home}</div>${m.note?`<div style="font-size:.72rem;font-weight:800;color:#16a34a;letter-spacing:.02em;margin-top:3px">${m.note}</div>`:''}</div>
           ${scoreboxHtml}
           <div class="hoy-team"><div class="hoy-team-flag">${flag(m.away)}</div><div class="hoy-team-name">${m.away}</div></div>
         </div>
-        ${m.note?`<div style="text-align:center;padding:4px 14px 10px;font-size:.75rem;font-weight:800;color:#16a34a;letter-spacing:.02em">${m.note}</div>`:''}
       </div>`;
     }).join('');
     const titleHtml=`<div class="hoy-title"><span>⚽ Partidos de hoy — ${today}</span><div class="hoy-title-prog"><div class="hoy-title-prog-bar"><div class="hoy-title-prog-fill" style="width:100%"></div></div><span class="hoy-title-prog-label">Fase eliminatoria</span></div></div>`;
