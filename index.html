@@ -704,7 +704,10 @@
     .ko-summary-rows{display:flex;flex-direction:column;gap:7px}
     .ko-summary-row{display:flex;align-items:flex-start;gap:6px;padding-bottom:7px;border-bottom:1px solid var(--border)}
     .ko-summary-row:last-child{padding-bottom:0;border-bottom:none}
-    .ko-summary-badge{font-size:.6rem;font-weight:800;background:var(--navy);color:#fff;border-radius:5px;padding:2px 7px;width:58px;text-align:center;flex-shrink:0;letter-spacing:.02em}
+    .ko-summary-badge-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:58px}
+    .ko-badge-sub{font-size:.5rem;color:var(--muted);margin-top:2px;text-align:center;line-height:1;white-space:nowrap}
+    .ko-summary-badge{font-size:.6rem;font-weight:800;background:var(--navy);color:#fff;border-radius:5px;padding:2px 7px;width:58px;text-align:center;flex-shrink:0;letter-spacing:.02em;box-sizing:border-box}
+    .ko-summary-badge.r4-badge{background:#1e3a5f}
     .ko-summary-badge.r2-badge{background:#7c3aed}
     .ko-summary-badge.rf-badge{background:#b45309}
     .ko-summary-badge.rc-badge{background:linear-gradient(135deg,#b45309,#d97706);border:1px solid #f59e0b}
@@ -1181,6 +1184,12 @@ function getKoResults(){
     const upto=order.indexOf(lvl);
     order.forEach((rid,i)=>{if(i<=upto&&_SIM_KO_BRACKET[rid])base[rid]=_SIM_KO_BRACKET[rid].slice();});
   }
+  // Partial overrides: ?sim_partial_r2=Francia,Argentina (solo local)
+  const qp=new URLSearchParams(location.search);
+  ['r16','r8','r4','r2','rf','rc'].forEach(rid=>{
+    const v=qp.get('sim_partial_'+rid);
+    if(v)base[rid]=v.split(',').map(s=>s.trim());
+  });
   return base;
 }
 // ── Fase actual del torneo ──
@@ -2193,7 +2202,8 @@ function buildMobCard(d,hasResults,hasKoResults,groupWinner,grpPrize,phase,allWi
 
   // Sección "Último" — resumen Semis/Final/Campeón desde esa fase en adelante; grupos/R16-R4 usan lastSection clásico
   const KO_SEMIS_PHASES=new Set(['r2','rf','rc']);
-  const lastSection=(KO_SEMIS_PHASES.has(phase)||allWinners)?buildKoSummarySection(d):buildLastSection(d,phase);
+  const koSummary=buildKoSummarySection(d);
+  const lastSection=(KO_SEMIS_PHASES.has(phase)||allWinners)?koSummary:(phase==='r4'?buildKoSummarySection(d,true):buildLastSection(d,phase));
 
   // KO totals (solo rondas con resultados cargados) — solo en fase de grupos/groups_done
   let koInlineHtml='';
@@ -2231,9 +2241,10 @@ function buildMobCard(d,hasResults,hasKoResults,groupWinner,grpPrize,phase,allWi
 }
 
 // Sección "Último" según fase: grupos→último partido; 16vos/8vos→botón; 4tos+→banderitas de picks
-function buildKoSummarySection(d){
+function buildKoSummarySection(d, includeR4=false){
   const{koDetail}=d;
   const phasesMeta=[
+    ...(includeR4?[{id:'r4', label:'4tos', cls:'r4-badge'}]:[]),
     {id:'r2', label:'Semis',   cls:'r2-badge'},
     {id:'rf', label:'Final',   cls:'rf-badge'},
     {id:'rc', label:'Campeón', cls:'rc-badge'},
@@ -2247,23 +2258,30 @@ function buildKoSummarySection(d){
     const actual=_toArr(koResults[id]||[]);
     if(!picks.length&&!actual.length)return '';
     const hasResult=actual.length>0;
+    const phaseComplete=actual.length>=round.count;
     const correct=picks.filter(t=>actual.includes(t)).length;
-    const pts=hasResult?correct*round.pts:null;
-    if(pts!==null){totalKoPts+=pts;totalCorrect+=correct;totalPossible+=picks.length;}
+    const ptsEarned=hasResult?correct*round.pts:null;
+    if(phaseComplete){totalKoPts+=ptsEarned;totalCorrect+=correct;totalPossible+=picks.length;}
     const flagsHtml=picks.length
       ?picks.map(t=>{
           const ok2=hasResult&&actual.includes(t);
-          const miss=hasResult&&!actual.includes(t);
+          const miss=phaseComplete&&!actual.includes(t);
           const marker=ok2?`<span class="ko-flag-marker" style="color:#16a34a">✓</span>`
                        :miss?`<span class="ko-flag-marker" style="color:#dc2626">✗</span>`:'';
           return`<span class="ko-summary-flag${ok2?' ok':miss?' miss':''}">${flag(t)}<span>${t}</span>${marker}</span>`;
         }).join('')
       :`<span style="font-size:.65rem;color:var(--muted)">Sin picks</span>`;
-    const rightHtml=pts!==null
-      ?`<span class="ko-summary-pts-eq${pts>0?' earned':' zero'}">+${pts} pts</span>`
-      :`<span class="ko-summary-pts-eq pending">+${round.pts}pts/eq</span>`;
+    const rightHtml=ptsEarned!==null
+      ?`<span class="ko-summary-pts-eq${ptsEarned>0?' earned':' zero'}">+${ptsEarned} pts</span>`
+      :'';
+    const ptsSubHtml=!hasResult
+      ?`<span class="ko-badge-sub">+${round.pts}pt/eq</span>`
+      :'';
     return`<div class="ko-summary-row">
-      <span class="ko-summary-badge ${cls}">${label}</span>
+      <div class="ko-summary-badge-wrap">
+        <span class="ko-summary-badge ${cls}">${label}</span>
+        ${ptsSubHtml}
+      </div>
       <div class="ko-summary-flags">${flagsHtml}</div>
       ${rightHtml}
     </div>`;
