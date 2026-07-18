@@ -1141,6 +1141,10 @@ const KO_MATCHES=[
   // Semifinales
   {id:'ko_r2_1',  round:'r2', home:'Francia',          away:'España',             date:'14 Jul',time:'13:00',venue:'Arlington, Texas'},
   {id:'ko_r2_2',  round:'r2', home:'Inglaterra',       away:'Argentina',          date:'15 Jul',time:'13:00',venue:'Atlanta'},
+  // Tercer Lugar (solo goles)
+  {id:'ko_r3p_1', round:'r3p',home:'Francia',          away:'Inglaterra',         date:'18 Jul',time:'15:00',venue:'Miami'},
+  // Final
+  {id:'ko_rf_1',  round:'rf', home:'España',           away:'Argentina',          date:'19 Jul',time:'13:00',venue:'Nueva York / NJ'},
 ];
 function getKoMatchResults(){
   const all=load('q26_results',{});
@@ -1172,7 +1176,7 @@ function renderResKoMatches(){
   if(!KO_MATCHES.length){wrap.innerHTML='<p style="color:var(--muted);font-size:.82rem;padding:8px 0">No hay partidos KO configurados aún.</p>';return;}
   wrap.innerHTML=KO_MATCHES.map(m=>{
     const res=results[m.id];
-    const roundLabel={r16:'16vos',r8:'Octavos',r4:'Cuartos',r2:'Semis',rf:'Final',rc:'Campeón'}[m.round]||m.round;
+    const roundLabel={r16:'16vos',r8:'Octavos',r4:'Cuartos',r2:'Semis',r3p:'3er Lugar',rf:'Final',rc:'Campeón'}[m.round]||m.round;
     const hVal=res?res.h:'';const aVal=res?res.a:'';
     return `<div class="res-ko-match-card">
       <div class="res-ko-match-hdr">

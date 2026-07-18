@@ -758,6 +758,19 @@
     .goles-modal-diff.over{background:#fee2e2;color:#991b1b}
     .goles-modal-diff.under{background:#e0f2fe;color:#075985}
     /* ── Ganadores Card (reemplaza Partidos de Hoy al terminar el mundial) ── */
+    /* Top winner banners */
+    .winner-top-banner{border-radius:14px;overflow:hidden;margin-bottom:10px;box-shadow:0 3px 16px rgba(0,0,0,.12)}
+    .wtb-quiniela{background:linear-gradient(135deg,#b45309 0%,#d97706 45%,#f59e0b 100%);padding:14px 18px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+    .wtb-quiniela::after{content:'';position:absolute;top:0;left:0;width:35%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-130%);animation:mwb-shine 3.5s ease-in-out infinite 0.8s;pointer-events:none}
+    .wtb-segundo{background:linear-gradient(135deg,#374151 0%,#4b5563 50%,#6b7280 100%);padding:14px 18px;display:flex;align-items:center;gap:12px}
+    .wtb-grupos{background:linear-gradient(135deg,#1e40af 0%,#2563eb 50%,#3b82f6 100%);padding:14px 18px;display:flex;align-items:center;gap:12px}
+    .wtb-salado{background:linear-gradient(135deg,#7c2d12 0%,#9a3412 50%,#c2410c 100%);padding:14px 18px;display:flex;align-items:center;gap:12px}
+    .wtb-icon{font-size:2rem;line-height:1;flex-shrink:0}
+    .wtb-info{flex:1;min-width:0}
+    .wtb-label{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.8;color:#fff}
+    .wtb-name{font-size:1.05rem;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+    .wtb-sub{font-size:.65rem;font-weight:700;color:rgba(255,255,255,.8);margin-top:1px}
+    .wtb-prize{font-size:.82rem;font-weight:900;color:#fff;background:rgba(0,0,0,.2);border-radius:8px;padding:5px 10px;flex-shrink:0;white-space:nowrap}
     .gana-card{background:var(--surface);border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.09);margin-bottom:14px}
     .gana-title{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:linear-gradient(135deg,#b45309,#d97706,#f59e0b);color:#fff}
     .gana-title-text{font-size:.85rem;font-weight:900;letter-spacing:.03em}
@@ -782,19 +795,34 @@
     .mob-winner-banner.salado .mwb-title{color:#7f1d1d}
     .mob-winner-banner.salado .mwb-prize{color:#7f1d1d}
     /* ── Modal de Agradecimiento ── */
-    .agra-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}
+    .agra-overlay{position:fixed;inset:0;background:rgba(5,15,40,.78);z-index:3000;display:none;align-items:center;justify-content:center;padding:12px}
     .agra-overlay.open{display:flex}
-    .agra-modal{background:var(--surface);border-radius:18px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.35);display:flex;flex-direction:column}
-    .agra-header{background:linear-gradient(135deg,#1a3a6e,#1e4d9b);padding:20px 20px 16px;border-radius:18px 18px 0 0;text-align:center;flex-shrink:0;position:relative}
-    .agra-close{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:1rem;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900}
-    .agra-header h2{color:#fff;font-size:1.15rem;font-weight:900;margin:0 0 4px}
-    .agra-header p{color:rgba(255,255,255,.8);font-size:.72rem;margin:0}
-    .agra-trophy{font-size:2.2rem;margin-bottom:8px}
-    .agra-body{padding:16px 20px 20px;display:flex;flex-direction:column;gap:14px}
-    .agra-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-    .agra-name{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 8px;font-size:.7rem;font-weight:700;color:var(--navy);text-align:center;line-height:1.2}
-    .agra-cta{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-size:.9rem;font-weight:900;border:none;border-radius:12px;cursor:pointer;text-align:center;text-decoration:none;letter-spacing:.02em}
-    .agra-cta:hover{background:linear-gradient(135deg,#15803d,#166534)}
+    .agra-modal{background:linear-gradient(155deg,#0c1f4a,#1a3a6e);border-radius:22px;width:100%;max-width:520px;max-height:92vh;box-shadow:0 12px 60px rgba(0,0,0,.55);display:flex;flex-direction:column;overflow:hidden;position:relative}
+    .agra-close{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1rem;width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900;z-index:10}
+    .agra-header{padding:28px 24px 18px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.14)}
+    .agra-trophy{font-size:2.4rem;line-height:1;filter:drop-shadow(0 0 12px rgba(245,158,11,.6))}
+    .agra-center-title{color:#fff;font-size:1.1rem;font-weight:900;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+    .agra-center-sub{color:rgba(255,255,255,.65);font-size:.65rem;line-height:1.3;margin-top:2px}
+    .agra-cta-btn{margin-top:8px;padding:9px 20px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-size:.82rem;font-weight:900;border:none;border-radius:10px;cursor:pointer;letter-spacing:.02em;box-shadow:0 3px 12px rgba(22,163,74,.4);white-space:nowrap}
+    .agra-cta-btn:hover{background:linear-gradient(135deg,#15803d,#166534)}
+    .agra-names-wrap{overflow-y:auto;flex:1;padding:14px 16px 18px;min-height:0}
+    .agra-names-grid{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+    .agra-name-chip{display:inline-flex;align-items:center;font-size:.74rem;font-weight:700;color:rgba(255,255,255,.92);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 11px}
+    /* mensaje modal */
+    .mensaje-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:4000;display:none;align-items:center;justify-content:center;padding:16px}
+    .mensaje-overlay.open{display:flex}
+    .mensaje-modal{background:#fff;border-radius:16px;width:100%;max-width:400px;box-shadow:0 10px 40px rgba(0,0,0,.3);overflow:hidden}
+    .mensaje-header{background:linear-gradient(135deg,#1a3a6e,#1e4d9b);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+    .mensaje-header span{color:#fff;font-size:.9rem;font-weight:900}
+    .mensaje-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+    .mensaje-body{padding:18px;display:flex;flex-direction:column;gap:10px}
+    .mensaje-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:.82rem;font-family:inherit;box-sizing:border-box;outline:none}
+    .mensaje-input:focus{border-color:#1e4d9b}
+    .mensaje-textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:.82rem;font-family:inherit;box-sizing:border-box;resize:vertical;min-height:100px;outline:none}
+    .mensaje-textarea:focus{border-color:#1e4d9b}
+    .mensaje-enviar{width:100%;padding:12px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-size:.88rem;font-weight:900;border:none;border-radius:10px;cursor:pointer;letter-spacing:.02em}
+    .mensaje-enviar:disabled{opacity:.6;cursor:not-allowed}
+    .mensaje-status{font-size:.78rem;text-align:center;min-height:18px}
   </style>
 </head>
 <body>
@@ -920,8 +948,11 @@
           </div>
         </div>
       </div>
-      <div id="hoy-wrap"></div>
+      <div id="winner-1st-wrap"></div>
+      <div id="winner-2nd-wrap"></div>
       <div id="goles-card-wrap"></div>
+      <div id="winner-salado-wrap"></div>
+      <div id="hoy-wrap"></div>
       <div class="search-box" style="margin:8px 0 4px">
         <span style="color:var(--muted)">🔍</span>
         <input type="text" id="mob-tablero-search" placeholder="Buscar participante…" oninput="renderTableroMobile()">
@@ -1010,17 +1041,31 @@
 
 <div id="agra-overlay" class="agra-overlay" onclick="closeAgraModal(event)">
   <div class="agra-modal" onclick="event.stopPropagation()">
+    <button class="agra-close" onclick="closeAgraModal()">✕</button>
     <div class="agra-header">
-      <button class="agra-close" onclick="closeAgraModal()">✕</button>
       <div class="agra-trophy">🏆</div>
-      <h2>¡Gracias a todos!</h2>
-      <p>Mundial 2026 · Quiniela entre amigos</p>
+      <div class="agra-center-title">¡Gracias a todos!</div>
+      <div class="agra-center-sub">Mundial 2026 · Quiniela entre amigos</div>
+      <button class="agra-cta-btn" onclick="openMensajeModal()">📝 Deja un mensaje</button>
     </div>
-    <div class="agra-body">
-      <div id="agra-grid" class="agra-grid"></div>
-      <a class="agra-cta" href="mailto:admin@tarreola.com?subject=Mi%20comentario%20sobre%20la%20Quiniela%202026&body=Hola%20Toño%2C%0A%0AMi%20comentario%3A%0A">
-        📝 Manda tu comentario
-      </a>
+    <div class="agra-names-wrap">
+      <div id="agra-names-grid" class="agra-names-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal deja un mensaje -->
+<div id="mensaje-overlay" class="mensaje-overlay" onclick="closeMensajeModal(event)">
+  <div class="mensaje-modal" onclick="event.stopPropagation()">
+    <div class="mensaje-header">
+      <span>📝 Deja un mensaje</span>
+      <button class="mensaje-close" onclick="closeMensajeModal()">✕</button>
+    </div>
+    <div class="mensaje-body">
+      <input id="mensaje-nombre" class="mensaje-input" type="text" placeholder="Tu nombre (se llenará automático)">
+      <textarea id="mensaje-texto" class="mensaje-textarea" placeholder="Escribe tu mensaje aquí…"></textarea>
+      <div id="mensaje-status" class="mensaje-status"></div>
+      <button id="mensaje-enviar" class="mensaje-enviar" onclick="enviarMensaje()">Enviar mensaje ✉️</button>
     </div>
   </div>
 </div>
@@ -1139,6 +1184,10 @@ const KO_MATCHES=[
   // Semifinales (informativos — solo avance cuenta en puntaje)
   {id:'ko_r2_1',  round:'r2', home:'Francia',          away:'España',             date:'14 Jul',time:'13:00',venue:'Arlington, Texas'},
   {id:'ko_r2_2',  round:'r2', home:'Inglaterra',       away:'Argentina',          date:'15 Jul',time:'13:00',venue:'Atlanta'},
+  // Tercer Lugar (solo goles — no cuenta en picks KO)
+  {id:'ko_r3p_1', round:'r3p',home:'Francia',          away:'Inglaterra',         date:'18 Jul',time:'15:00',venue:'Miami'},
+  // Final
+  {id:'ko_rf_1',  round:'rf', home:'España',           away:'Argentina',          date:'19 Jul',time:'13:00',venue:'Nueva York / NJ'},
 ];
 const KO_PREVIEW_ROUNDS=new Set(['r16','r8','r4']);
 const DEFAULT_MATCHES=[{id:'A1',group:'A',matchday:1,date:'11 Jun',time:'13:00',venue:'Ciudad de México',hi:0,ai:2},{id:'A2',group:'A',matchday:1,date:'11 Jun',time:'20:00',venue:'Guadalajara',hi:1,ai:3},{id:'B1',group:'B',matchday:1,date:'12 Jun',time:'13:00',venue:'Toronto',hi:0,ai:1},{id:'D1',group:'D',matchday:1,date:'12 Jun',time:'19:00',venue:'Los Ángeles',hi:0,ai:1},{id:'B2',group:'B',matchday:1,date:'13 Jun',time:'13:00',venue:'San Francisco',hi:2,ai:3},{id:'C1',group:'C',matchday:1,date:'13 Jun',time:'16:00',venue:'Nueva York / NJ',hi:0,ai:1},{id:'C2',group:'C',matchday:1,date:'13 Jun',time:'19:00',venue:'Boston',hi:2,ai:3},{id:'D2',group:'D',matchday:1,date:'13 Jun',time:'22:00',venue:'Vancouver',hi:2,ai:3},{id:'E1',group:'E',matchday:1,date:'14 Jun',time:'11:00',venue:'Houston',hi:0,ai:1},{id:'F1',group:'F',matchday:1,date:'14 Jun',time:'14:00',venue:'Dallas',hi:0,ai:1},{id:'E2',group:'E',matchday:1,date:'14 Jun',time:'17:00',venue:'Filadelfia',hi:2,ai:3},{id:'F2',group:'F',matchday:1,date:'14 Jun',time:'20:00',venue:'Monterrey',hi:2,ai:3},{id:'H1',group:'H',matchday:1,date:'15 Jun',time:'10:00',venue:'Atlanta',hi:0,ai:1},{id:'G1',group:'G',matchday:1,date:'15 Jun',time:'13:00',venue:'Seattle',hi:0,ai:1},{id:'H2',group:'H',matchday:1,date:'15 Jun',time:'16:00',venue:'Miami',hi:2,ai:3},{id:'G2',group:'G',matchday:1,date:'15 Jun',time:'19:00',venue:'Los Ángeles',hi:2,ai:3},{id:'I1',group:'I',matchday:1,date:'16 Jun',time:'13:00',venue:'Nueva York / NJ',hi:0,ai:1},{id:'I2',group:'I',matchday:1,date:'16 Jun',time:'16:00',venue:'Boston',hi:2,ai:3},{id:'J1',group:'J',matchday:1,date:'16 Jun',time:'19:00',venue:'Kansas City',hi:0,ai:2},{id:'J2',group:'J',matchday:1,date:'16 Jun',time:'22:00',venue:'San Francisco',hi:1,ai:3},{id:'K1',group:'K',matchday:1,date:'17 Jun',time:'11:00',venue:'Houston',hi:0,ai:2},{id:'L1',group:'L',matchday:1,date:'17 Jun',time:'14:00',venue:'Dallas',hi:0,ai:1},{id:'L2',group:'L',matchday:1,date:'17 Jun',time:'17:00',venue:'Toronto',hi:2,ai:3},{id:'K2',group:'K',matchday:1,date:'17 Jun',time:'20:00',venue:'Ciudad de México',hi:3,ai:1},{id:'A3',group:'A',matchday:2,date:'18 Jun',time:'10:00',venue:'Atlanta',hi:3,ai:2},{id:'B3',group:'B',matchday:2,date:'18 Jun',time:'13:00',venue:'Los Ángeles',hi:3,ai:1},{id:'B4',group:'B',matchday:2,date:'18 Jun',time:'16:00',venue:'Vancouver',hi:0,ai:2},{id:'A4',group:'A',matchday:2,date:'18 Jun',time:'19:00',venue:'Guadalajara',hi:0,ai:1},{id:'D3',group:'D',matchday:2,date:'19 Jun',time:'13:00',venue:'Seattle',hi:0,ai:2},{id:'C3',group:'C',matchday:2,date:'19 Jun',time:'16:00',venue:'Boston',hi:3,ai:1},{id:'C4',group:'C',matchday:2,date:'19 Jun',time:'19:00',venue:'Filadelfia',hi:0,ai:2},{id:'D4',group:'D',matchday:2,date:'19 Jun',time:'22:00',venue:'San Francisco',hi:3,ai:1},{id:'F3',group:'F',matchday:2,date:'20 Jun',time:'11:00',venue:'Houston',hi:0,ai:2},{id:'E3',group:'E',matchday:2,date:'20 Jun',time:'14:00',venue:'Toronto',hi:0,ai:2},{id:'E4',group:'E',matchday:2,date:'20 Jun',time:'18:00',venue:'Kansas City',hi:3,ai:1},{id:'F4',group:'F',matchday:2,date:'20 Jun',time:'22:00',venue:'Guadalajara',hi:3,ai:1},{id:'H3',group:'H',matchday:2,date:'21 Jun',time:'10:00',venue:'Atlanta',hi:0,ai:2},{id:'G3',group:'G',matchday:2,date:'21 Jun',time:'13:00',venue:'Los Ángeles',hi:0,ai:2},{id:'H4',group:'H',matchday:2,date:'21 Jun',time:'16:00',venue:'Miami',hi:3,ai:1},{id:'G4',group:'G',matchday:2,date:'21 Jun',time:'19:00',venue:'Vancouver',hi:3,ai:1},{id:'J3',group:'J',matchday:2,date:'22 Jun',time:'11:00',venue:'Dallas',hi:0,ai:1},{id:'I3',group:'I',matchday:2,date:'22 Jun',time:'15:00',venue:'Filadelfia',hi:0,ai:2},{id:'I4',group:'I',matchday:2,date:'22 Jun',time:'18:00',venue:'Nueva York / NJ',hi:3,ai:1},{id:'J4',group:'J',matchday:2,date:'22 Jun',time:'21:00',venue:'San Francisco',hi:3,ai:2},{id:'K3',group:'K',matchday:2,date:'23 Jun',time:'11:00',venue:'Houston',hi:0,ai:3},{id:'L3',group:'L',matchday:2,date:'23 Jun',time:'14:00',venue:'Boston',hi:0,ai:2},{id:'L4',group:'L',matchday:2,date:'23 Jun',time:'17:00',venue:'Toronto',hi:3,ai:1},{id:'K4',group:'K',matchday:2,date:'23 Jun',time:'20:00',venue:'Guadalajara',hi:1,ai:2},{id:'B5',group:'B',matchday:3,date:'24 Jun',time:'13:00',venue:'Vancouver',hi:3,ai:0},{id:'B6',group:'B',matchday:3,date:'24 Jun',time:'13:00',venue:'Seattle',hi:1,ai:2},{id:'C5',group:'C',matchday:3,date:'24 Jun',time:'16:00',venue:'Miami',hi:3,ai:0},{id:'C6',group:'C',matchday:3,date:'24 Jun',time:'16:00',venue:'Atlanta',hi:1,ai:2},{id:'A5',group:'A',matchday:3,date:'24 Jun',time:'19:00',venue:'Ciudad de México',hi:3,ai:0},{id:'A6',group:'A',matchday:3,date:'24 Jun',time:'19:00',venue:'Monterrey',hi:2,ai:1},{id:'E5',group:'E',matchday:3,date:'25 Jun',time:'14:00',venue:'Filadelfia',hi:1,ai:2},{id:'E6',group:'E',matchday:3,date:'25 Jun',time:'14:00',venue:'Nueva York / NJ',hi:3,ai:0},{id:'F5',group:'F',matchday:3,date:'25 Jun',time:'17:00',venue:'Dallas',hi:1,ai:2},{id:'F6',group:'F',matchday:3,date:'25 Jun',time:'17:00',venue:'Kansas City',hi:3,ai:0},{id:'D5',group:'D',matchday:3,date:'25 Jun',time:'20:00',venue:'Los Ángeles',hi:3,ai:0},{id:'D6',group:'D',matchday:3,date:'25 Jun',time:'20:00',venue:'San Francisco',hi:1,ai:2},{id:'I5',group:'I',matchday:3,date:'26 Jun',time:'13:00',venue:'Boston',hi:3,ai:0},{id:'I6',group:'I',matchday:3,date:'26 Jun',time:'13:00',venue:'Toronto',hi:1,ai:2},{id:'H5',group:'H',matchday:3,date:'26 Jun',time:'18:00',venue:'Houston',hi:1,ai:2},{id:'H6',group:'H',matchday:3,date:'26 Jun',time:'18:00',venue:'Guadalajara',hi:3,ai:0},{id:'G5',group:'G',matchday:3,date:'26 Jun',time:'21:00',venue:'Seattle',hi:1,ai:2},{id:'G6',group:'G',matchday:3,date:'26 Jun',time:'21:00',venue:'Vancouver',hi:3,ai:0},{id:'L5',group:'L',matchday:3,date:'27 Jun',time:'15:00',venue:'Nueva York / NJ',hi:3,ai:0},{id:'L6',group:'L',matchday:3,date:'27 Jun',time:'15:00',venue:'Filadelfia',hi:1,ai:2},{id:'K5',group:'K',matchday:3,date:'27 Jun',time:'17:30',venue:'Miami',hi:1,ai:0},{id:'K6',group:'K',matchday:3,date:'27 Jun',time:'17:30',venue:'Atlanta',hi:2,ai:3},{id:'J5',group:'J',matchday:3,date:'27 Jun',time:'20:00',venue:'Kansas City',hi:2,ai:1},{id:'J6',group:'J',matchday:3,date:'27 Jun',time:'20:00',venue:'Dallas',hi:3,ai:0}];
@@ -1165,10 +1214,10 @@ function getResults(){
 function getKoPreds(){return load('q26_ko_preds',{})}
 // ── Datos de simulación KO (solo memoria, para previsualizar fases) ──
 const _SIM_KO_BRACKET={
-  rc:['Argentina'],
-  rf:['Argentina','España'],
-  r2:['Argentina','España','Francia','Brasil'],
-  r4:['Argentina','España','Francia','Brasil','Inglaterra','Países Bajos','Portugal','Alemania'],
+  rc:['España'],
+  rf:['España','Argentina'],
+  r2:['Francia','España','Inglaterra','Argentina'],
+  r4:['Francia','España','Inglaterra','Argentina','Brasil','Alemania','Portugal','Países Bajos'],
   r8:['Argentina','España','Francia','Brasil','Inglaterra','Países Bajos','Portugal','Alemania','México','Croacia','Bélgica','Uruguay','Marruecos','Colombia','Japón','Suiza'],
   r16:['Argentina','España','Francia','Brasil','Inglaterra','Países Bajos','Portugal','Alemania','México','Croacia','Bélgica','Uruguay','Marruecos','Colombia','Japón','Suiza','Corea del Sur','Senegal','Ecuador','Australia','Egipto','Noruega','Paraguay','Túnez','Catar','Austria','Escocia','Irán','Ghana','Curazao','Panamá','Sudáfrica']
 };
@@ -1255,15 +1304,80 @@ function calcAllWinners(){
   });
   scored.sort((a,b)=>b.totalPts-a.totalPts||(b.exactCount-a.exactCount));
   const totalGoles=Object.entries(results).reduce((s,[,r])=>s+(r.h||0)+(r.a||0),0);
-  let golesWinner=null,golesMin=Infinity;
-  participants.forEach(p=>{
-    const g=goalsMap[p];if(g==null)return;
-    const diff=Math.abs(g-totalGoles);
-    if(diff<golesMin){golesMin=diff;golesWinner={p,pred:g,diff};}
-  });
+  const golesEligible=participants
+    .filter(p=>goalsMap[p]!=null&&Number(goalsMap[p])<=totalGoles)
+    .map(p=>({p,pred:Number(goalsMap[p]),diff:totalGoles-Number(goalsMap[p])}))
+    .sort((a,b)=>a.diff-b.diff);
+  const golesWinner=golesEligible.length?golesEligible[0]:null;
   return{place1:scored[0]||null,place2:scored[1]||null,groupLeader:getGroupStageWinner(),golesWinner,salado:scored[scored.length-1]||null,totalGoles};
 }
 
+function renderWinnerTopBanners(){
+  const w1=document.getElementById('winner-1st-wrap');
+  const w2=document.getElementById('winner-2nd-wrap');
+  const ws=document.getElementById('winner-salado-wrap');
+  if(!w1)return;
+  if(!isQuinielaComplete()){[w1,w2,ws].forEach(el=>{if(el)el.innerHTML='';});return;}
+  const bolsa=getParticipants().filter(p=>{const pay=load('q26_payments',{})[p];return['mp','efectivo_jr','efectivo_paps','publicado_pendiente'].includes(pay);}).length*3000;
+  const fmt=(pct)=>bolsa>0?'$'+Math.round(bolsa*pct).toLocaleString('es-MX')+' MXN':'—';
+  const w=calcAllWinners();
+  const{place1,place2,groupLeader,salado}=w;
+  const sameAs1=groupLeader&&place1&&groupLeader.p===place1.p;
+  if(place1){
+    const prize=sameAs1?fmt(.75):fmt(.60);
+    const label=sameAs1?'1er Lugar · Líder de Grupos':'Ganador de la Quiniela';
+    const sub=sameAs1?`${place1.totalPts} pts · 1er Lugar + Líder Grupos`:`${place1.totalPts} puntos totales`;
+    w1.innerHTML=`<div class="winner-top-banner">
+      <div class="wtb-quiniela">
+        <div class="wtb-icon">🥇</div>
+        <div class="wtb-info">
+          <div class="wtb-label">${label}</div>
+          <div class="wtb-name">${place1.p}</div>
+          <div class="wtb-sub">${sub}</div>
+        </div>
+        <div class="wtb-prize">${prize}</div>
+      </div>
+    </div>`;
+  }
+  if(place2){
+    w2.innerHTML=`<div class="winner-top-banner">
+      <div class="wtb-segundo">
+        <div class="wtb-icon">🥈</div>
+        <div class="wtb-info">
+          <div class="wtb-label">2do Lugar</div>
+          <div class="wtb-name">${place2.p}</div>
+          <div class="wtb-sub">${place2.totalPts} puntos totales</div>
+        </div>
+        <div class="wtb-prize">${fmt(.15)}</div>
+      </div>
+    </div>`;
+  }
+  if(groupLeader&&!sameAs1&&w1){
+    w1.innerHTML+=`<div class="winner-top-banner">
+      <div class="wtb-grupos">
+        <div class="wtb-icon">⚽</div>
+        <div class="wtb-info">
+          <div class="wtb-label">Líder Fase de Grupos</div>
+          <div class="wtb-name">${groupLeader.p}</div>
+        </div>
+        <div class="wtb-prize">${fmt(.15)}</div>
+      </div>
+    </div>`;
+  }
+  if(salado&&ws){
+    ws.innerHTML=`<div class="winner-top-banner">
+      <div class="wtb-salado">
+        <div class="wtb-icon">🌵</div>
+        <div class="wtb-info">
+          <div class="wtb-label">El más salado</div>
+          <div class="wtb-name">${salado.p}</div>
+          <div class="wtb-sub">${salado.totalPts} puntos totales</div>
+        </div>
+        <div class="wtb-prize">${fmt(.03)}</div>
+      </div>
+    </div>`;
+  }
+}
 function renderGanadoresCard(targetId){
   const wrap=document.getElementById(targetId);
   if(!wrap)return;
@@ -1313,9 +1427,9 @@ function renderGolesCard(targetId){
   const exactos=rows.filter(r=>r.pred===totalGoles);
   // Predicciones = aún pueden ganar (pred > total, o si total aún crece)
   const predicciones=rows.filter(r=>r.pred>totalGoles).sort((a,b)=>a.diff-b.diff);
-  // Ganador = más cercano al total final
-  const allSorted=[...rows].sort((a,b)=>a.diff-b.diff||a.pred-b.pred);
-  const golesWinner=allSorted.length?allSorted[0]:null;
+  // Ganador = más cercano sin pasarse (pred ≤ total)
+  const golesEligible=[...rows].filter(r=>r.pred<=totalGoles).sort((a,b)=>a.diff-b.diff||b.pred-a.pred);
+  const golesWinner=golesEligible.length?golesEligible[0]:null;
   const complete=isQuinielaComplete();
 
   // Guardar datos para modales
@@ -1323,7 +1437,9 @@ function renderGolesCard(targetId){
 
   const exactNamesHtml=exactos.length
     ?exactos.map(r=>`<div style="font-size:.7rem;font-weight:800;color:#166534;margin-top:2px">${r.p}</div>`).join('')
-    :`<div style="font-size:.62rem;color:var(--muted);margin-top:4px">nadie</div>`;
+    :golesWinner&&complete
+      ?`<div style="font-size:.7rem;font-weight:800;color:#166534;margin-top:2px">${golesWinner.p}</div>${golesWinner.diff>0?`<div style="font-size:.6rem;color:#16a34a;font-weight:700">${golesWinner.pred} goles</div>`:''}`
+      :`<div style="font-size:.62rem;color:var(--muted);margin-top:4px">nadie</div>`;
 
   wrap.innerHTML=`<div class="goles-card">
     <div class="goles-header">
@@ -1405,14 +1521,58 @@ function openAgraModal(){
   const payments=load('q26_payments',{});
   const PAID=new Set(['mp','efectivo_jr','efectivo_paps','publicado_pendiente']);
   const participants=getParticipants().filter(p=>PAID.has(payments[p]||'')).sort();
-  const grid=document.getElementById('agra-grid');
-  if(grid)grid.innerHTML=participants.map(p=>`<div class="agra-name">${p}</div>`).join('');
+  // Pre-fill nombre with logged-in apodo
+  const myApodo=localStorage.getItem('q26_my_apodo')||localStorage.getItem('q26_participant_access')||'';
+  const nombreEl=document.getElementById('mensaje-nombre');
+  if(nombreEl&&myApodo)nombreEl.value=myApodo;
+  // Build names grid
+  const grid=document.getElementById('agra-names-grid');
+  if(grid){
+    grid.innerHTML=participants.map(name=>`<div class="agra-name-chip">${name}</div>`).join('');
+  }
   overlay.classList.add('open');
   _agraShown=true;
 }
 function closeAgraModal(e){
   if(e&&e.target!==document.getElementById('agra-overlay'))return;
   document.getElementById('agra-overlay')?.classList.remove('open');
+}
+function openMensajeModal(){
+  document.getElementById('mensaje-overlay')?.classList.add('open');
+}
+function closeMensajeModal(e){
+  if(e&&e.target!==document.getElementById('mensaje-overlay'))return;
+  document.getElementById('mensaje-overlay')?.classList.remove('open');
+}
+async function enviarMensaje(){
+  const nombre=(document.getElementById('mensaje-nombre')?.value||'').trim()||'Anónimo';
+  const texto=(document.getElementById('mensaje-texto')?.value||'').trim();
+  const statusEl=document.getElementById('mensaje-status');
+  const btn=document.getElementById('mensaje-enviar');
+  if(!texto){statusEl.innerHTML='<span style="color:#dc2626">Escribe algo primero.</span>';return;}
+  btn.disabled=true;btn.textContent='Enviando…';
+  statusEl.innerHTML='';
+  try{
+    // Local preview mock
+    const isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
+    if(isLocal){
+      await new Promise(r=>setTimeout(r,900));
+    } else {
+      const res=await fetch('https://formspree.io/f/xpwzgvkl',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({nombre,mensaje:texto,_subject:`Quiniela 2026 · Mensaje de ${nombre}`})
+      });
+      if(!res.ok)throw new Error();
+    }
+    statusEl.innerHTML='<span style="color:#16a34a">✅ ¡Mensaje enviado! Gracias.</span>';
+    document.getElementById('mensaje-texto').value='';
+    btn.textContent='✅ Enviado';
+    setTimeout(()=>closeMensajeModal(),1800);
+  }catch(err){
+    statusEl.innerHTML='<span style="color:#dc2626">❌ No se pudo enviar. Intenta de nuevo.</span>';
+    btn.disabled=false;btn.textContent='Enviar mensaje ✉️';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1425,7 +1585,7 @@ function showView(v){
   document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   document.querySelectorAll('.nav-btn')[['tablero','ranking'].indexOf(v)].classList.add('active');
-  if(v==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderPartidosHoy();renderGolesCard('goles-card-wrap');raceInit();renderTableroMobile();}}
+  if(v==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderPartidosHoy();renderGolesCard('goles-card-wrap');renderWinnerTopBanners();raceInit();renderTableroMobile();}}
   if(v==='ranking'){renderRanking();}
 }
 
@@ -1922,8 +2082,6 @@ function toggleHoyCard(){_hoyOpen=!_hoyOpen;renderPartidosHoy();}
 function renderPartidosHoyImpl(targetId){
   const wrap=document.getElementById(targetId);
   if(!wrap)return;
-  // Mundial terminado → mostrar card de ganadores
-  if(isQuinielaComplete()){renderGanadoresCard(targetId);return;}
   // Mostrar partidos KO del día si existen (independiente de si hay resultados KO cargados)
   const today=getTodayMatchDate();
   const todayKo=KO_MATCHES.filter(m=>m.date===today);
@@ -2620,9 +2778,7 @@ function raceInit(){
   const wrap=document.getElementById('race-wrap');if(!wrap)return;
   // La Carrera de Posiciones solo se muestra al completar la fase de grupos (72/72)
   if(!isGroupStageComplete()){wrap.style.display='none';return;}
-  _raceSnaps=_buildRaceSnaps();
-  if(!_raceSnaps.length){wrap.style.display='none';return;}
-  wrap.style.display='block';
+  wrap.style.display='none';return;
   const sl=document.getElementById('race-slider');
   if(sl){sl.max=_raceSnaps.length-1;sl.value=_raceSnaps.length-1;}
   _raceIdx=_raceSnaps.length-1;_racePrevTop5=_raceIdx>0?_raceSnaps[_raceIdx-1].top5:[];
@@ -2690,7 +2846,7 @@ firebase.database().ref('/').on('value',snap=>{
   _cache=snap.val()||{};
   const lb=document.getElementById('loading-bar');
   if(lb){lb.style.width='100%';setTimeout(()=>lb.classList.add('done'),400);}
-  if(activeView==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderPartidosHoy();renderGolesCard('goles-card-wrap');raceInit();renderTableroMobile();}if(isQuinielaComplete()&&!document.getElementById('agra-overlay')?.classList.contains('open'))openAgraModal();}
+  if(activeView==='tablero'){renderTablero();renderMiQuiniela();if(document.body.getAttribute('data-mob-view')!=='table'){renderPartidosHoy();renderGolesCard('goles-card-wrap');renderWinnerTopBanners();raceInit();renderTableroMobile();}if(isQuinielaComplete()&&!document.getElementById('agra-overlay')?.classList.contains('open'))openAgraModal();}
   if(activeView==='ranking'){renderRanking();}
 },err=>{
   clearTimeout(_connTimeout);
