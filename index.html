@@ -1304,10 +1304,11 @@ function calcAllWinners(){
   });
   scored.sort((a,b)=>b.totalPts-a.totalPts||(b.exactCount-a.exactCount));
   const totalGoles=Object.entries(results).reduce((s,[,r])=>s+(r.h||0)+(r.a||0),0);
+  const exactMap=Object.fromEntries(scored.map(s=>[s.p,s.exactCount]));
   const golesEligible=participants
     .filter(p=>goalsMap[p]!=null&&Number(goalsMap[p])<=totalGoles)
-    .map(p=>({p,pred:Number(goalsMap[p]),diff:totalGoles-Number(goalsMap[p])}))
-    .sort((a,b)=>a.diff-b.diff);
+    .map(p=>({p,pred:Number(goalsMap[p]),diff:totalGoles-Number(goalsMap[p]),exactCount:exactMap[p]||0}))
+    .sort((a,b)=>a.diff-b.diff||(b.exactCount-a.exactCount));
   const golesWinner=golesEligible.length?golesEligible[0]:null;
   return{place1:scored[0]||null,place2:scored[1]||null,groupLeader:getGroupStageWinner(),golesWinner,salado:scored[scored.length-1]||null,totalGoles};
 }
@@ -1416,9 +1417,19 @@ function renderGolesCard(targetId){
   const goalsMap=load('q26_goals',{});
   const totalGoles=Object.entries(results).reduce((s,[,r])=>s+(r.h||0)+(r.a||0),0);
 
+  // Exactos de partido por participante (desempate goles)
+  const predictions=getPredictions();
+  const allMatches=generateMatches(getTeams());
+  const exactCountMap={};
+  participants.forEach(p=>{
+    const pp=predictions[p]||{};let ex=0;
+    allMatches.forEach(m=>{if(calcPoints(pp[m.id],results[m.id])===3)ex++;});
+    exactCountMap[p]=ex;
+  });
+
   const rows=participants
     .filter(p=>goalsMap[p]!=null)
-    .map(p=>({p,pred:Number(goalsMap[p]),diff:Math.abs(Number(goalsMap[p])-totalGoles)}));
+    .map(p=>({p,pred:Number(goalsMap[p]),diff:Math.abs(Number(goalsMap[p])-totalGoles),exactCount:exactCountMap[p]||0}));
 
   const hasResults=totalGoles>0;
   // "Ya se pasaron" = el marcador ya superó su predicción (pred < total)
@@ -1427,8 +1438,8 @@ function renderGolesCard(targetId){
   const exactos=rows.filter(r=>r.pred===totalGoles);
   // Predicciones = aún pueden ganar (pred > total, o si total aún crece)
   const predicciones=rows.filter(r=>r.pred>totalGoles).sort((a,b)=>a.diff-b.diff);
-  // Ganador = más cercano sin pasarse (pred ≤ total)
-  const golesEligible=[...rows].filter(r=>r.pred<=totalGoles).sort((a,b)=>a.diff-b.diff||b.pred-a.pred);
+  // Ganador = más cercano sin pasarse; desempate por más exactos
+  const golesEligible=[...rows].filter(r=>r.pred<=totalGoles).sort((a,b)=>a.diff-b.diff||(b.exactCount-a.exactCount));
   const golesWinner=golesEligible.length?golesEligible[0]:null;
   const complete=isQuinielaComplete();
 
@@ -1457,7 +1468,7 @@ function renderGolesCard(targetId){
       <div style="flex:1;min-width:0">
         <div style="font-size:.56rem;font-weight:800;color:#166534;text-transform:uppercase;letter-spacing:.06em">Ganador Pronóstico de Goles</div>
         <div style="font-size:.88rem;font-weight:900;color:#14532d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${golesWinner.p}</div>
-        <div style="font-size:.62rem;color:#16a34a;font-weight:700">${golesWinner.pred} goles${golesWinner.diff===0?' · ¡Exacto!':' · diff '+golesWinner.diff}</div>
+        <div style="font-size:.62rem;color:#16a34a;font-weight:700">${golesWinner.pred} goles${golesWinner.diff===0?' · ¡Exacto!':' · diff '+golesWinner.diff} · ${golesWinner.exactCount} exactos</div>
       </div>
       <div style="font-size:.75rem;font-weight:900;color:#16a34a;white-space:nowrap">$7,350 MXN</div>
     </div>`:''}
