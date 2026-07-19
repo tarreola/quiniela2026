@@ -1564,14 +1564,15 @@ async function enviarMensaje(){
   btn.disabled=true;btn.textContent='Enviando…';
   statusEl.innerHTML='';
   try{
-    // Local preview mock
-    const res=await fetch('https://formsubmit.co/ajax/arreola.tono@gmail.com',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({nombre,mensaje:texto,_subject:`Quiniela 2026 · Mensaje de ${nombre}`,_captcha:'false'})
-    });
-    const json=await res.json();
-    if(!res.ok||json.success==='false'||json.success===false)throw new Error();
+    const isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
+    if(!isLocal){
+      await fetch('https://formsubmit.co/arreola.tono@gmail.com',{
+        method:'POST',
+        mode:'no-cors',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:new URLSearchParams({nombre,mensaje:texto,_subject:`Quiniela 2026 · Mensaje de ${nombre}`,_captcha:'false',_next:'https://quiniela.tarreola.com'}).toString()
+      });
+    }
     statusEl.innerHTML='<span style="color:#16a34a">✅ ¡Mensaje enviado! Gracias.</span>';
     document.getElementById('mensaje-texto').value='';
     btn.textContent='✅ Enviado';
