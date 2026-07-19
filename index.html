@@ -1565,18 +1565,13 @@ async function enviarMensaje(){
   statusEl.innerHTML='';
   try{
     // Local preview mock
-    const isLocal=location.hostname==='localhost'||location.hostname==='127.0.0.1';
-    if(isLocal){
-      await new Promise(r=>setTimeout(r,900));
-    } else {
-      const res=await fetch('https://formsubmit.co/ajax/arreola.tono@gmail.com',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Accept':'application/json'},
-        body:JSON.stringify({nombre,mensaje:texto,_subject:`Quiniela 2026 · Mensaje de ${nombre}`,_captcha:'false'})
-      });
-      const json=await res.json();
-      if(!res.ok||json.success==='false'||json.success===false)throw new Error();
-    }
+    const res=await fetch('https://formsubmit.co/ajax/arreola.tono@gmail.com',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({nombre,mensaje:texto,_subject:`Quiniela 2026 · Mensaje de ${nombre}`,_captcha:'false'})
+    });
+    const json=await res.json();
+    if(!res.ok||json.success==='false'||json.success===false)throw new Error();
     statusEl.innerHTML='<span style="color:#16a34a">✅ ¡Mensaje enviado! Gracias.</span>';
     document.getElementById('mensaje-texto').value='';
     btn.textContent='✅ Enviado';
